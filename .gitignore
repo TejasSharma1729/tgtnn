@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+# Large files
+data/*
+data
+assets/*
+assets
