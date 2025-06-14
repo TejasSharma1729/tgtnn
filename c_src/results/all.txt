@@ -1,0 +1,13 @@
+Compilation successful. Running the program...
+imagenet
+Mean search time: 1.89143 ms
+Net number of dot products: 120628130
+imdb_wiki
+Mean search time: 14.9616 ms
+Net number of dot products: 1693462608
+insta_1m
+Mean search time: 7.44709 ms
+Net number of dot products: 1137251737
+mirflickr
+Mean search time: 5.11635 ms
+Net number of dot products: 786070606
