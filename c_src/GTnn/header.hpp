@@ -8,9 +8,16 @@ using namespace std;
 using namespace std::chrono;
 using namespace Eigen;
 
+#ifndef __OPTIMIZED_GTNN_HEADER
+#define __OPTIMIZED_GTNN_HEADER
+
 #define NUM_THREADS 16
 namespace GTnn {
-    typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> matrix_t;
+    typedef Eigen::Matrix<double, 
+                Eigen::Dynamic, 
+                Eigen::Dynamic, 
+                Eigen::RowMajor
+    > matrix_t;
     typedef Eigen::Matrix<double, Eigen::Dynamic, 1> vector_t;
 
     bool check_file(ifstream &file);
@@ -83,7 +90,10 @@ bool GTnn::recursive_mkdir(const string &path) {
             cerr << "Error creating directory: " << dir << endl;
             return false;
         }
-        chdir(dir.c_str());
+        if (chdir(dir.c_str()) == -1) {
+            cerr << "Error changing directory: " << dir << endl;
+            return false;
+        }
     }
     return true;
 }
@@ -129,3 +139,5 @@ bool GTnn::save_matrix(const string &file_name, const matrix_t &matrix) {
     file.close();
     return true;
 }
+
+#endif // __OPTIMIZED_GTNN_HEADER

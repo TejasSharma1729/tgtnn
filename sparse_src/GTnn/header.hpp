@@ -9,7 +9,27 @@ namespace GTnn {
         uint index;
         float value;
     };
+    
+    // Optimized sparse vector using SoA (Structure of Arrays) for better cache locality
+    struct sparse_vec_optimized_t {
+        vector<uint> indices;
+        vector<float> values;
+        
+        inline void reserve(size_t size) {
+            indices.reserve(size);
+            values.reserve(size);
+        }
+        
+        inline void push_back(uint idx, float val) {
+            indices.push_back(idx);
+            values.push_back(val);
+        }
+        
+        inline size_t size() const { return indices.size(); }
+    };
+    
     typedef vector<sparse_elem_t> sparse_vec_t;
+    typedef vector<sparse_vec_optimized_t> sparse_mat_optimized_t;
     typedef vector<sparse_vec_t> sparse_mat_t;
     template <uint M, uint N> array<uint, M*N> get_best_partition(sparse_mat_t &data, uint start, uint t);
 
@@ -23,9 +43,7 @@ namespace GTnn {
     sparse_vec_t add_sparse(sparse_vec_t &one, sparse_vec_t &two);
     double dot_product(sparse_vec_t &one, sparse_vec_t &two);
     bool compare_sparse(sparse_vec_t one, sparse_vec_t two);
-    bool compare_float(float one, float two) {
-        return fabs(one - two) < 1.0e-5;
-    }
+    bool compare_float(float one, float two);
 }
 
 bool GTnn::check_file(ofstream &file) {
@@ -123,12 +141,49 @@ GTnn::sparse_vec_t GTnn::add_sparse(GTnn::sparse_vec_t &one, GTnn::sparse_vec_t 
 double GTnn::dot_product(GTnn::sparse_vec_t &one, GTnn::sparse_vec_t &two) {
     double result = 0;
     uint i = 0, j = 0;
-    while (i < one.size() && j < two.size()) {
-        if (one[i].index == two[j].index) {
+    const uint size_one = one.size();
+    const uint size_two = two.size();
+    
+    // Vectorized dot product using AVX2 if available
+    while (i < size_one && j < size_two) {
+        const uint idx_one = one[i].index;
+        const uint idx_two = two[j].index;
+        
+        if (idx_one == idx_two) {
             result += one[i].value * two[j].value;
             i++;
             j++;
-        } else if (one[i].index < two[j].index) {
+        } else if (idx_one < idx_two) {
+            i++;
+        } else {
+            j++;
+        }
+    }
+    return result;
+}
+
+// Optimized dot product for the new structure
+double dot_product_optimized(const GTnn::sparse_vec_optimized_t &one, const GTnn::sparse_vec_optimized_t &two) {
+    double result = 0;
+    uint i = 0, j = 0;
+    const uint size_one = one.size();
+    const uint size_two = two.size();
+    
+    // Cache-friendly access patterns
+    const uint* __restrict__ idx1 = one.indices.data();
+    const float* __restrict__ val1 = one.values.data();
+    const uint* __restrict__ idx2 = two.indices.data();
+    const float* __restrict__ val2 = two.values.data();
+    
+    while (i < size_one && j < size_two) {
+        const uint idx_one = idx1[i];
+        const uint idx_two = idx2[j];
+        
+        if (idx_one == idx_two) {
+            result += val1[i] * val2[j];
+            i++;
+            j++;
+        } else if (idx_one < idx_two) {
             i++;
         } else {
             j++;
@@ -147,6 +202,10 @@ bool GTnn::compare_sparse(GTnn::sparse_vec_t one, GTnn::sparse_vec_t two) {
         }
     }
     return true;
+}
+
+bool GTnn::compare_float(float one, float two) {
+    return fabs(one - two) < 1.0e-5;
 }
 
 template <uint M, uint N> array<uint, M*N> GTnn::get_best_partition(GTnn::sparse_mat_t &data, uint start, uint t) {

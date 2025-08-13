@@ -21,5 +21,7 @@
         "unordered_set": "cpp",
         "iostream": "cpp",
         "tuple": "cpp"
-    }
+    },
+    "C_Cpp.intelliSenseEngine": "disabled",
+    "C_Cpp.errorSquiggles": "enabled",
 }

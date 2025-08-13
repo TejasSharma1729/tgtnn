@@ -1,0 +1,51 @@
+# Makefile for Naive vs LINSCAN comparison
+
+CXX = g++
+CXXFLAGS = -std=c++17 -O3 -march=native -Wall -Wextra
+CXXFLAGS += -fopenmp -pthread -DNDEBUG
+CXXFLAGS += -I./sparse_src
+LDFLAGS = -fopenmp -pthread
+
+SRCDIR = sparse_src
+OBJDIR = obj
+BINDIR = bin
+
+# Source files
+COMPARE_SOURCES = $(SRCDIR)/compare_naive_linscan.cpp
+COMPARE_OBJECTS = $(COMPARE_SOURCES:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
+COMPARE_TARGET = $(BINDIR)/compare_naive_linscan
+
+.PHONY: all clean compare
+
+all: $(COMPARE_TARGET)
+
+$(COMPARE_TARGET): $(COMPARE_OBJECTS) | $(BINDIR)
+	$(CXX) $(COMPARE_OBJECTS) -o $@ $(LDFLAGS)
+
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp | $(OBJDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(OBJDIR):
+	mkdir -p $(OBJDIR)
+
+$(BINDIR):
+	mkdir -p $(BINDIR)
+
+clean:
+	rm -rf $(OBJDIR) $(BINDIR)
+
+# Build and run comparison
+compare: $(COMPARE_TARGET)
+	@echo "Built comparison tool: $(COMPARE_TARGET)"
+	@echo "Usage: $(COMPARE_TARGET) <data_file> <query_file>"
+	@echo ""
+	@echo "Example:"
+	@echo "  $(COMPARE_TARGET) data/dataset.bin data/queries.bin"
+
+# Help target
+help:
+	@echo "Available targets:"
+	@echo "  all       - Build all targets"
+	@echo "  compare   - Build comparison tool"
+	@echo "  clean     - Remove build artifacts"
+	@echo "  help      - Show this help"

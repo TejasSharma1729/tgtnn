@@ -1,39 +1,41 @@
 #include "header.hpp"
 
-#define NUM_LEVELS 8
-#define INVERTED_LEVELS 6
+#define KNNS_DOUBLE_NUM_LEVELS 8
+#define KNNS_DOUBLE_INVERTED_LEVELS 6
 
 namespace GTnn {
-    using result_elem_t = array<vector<uint>, (1 << INVERTED_LEVELS)>;
-    template <uint N = NUM_LEVELS> using single_index_t = array<vector_t, (1 << (N + 1))>;
-    template <uint N = NUM_LEVELS> using index_t = vector<single_index_t<N>>;
-    template <uint N = NUM_LEVELS> index_t<N> build_index(matrix_t &matrix);
+    using knnsd_result_elem_t = array<vector<uint>, (1 << KNNS_DOUBLE_INVERTED_LEVELS)>;
+    template <uint N = KNNS_DOUBLE_NUM_LEVELS> using knns_double_elem_t = array<vector_t, (1 << (N + 1))>;
+    template <uint N = KNNS_DOUBLE_NUM_LEVELS> using knns_double_index_t = vector<knns_double_elem_t<N>>;
+    template <uint N = KNNS_DOUBLE_NUM_LEVELS> knns_double_index_t<N> build_knns_double_index(matrix_t &matrix);
 
-    class GroupTestingNN {
+    class KnnsDoubleNN {
     public:
-        GroupTestingNN(string file_name, double __k_val = 0.8);
+        KnnsDoubleNN(string file_name, double __k_val = 0.8);
         pair<map<uint, vector<uint>>, size_t> search(matrix_t &queries);
         array<double, 2> verify_results(vector_t query, vector<uint> &src_result);
         size_t size() { return this->data_set.rows(); }
+        
+        // Public access to data_set for ground truth calculation
+        matrix_t data_set;
 
     protected:
-        matrix_t data_set;
-        index_t<NUM_LEVELS> data_index;
+        knns_double_index_t<KNNS_DOUBLE_NUM_LEVELS> data_index;
         size_t dimention;
         size_t k_val;
         pair<vector<vector<uint>>, size_t> search_threshold(matrix_t &queries, double threshold);
-        pair<result_elem_t, size_t> search_pool(
-            single_index_t<NUM_LEVELS> &pool, single_index_t<INVERTED_LEVELS> &qpool, 
+        pair<knnsd_result_elem_t, size_t> search_pool(
+            knns_double_elem_t<KNNS_DOUBLE_NUM_LEVELS> &pool, knns_double_elem_t<KNNS_DOUBLE_INVERTED_LEVELS> &qpool, 
             uint &pool_index, double threshold
         );
     };
 };
 
 template <uint N>
-GTnn::index_t<N> GTnn::build_index(GTnn::matrix_t &matrix) {
+GTnn::knns_double_index_t<N> GTnn::build_knns_double_index(GTnn::matrix_t &matrix) {
     const uint num_vectors = matrix.rows();
     const uint num_indices = (num_vectors + (1 << N) - 1) / (1 << N);
-    GTnn::index_t<N> data_index(num_indices);
+    GTnn::knns_double_index_t<N> data_index(num_indices);
     for (uint i = 0; i < num_indices; i++) {
         const uint offset = i * (1 << N);
         for (uint j = 0; j < (1 << N); j++) {
@@ -54,17 +56,17 @@ GTnn::index_t<N> GTnn::build_index(GTnn::matrix_t &matrix) {
     return data_index;
 }
 
-GTnn::GroupTestingNN::GroupTestingNN(string file_name, double __k_val) {
+GTnn::KnnsDoubleNN::KnnsDoubleNN(string file_name, double __k_val) {
     this->dimention = GTnn::extract_matrix(file_name, this->data_set);
     if (!this->dimention) {
         cerr << "Error reading matrix from file: " << file_name << endl;
         exit(EXIT_FAILURE);
     }
     this->k_val = __k_val;
-    this->data_index = GTnn::build_index<NUM_LEVELS>(this->data_set);
+    this->data_index = GTnn::build_knns_double_index<KNNS_DOUBLE_NUM_LEVELS>(this->data_set);
 }
 
-pair<map<uint, vector<uint>>, size_t> GTnn::GroupTestingNN::search(GTnn::matrix_t &query_set) {
+pair<map<uint, vector<uint>>, size_t> GTnn::KnnsDoubleNN::search(GTnn::matrix_t &query_set) {
     pair<map<uint, vector<uint>>, size_t> result;
     if (this->data_index.size() == 0 || query_set.rows() == 0) {
         return result;
@@ -107,11 +109,11 @@ pair<map<uint, vector<uint>>, size_t> GTnn::GroupTestingNN::search(GTnn::matrix_
     return result;
 }
 
-pair<vector<vector<uint>>, size_t> GTnn::GroupTestingNN::search_threshold(
+pair<vector<vector<uint>>, size_t> GTnn::KnnsDoubleNN::search_threshold(
     GTnn::matrix_t &queries, double threshold
 ) {
-    GTnn::index_t<INVERTED_LEVELS> query_pools = GTnn::build_index<INVERTED_LEVELS>(queries);
-    vector<pair<GTnn::result_elem_t, size_t>> async_results(this->data_index.size() * query_pools.size());
+    GTnn::knns_double_index_t<KNNS_DOUBLE_INVERTED_LEVELS> query_pools = GTnn::build_knns_double_index<KNNS_DOUBLE_INVERTED_LEVELS>(queries);
+    vector<pair<GTnn::knnsd_result_elem_t, size_t>> async_results(this->data_index.size() * query_pools.size());
     array<thread, NUM_THREADS> threads;
     auto worker = [this, &async_results, &query_pools, threshold] (uint start, uint end) {
         for (uint pool_index = start; pool_index < end; pool_index++) {
@@ -139,7 +141,7 @@ pair<vector<vector<uint>>, size_t> GTnn::GroupTestingNN::search_threshold(
             auto &async_result = async_results[pool_index * query_pools.size() + qpool_index].first;
             result.second += async_results[pool_index * query_pools.size() + qpool_index].second;
             for (uint i = 0; i < async_result.size(); i++) {
-                uint qidx = i + qpool_index * (1 << INVERTED_LEVELS);
+                uint qidx = i + qpool_index * (1 << KNNS_DOUBLE_INVERTED_LEVELS);
                 if (qidx >= queries.rows()) {
                     break;
                 }
@@ -152,15 +154,15 @@ pair<vector<vector<uint>>, size_t> GTnn::GroupTestingNN::search_threshold(
     return result;
 }
 
-pair<GTnn::result_elem_t, size_t> GTnn::GroupTestingNN::search_pool(
-        GTnn::single_index_t<NUM_LEVELS> &pool, 
-        GTnn::single_index_t<INVERTED_LEVELS> &qpool, 
+pair<GTnn::knnsd_result_elem_t, size_t> GTnn::KnnsDoubleNN::search_pool(
+        GTnn::knns_double_elem_t<KNNS_DOUBLE_NUM_LEVELS> &pool, 
+        GTnn::knns_double_elem_t<KNNS_DOUBLE_INVERTED_LEVELS> &qpool, 
         uint &pool_index, double threshold) 
 {
-    pair<GTnn::result_elem_t, size_t> result = {GTnn::result_elem_t(), 1};
-    array<double, 2 * (NUM_LEVELS + INVERTED_LEVELS) + 1> dots;
-    array<uint, 2 * (NUM_LEVELS + INVERTED_LEVELS) + 1> idxs;
-    array<uint, 2 * (NUM_LEVELS + INVERTED_LEVELS) + 1> qidxs;
+    pair<GTnn::knnsd_result_elem_t, size_t> result = {GTnn::knnsd_result_elem_t(), 1};
+    array<double, 2 * (KNNS_DOUBLE_NUM_LEVELS + KNNS_DOUBLE_INVERTED_LEVELS) + 1> dots;
+    array<uint, 2 * (KNNS_DOUBLE_NUM_LEVELS + KNNS_DOUBLE_INVERTED_LEVELS) + 1> idxs;
+    array<uint, 2 * (KNNS_DOUBLE_NUM_LEVELS + KNNS_DOUBLE_INVERTED_LEVELS) + 1> qidxs;
     uint dot_idx = 1;
     dots[0] = qpool[1].dot(pool[1]);
     idxs[0] = 1;
@@ -178,14 +180,14 @@ pair<GTnn::result_elem_t, size_t> GTnn::GroupTestingNN::search_pool(
             dot_idx--;
             continue;
         }
-        if (idx >= static_cast<uint>(1 << NUM_LEVELS)) {
-            if (qidx >= static_cast<uint>(1 << INVERTED_LEVELS)) {
-                uint data_idx = idx - (1 << NUM_LEVELS) + pool_index * (1 << NUM_LEVELS);
+        if (idx >= static_cast<uint>(1 << KNNS_DOUBLE_NUM_LEVELS)) {
+            if (qidx >= static_cast<uint>(1 << KNNS_DOUBLE_INVERTED_LEVELS)) {
+                uint data_idx = idx - (1 << KNNS_DOUBLE_NUM_LEVELS) + pool_index * (1 << KNNS_DOUBLE_NUM_LEVELS);
                 if (data_idx >= this->data_set.rows()) {
                     dot_idx--;
                     continue;
                 }
-                uint query_idx = qidx - (1 << INVERTED_LEVELS);
+                uint query_idx = qidx - (1 << KNNS_DOUBLE_INVERTED_LEVELS);
                 result.first[query_idx].push_back(data_idx);
                 dot_idx--;
                 continue;
@@ -201,7 +203,7 @@ pair<GTnn::result_elem_t, size_t> GTnn::GroupTestingNN::search_pool(
             qidxs[dot_idx - 2] = 2 * qidx;
             continue;
         }
-        if (qidx >= static_cast<uint>(1 << INVERTED_LEVELS)) {
+        if (qidx >= static_cast<uint>(1 << KNNS_DOUBLE_INVERTED_LEVELS)) {
             dot_idx++;
             result.second++;
             dots[dot_idx - 1] = qpool[qidx].dot(pool[2 * idx + 1]);
@@ -232,7 +234,7 @@ pair<GTnn::result_elem_t, size_t> GTnn::GroupTestingNN::search_pool(
     return result;
 }
  
-array<double, 2> GTnn::GroupTestingNN::verify_results(GTnn::vector_t query, vector<uint> &result) {
+array<double, 2> GTnn::KnnsDoubleNN::verify_results(GTnn::vector_t query, vector<uint> &result) {
     vector<pair<double, uint>> true_results;
     auto start = high_resolution_clock::now();
     for (long i = 0; i < data_set.rows(); i++) {
