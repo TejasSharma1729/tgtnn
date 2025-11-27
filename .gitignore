@@ -38,3 +38,5 @@ assets/*
 assets
 .cache/*
 .cache
+.vscode/*
+.vscode
