@@ -1,17 +1,14 @@
 #include <bits/stdc++.h>
-using namespace std;
-typedef unsigned int uint;
-typedef vector<pair<vector<uint>, vector<float>>> CSRMatrix;
+using uint = unsigned int;
+using CSRMatrix = std::vector<std::pair<std::vector<uint>, std::vector<float>>>;
 
 // Function to create a random CSR matrix
 CSRMatrix create_random_csr_matrix(uint num_rows, uint num_cols, uint sparsity) {
-    // Initialize random number generator
-    random_device rd;
-    mt19937 gen(rd());
-    poission_distribution<uint> nnz_dist(sparsity);
-    exponential_distribution<float> val_dist(1.0);
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::poisson_distribution<uint> nnz_dist(sparsity);
+    std::exponential_distribution<float> val_dist(1.0);
 
-    // Create CSR matrix
     CSRMatrix csr_matrix(num_rows);
 
     for (uint i = 0; i < num_rows; i++) {

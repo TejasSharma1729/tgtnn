@@ -1,7 +1,7 @@
-#include <bits/stdc++.h>
-typedef uint32_t uint;
-using CSRMatrix = std::vector<std::pair<std::vector<uint>, std::vector<float>>>;
 
+#include <bits/stdc++.h>
+using uint = uint32_t;
+using CSRMatrix = std::vector<std::pair<std::vector<uint>, std::vector<float>>>;
 
 // Function to read a CSR matrix from binary file
 CSRMatrix read_csr_matrix(const std::string& filename, uint& num_rows, uint& num_cols) {
@@ -11,7 +11,6 @@ CSRMatrix read_csr_matrix(const std::string& filename, uint& num_rows, uint& num
     // Read matrix dimensions
     file.read(reinterpret_cast<char*>(&num_rows), sizeof(uint));
     file.read(reinterpret_cast<char*>(&num_cols), sizeof(uint));
-    
 
     // Read number of nonzero elements
     uint num_nonzero = 0;

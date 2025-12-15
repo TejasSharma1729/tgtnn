@@ -1,0 +1,526 @@
+Running MLGT on dataset: mirflickr with parameters: Namespace(num_tables=500, hash_bits=10, input_dim=1000, hash_threshold=0, match_threshold=50, num_pools=5000, pools_per_point=10, num_queries=100, algorithm='my_algo', dataset='mirflickr')
+Warning: Adjusting points_per_pool from 600 to 2010 to satisfy demand.
+Creating random pool assignment...
+Assigned 0 points
+Assigned 100000 points
+Assigned 200000 points
+Assigned 300000 points
+Assigned 400000 points
+Assigned 500000 points
+Assigned 600000 points
+Assigned 700000 points
+Assigned 800000 points
+Assigned 900000 points
+Assigned 1000000 points
+Assigned 1100000 points
+Assigned 1200000 points
+Assigned 1300000 points
+Assigned 1400000 points
+Assigned 1500000 points
+Assigned 1600000 points
+Assigned 1700000 points
+Assigned 1800000 points
+Assigned 1900000 points
+Assigned 2000000 points
+Assigned 2100000 points
+Assigned 2200000 points
+Assigned 2300000 points
+Assigned 2400000 points
+Assigned 2500000 points
+Assigned 2600000 points
+Assigned 2700000 points
+Assigned 2800000 points
+Assigned 2900000 points
+Assigned 3000000 points
+Assigned 3100000 points
+Assigned 3200000 points
+Assigned 3300000 points
+Assigned 3400000 points
+Assigned 3500000 points
+Assigned 3600000 points
+Assigned 3700000 points
+Assigned 3800000 points
+Assigned 3900000 points
+Assigned 4000000 points
+Assigned 4100000 points
+Assigned 4200000 points
+Assigned 4300000 points
+Assigned 4400000 points
+Assigned 4500000 points
+Assigned 4600000 points
+Assigned 4700000 points
+Assigned 4800000 points
+Assigned 4900000 points
+Assigned 5000000 points
+Assigned 5100000 points
+Assigned 5200000 points
+Assigned 5300000 points
+Assigned 5400000 points
+Assigned 5500000 points
+Assigned 5600000 points
+Assigned 5700000 points
+Assigned 5800000 points
+Assigned 5900000 points
+Assigned 6000000 points
+Assigned 6100000 points
+Assigned 6200000 points
+Assigned 6300000 points
+Assigned 6400000 points
+Assigned 6500000 points
+Assigned 6600000 points
+Assigned 6700000 points
+Assigned 6800000 points
+Assigned 6900000 points
+Assigned 7000000 points
+Assigned 7100000 points
+Assigned 7200000 points
+Assigned 7300000 points
+Assigned 7400000 points
+Assigned 7500000 points
+Assigned 7600000 points
+Assigned 7700000 points
+Assigned 7800000 points
+Assigned 7900000 points
+Assigned 8000000 points
+Assigned 8100000 points
+Assigned 8200000 points
+Assigned 8300000 points
+Assigned 8400000 points
+Assigned 8500000 points
+Assigned 8600000 points
+Assigned 8700000 points
+Assigned 8800000 points
+Assigned 8900000 points
+Assigned 9000000 points
+Assigned 9100000 points
+Assigned 9200000 points
+Assigned 9300000 points
+Assigned 9400000 points
+Assigned 9500000 points
+Assigned 9600000 points
+Assigned 9700000 points
+Assigned 9800000 points
+Assigned 9900000 points
+DEBUG: Pools shape: (5000, 2010), Pooling matrix shape: (5000, 999993)
+DEBUG: Hash features shape: (999993, 500)
+DEBUG: Computing inverted hash tables...
+Building per-pool inverted index (CSR optimized)...
+Built 0 pool indices
+Built 500 pool indices
+Built 1000 pool indices
+Built 1500 pool indices
+Built 2000 pool indices
+Built 2500 pool indices
+Built 3000 pool indices
+Built 3500 pool indices
+Built 4000 pool indices
+Built 4500 pool indices
+Index built for dataset mirflickr with 999993 features.
+-- Hash vs True (LSH quality) -- Precision: 0.5800, Recall: 0.5800, Sizes: |hash|=100, |true|=100, |∩|=58
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 0.0500, Sizes: |mlgt|=5, |hash|=100, |∩|=5
+-- MLGT vs True (End-to-end) -- Precision: 1.0000, Recall: 0.0500, F1: 0.0952, Sizes: |mlgt|=5, |true|=100, |∩|=5
+Query 0: my_algo time 12.3608s | Precision: 1.0000, Recall(my_algo vs true): 0.0500, Recall(hash vs true): 0.5800, Recall(my_algo vs hash): 0.0500
+-- Hash vs True (LSH quality) -- Precision: 0.8000, Recall: 0.8000, Sizes: |hash|=100, |true|=100, |∩|=80
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.8000, Recall: 0.8000, F1: 0.8000, Sizes: |mlgt|=100, |true|=100, |∩|=80
+Query 1: my_algo time 5.7208s | Precision: 0.8000, Recall(my_algo vs true): 0.8000, Recall(hash vs true): 0.8000, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.9700, Recall: 0.9700, Sizes: |hash|=100, |true|=100, |∩|=97
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.9700, Recall: 0.9700, F1: 0.9700, Sizes: |mlgt|=100, |true|=100, |∩|=97
+Query 2: my_algo time 6.5507s | Precision: 0.9700, Recall(my_algo vs true): 0.9700, Recall(hash vs true): 0.9700, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.7600, Recall: 0.7600, Sizes: |hash|=100, |true|=100, |∩|=76
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 0.1000, Sizes: |mlgt|=10, |hash|=100, |∩|=10
+-- MLGT vs True (End-to-end) -- Precision: 1.0000, Recall: 0.1000, F1: 0.1818, Sizes: |mlgt|=10, |true|=100, |∩|=10
+Query 3: my_algo time 9.8713s | Precision: 1.0000, Recall(my_algo vs true): 0.1000, Recall(hash vs true): 0.7600, Recall(my_algo vs hash): 0.1000
+-- Hash vs True (LSH quality) -- Precision: 0.7700, Recall: 0.7700, Sizes: |hash|=100, |true|=100, |∩|=77
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 0.1900, Sizes: |mlgt|=19, |hash|=100, |∩|=19
+-- MLGT vs True (End-to-end) -- Precision: 1.0000, Recall: 0.1900, F1: 0.3193, Sizes: |mlgt|=19, |true|=100, |∩|=19
+Query 4: my_algo time 9.9790s | Precision: 1.0000, Recall(my_algo vs true): 0.1900, Recall(hash vs true): 0.7700, Recall(my_algo vs hash): 0.1900
+-- Hash vs True (LSH quality) -- Precision: 0.3300, Recall: 0.3300, Sizes: |hash|=100, |true|=100, |∩|=33
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.3300, Recall: 0.3300, F1: 0.3300, Sizes: |mlgt|=100, |true|=100, |∩|=33
+Query 5: my_algo time 7.1405s | Precision: 0.3300, Recall(my_algo vs true): 0.3300, Recall(hash vs true): 0.3300, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.7400, Recall: 0.7400, Sizes: |hash|=100, |true|=100, |∩|=74
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 0.1100, Sizes: |mlgt|=11, |hash|=100, |∩|=11
+-- MLGT vs True (End-to-end) -- Precision: 1.0000, Recall: 0.1100, F1: 0.1982, Sizes: |mlgt|=11, |true|=100, |∩|=11
+Query 6: my_algo time 10.0175s | Precision: 1.0000, Recall(my_algo vs true): 0.1100, Recall(hash vs true): 0.7400, Recall(my_algo vs hash): 0.1100
+-- Hash vs True (LSH quality) -- Precision: 0.3400, Recall: 0.3400, Sizes: |hash|=100, |true|=100, |∩|=34
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.3400, Recall: 0.3400, F1: 0.3400, Sizes: |mlgt|=100, |true|=100, |∩|=34
+Query 7: my_algo time 5.8558s | Precision: 0.3400, Recall(my_algo vs true): 0.3400, Recall(hash vs true): 0.3400, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.6000, Recall: 0.6000, Sizes: |hash|=100, |true|=100, |∩|=60
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.6000, Recall: 0.6000, F1: 0.6000, Sizes: |mlgt|=100, |true|=100, |∩|=60
+Query 8: my_algo time 7.1449s | Precision: 0.6000, Recall(my_algo vs true): 0.6000, Recall(hash vs true): 0.6000, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.7600, Recall: 0.7600, Sizes: |hash|=100, |true|=100, |∩|=76
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.7600, Recall: 0.7600, F1: 0.7600, Sizes: |mlgt|=100, |true|=100, |∩|=76
+Query 9: my_algo time 10.0725s | Precision: 0.7600, Recall(my_algo vs true): 0.7600, Recall(hash vs true): 0.7600, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.3900, Recall: 0.3900, Sizes: |hash|=100, |true|=100, |∩|=39
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 0.0700, Sizes: |mlgt|=7, |hash|=100, |∩|=7
+-- MLGT vs True (End-to-end) -- Precision: 1.0000, Recall: 0.0700, F1: 0.1308, Sizes: |mlgt|=7, |true|=100, |∩|=7
+Query 10: my_algo time 9.8893s | Precision: 1.0000, Recall(my_algo vs true): 0.0700, Recall(hash vs true): 0.3900, Recall(my_algo vs hash): 0.0700
+-- Hash vs True (LSH quality) -- Precision: 0.8900, Recall: 0.8900, Sizes: |hash|=100, |true|=100, |∩|=89
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.8900, Recall: 0.8900, F1: 0.8900, Sizes: |mlgt|=100, |true|=100, |∩|=89
+Query 11: my_algo time 9.7962s | Precision: 0.8900, Recall(my_algo vs true): 0.8900, Recall(hash vs true): 0.8900, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.9700, Recall: 0.9700, Sizes: |hash|=100, |true|=100, |∩|=97
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.9700, Recall: 0.9700, F1: 0.9700, Sizes: |mlgt|=100, |true|=100, |∩|=97
+Query 12: my_algo time 9.6684s | Precision: 0.9700, Recall(my_algo vs true): 0.9700, Recall(hash vs true): 0.9700, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.8400, Recall: 0.8400, Sizes: |hash|=100, |true|=100, |∩|=84
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.8400, Recall: 0.8400, F1: 0.8400, Sizes: |mlgt|=100, |true|=100, |∩|=84
+Query 13: my_algo time 6.6170s | Precision: 0.8400, Recall(my_algo vs true): 0.8400, Recall(hash vs true): 0.8400, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.7500, Recall: 0.7500, Sizes: |hash|=100, |true|=100, |∩|=75
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.7500, Recall: 0.7500, F1: 0.7500, Sizes: |mlgt|=100, |true|=100, |∩|=75
+Query 14: my_algo time 5.7665s | Precision: 0.7500, Recall(my_algo vs true): 0.7500, Recall(hash vs true): 0.7500, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.8800, Recall: 0.8800, Sizes: |hash|=100, |true|=100, |∩|=88
+-- MLGT vs Hash (Recovery quality) -- Precision: 0.9900, Recall: 0.9900, Sizes: |mlgt|=100, |hash|=100, |∩|=99
+-- MLGT vs True (End-to-end) -- Precision: 0.8700, Recall: 0.8700, F1: 0.8700, Sizes: |mlgt|=100, |true|=100, |∩|=87
+Query 15: my_algo time 9.8195s | Precision: 0.8700, Recall(my_algo vs true): 0.8700, Recall(hash vs true): 0.8800, Recall(my_algo vs hash): 0.9900
+-- Hash vs True (LSH quality) -- Precision: 0.8100, Recall: 0.8100, Sizes: |hash|=100, |true|=100, |∩|=81
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.8100, Recall: 0.8100, F1: 0.8100, Sizes: |mlgt|=100, |true|=100, |∩|=81
+Query 16: my_algo time 6.0028s | Precision: 0.8100, Recall(my_algo vs true): 0.8100, Recall(hash vs true): 0.8100, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.8300, Recall: 0.8300, Sizes: |hash|=100, |true|=100, |∩|=83
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.8300, Recall: 0.8300, F1: 0.8300, Sizes: |mlgt|=100, |true|=100, |∩|=83
+Query 17: my_algo time 6.3962s | Precision: 0.8300, Recall(my_algo vs true): 0.8300, Recall(hash vs true): 0.8300, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.9000, Recall: 0.9000, Sizes: |hash|=100, |true|=100, |∩|=90
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.9000, Recall: 0.9000, F1: 0.9000, Sizes: |mlgt|=100, |true|=100, |∩|=90
+Query 18: my_algo time 6.3258s | Precision: 0.9000, Recall(my_algo vs true): 0.9000, Recall(hash vs true): 0.9000, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.6000, Recall: 0.6000, Sizes: |hash|=100, |true|=100, |∩|=60
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.6000, Recall: 0.6000, F1: 0.6000, Sizes: |mlgt|=100, |true|=100, |∩|=60
+Query 19: my_algo time 6.8288s | Precision: 0.6000, Recall(my_algo vs true): 0.6000, Recall(hash vs true): 0.6000, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.6400, Recall: 0.6400, Sizes: |hash|=100, |true|=100, |∩|=64
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.6400, Recall: 0.6400, F1: 0.6400, Sizes: |mlgt|=100, |true|=100, |∩|=64
+Query 20: my_algo time 5.6566s | Precision: 0.6400, Recall(my_algo vs true): 0.6400, Recall(hash vs true): 0.6400, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.6600, Recall: 0.6600, Sizes: |hash|=100, |true|=100, |∩|=66
+-- MLGT vs Hash (Recovery quality) -- Precision: 0.9500, Recall: 0.9500, Sizes: |mlgt|=100, |hash|=100, |∩|=95
+-- MLGT vs True (End-to-end) -- Precision: 0.6500, Recall: 0.6500, F1: 0.6500, Sizes: |mlgt|=100, |true|=100, |∩|=65
+Query 21: my_algo time 10.0782s | Precision: 0.6500, Recall(my_algo vs true): 0.6500, Recall(hash vs true): 0.6600, Recall(my_algo vs hash): 0.9500
+-- Hash vs True (LSH quality) -- Precision: 0.8800, Recall: 0.8800, Sizes: |hash|=100, |true|=100, |∩|=88
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.8800, Recall: 0.8800, F1: 0.8800, Sizes: |mlgt|=100, |true|=100, |∩|=88
+Query 22: my_algo time 7.0651s | Precision: 0.8800, Recall(my_algo vs true): 0.8800, Recall(hash vs true): 0.8800, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.5500, Recall: 0.5500, Sizes: |hash|=100, |true|=100, |∩|=55
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.5500, Recall: 0.5500, F1: 0.5500, Sizes: |mlgt|=100, |true|=100, |∩|=55
+Query 23: my_algo time 5.5933s | Precision: 0.5500, Recall(my_algo vs true): 0.5500, Recall(hash vs true): 0.5500, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.7300, Recall: 0.7300, Sizes: |hash|=100, |true|=100, |∩|=73
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.7300, Recall: 0.7300, F1: 0.7300, Sizes: |mlgt|=100, |true|=100, |∩|=73
+Query 24: my_algo time 9.5945s | Precision: 0.7300, Recall(my_algo vs true): 0.7300, Recall(hash vs true): 0.7300, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.8700, Recall: 0.8700, Sizes: |hash|=100, |true|=100, |∩|=87
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.8700, Recall: 0.8700, F1: 0.8700, Sizes: |mlgt|=100, |true|=100, |∩|=87
+Query 25: my_algo time 6.0984s | Precision: 0.8700, Recall(my_algo vs true): 0.8700, Recall(hash vs true): 0.8700, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.9500, Recall: 0.9500, Sizes: |hash|=100, |true|=100, |∩|=95
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.9500, Recall: 0.9500, F1: 0.9500, Sizes: |mlgt|=100, |true|=100, |∩|=95
+Query 26: my_algo time 6.1633s | Precision: 0.9500, Recall(my_algo vs true): 0.9500, Recall(hash vs true): 0.9500, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.8400, Recall: 0.8400, Sizes: |hash|=100, |true|=100, |∩|=84
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.8400, Recall: 0.8400, F1: 0.8400, Sizes: |mlgt|=100, |true|=100, |∩|=84
+Query 27: my_algo time 6.4282s | Precision: 0.8400, Recall(my_algo vs true): 0.8400, Recall(hash vs true): 0.8400, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.9500, Recall: 0.9500, Sizes: |hash|=100, |true|=100, |∩|=95
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.9500, Recall: 0.9500, F1: 0.9500, Sizes: |mlgt|=100, |true|=100, |∩|=95
+Query 28: my_algo time 7.0751s | Precision: 0.9500, Recall(my_algo vs true): 0.9500, Recall(hash vs true): 0.9500, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.7000, Recall: 0.7000, Sizes: |hash|=100, |true|=100, |∩|=70
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.7000, Recall: 0.7000, F1: 0.7000, Sizes: |mlgt|=100, |true|=100, |∩|=70
+Query 29: my_algo time 5.6008s | Precision: 0.7000, Recall(my_algo vs true): 0.7000, Recall(hash vs true): 0.7000, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.6100, Recall: 0.6100, Sizes: |hash|=100, |true|=100, |∩|=61
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.6100, Recall: 0.6100, F1: 0.6100, Sizes: |mlgt|=100, |true|=100, |∩|=61
+Query 30: my_algo time 7.6091s | Precision: 0.6100, Recall(my_algo vs true): 0.6100, Recall(hash vs true): 0.6100, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.9600, Recall: 0.9600, Sizes: |hash|=100, |true|=100, |∩|=96
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.9600, Recall: 0.9600, F1: 0.9600, Sizes: |mlgt|=100, |true|=100, |∩|=96
+Query 31: my_algo time 7.3758s | Precision: 0.9600, Recall(my_algo vs true): 0.9600, Recall(hash vs true): 0.9600, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.9000, Recall: 0.9000, Sizes: |hash|=100, |true|=100, |∩|=90
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.9000, Recall: 0.9000, F1: 0.9000, Sizes: |mlgt|=100, |true|=100, |∩|=90
+Query 32: my_algo time 6.2241s | Precision: 0.9000, Recall(my_algo vs true): 0.9000, Recall(hash vs true): 0.9000, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.7700, Recall: 0.7700, Sizes: |hash|=100, |true|=100, |∩|=77
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.7700, Recall: 0.7700, F1: 0.7700, Sizes: |mlgt|=100, |true|=100, |∩|=77
+Query 33: my_algo time 5.4477s | Precision: 0.7700, Recall(my_algo vs true): 0.7700, Recall(hash vs true): 0.7700, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.9200, Recall: 0.9200, Sizes: |hash|=100, |true|=100, |∩|=92
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.9200, Recall: 0.9200, F1: 0.9200, Sizes: |mlgt|=100, |true|=100, |∩|=92
+Query 34: my_algo time 6.9202s | Precision: 0.9200, Recall(my_algo vs true): 0.9200, Recall(hash vs true): 0.9200, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.9800, Recall: 0.9800, Sizes: |hash|=100, |true|=100, |∩|=98
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.9800, Recall: 0.9800, F1: 0.9800, Sizes: |mlgt|=100, |true|=100, |∩|=98
+Query 35: my_algo time 6.4419s | Precision: 0.9800, Recall(my_algo vs true): 0.9800, Recall(hash vs true): 0.9800, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.8400, Recall: 0.8400, Sizes: |hash|=100, |true|=100, |∩|=84
+-- MLGT vs Hash (Recovery quality) -- Precision: 0.6900, Recall: 0.6900, Sizes: |mlgt|=100, |hash|=100, |∩|=69
+-- MLGT vs True (End-to-end) -- Precision: 0.6900, Recall: 0.6900, F1: 0.6900, Sizes: |mlgt|=100, |true|=100, |∩|=69
+Query 36: my_algo time 9.7479s | Precision: 0.6900, Recall(my_algo vs true): 0.6900, Recall(hash vs true): 0.8400, Recall(my_algo vs hash): 0.6900
+-- Hash vs True (LSH quality) -- Precision: 0.7900, Recall: 0.7900, Sizes: |hash|=100, |true|=100, |∩|=79
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.7900, Recall: 0.7900, F1: 0.7900, Sizes: |mlgt|=100, |true|=100, |∩|=79
+Query 37: my_algo time 7.1039s | Precision: 0.7900, Recall(my_algo vs true): 0.7900, Recall(hash vs true): 0.7900, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.7700, Recall: 0.7700, Sizes: |hash|=100, |true|=100, |∩|=77
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.7700, Recall: 0.7700, F1: 0.7700, Sizes: |mlgt|=100, |true|=100, |∩|=77
+Query 38: my_algo time 6.7449s | Precision: 0.7700, Recall(my_algo vs true): 0.7700, Recall(hash vs true): 0.7700, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.7000, Recall: 0.7000, Sizes: |hash|=100, |true|=100, |∩|=70
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.7000, Recall: 0.7000, F1: 0.7000, Sizes: |mlgt|=100, |true|=100, |∩|=70
+Query 39: my_algo time 7.4759s | Precision: 0.7000, Recall(my_algo vs true): 0.7000, Recall(hash vs true): 0.7000, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.7400, Recall: 0.7400, Sizes: |hash|=100, |true|=100, |∩|=74
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 0.1800, Sizes: |mlgt|=18, |hash|=100, |∩|=18
+-- MLGT vs True (End-to-end) -- Precision: 1.0000, Recall: 0.1800, F1: 0.3051, Sizes: |mlgt|=18, |true|=100, |∩|=18
+Query 40: my_algo time 9.8501s | Precision: 1.0000, Recall(my_algo vs true): 0.1800, Recall(hash vs true): 0.7400, Recall(my_algo vs hash): 0.1800
+-- Hash vs True (LSH quality) -- Precision: 0.9100, Recall: 0.9100, Sizes: |hash|=100, |true|=100, |∩|=91
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.9100, Recall: 0.9100, F1: 0.9100, Sizes: |mlgt|=100, |true|=100, |∩|=91
+Query 41: my_algo time 5.5786s | Precision: 0.9100, Recall(my_algo vs true): 0.9100, Recall(hash vs true): 0.9100, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.7500, Recall: 0.7500, Sizes: |hash|=100, |true|=100, |∩|=75
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.7500, Recall: 0.7500, F1: 0.7500, Sizes: |mlgt|=100, |true|=100, |∩|=75
+Query 42: my_algo time 6.1931s | Precision: 0.7500, Recall(my_algo vs true): 0.7500, Recall(hash vs true): 0.7500, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.8400, Recall: 0.8400, Sizes: |hash|=100, |true|=100, |∩|=84
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.8400, Recall: 0.8400, F1: 0.8400, Sizes: |mlgt|=100, |true|=100, |∩|=84
+Query 43: my_algo time 5.5808s | Precision: 0.8400, Recall(my_algo vs true): 0.8400, Recall(hash vs true): 0.8400, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.5100, Recall: 0.5100, Sizes: |hash|=100, |true|=100, |∩|=51
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.5100, Recall: 0.5100, F1: 0.5100, Sizes: |mlgt|=100, |true|=100, |∩|=51
+Query 44: my_algo time 7.0785s | Precision: 0.5100, Recall(my_algo vs true): 0.5100, Recall(hash vs true): 0.5100, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.8800, Recall: 0.8800, Sizes: |hash|=100, |true|=100, |∩|=88
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.8800, Recall: 0.8800, F1: 0.8800, Sizes: |mlgt|=100, |true|=100, |∩|=88
+Query 45: my_algo time 5.4735s | Precision: 0.8800, Recall(my_algo vs true): 0.8800, Recall(hash vs true): 0.8800, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.7100, Recall: 0.7100, Sizes: |hash|=100, |true|=100, |∩|=71
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 0.1800, Sizes: |mlgt|=18, |hash|=100, |∩|=18
+-- MLGT vs True (End-to-end) -- Precision: 1.0000, Recall: 0.1800, F1: 0.3051, Sizes: |mlgt|=18, |true|=100, |∩|=18
+Query 46: my_algo time 9.9748s | Precision: 1.0000, Recall(my_algo vs true): 0.1800, Recall(hash vs true): 0.7100, Recall(my_algo vs hash): 0.1800
+-- Hash vs True (LSH quality) -- Precision: 0.7300, Recall: 0.7300, Sizes: |hash|=100, |true|=100, |∩|=73
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.7300, Recall: 0.7300, F1: 0.7300, Sizes: |mlgt|=100, |true|=100, |∩|=73
+Query 47: my_algo time 5.7419s | Precision: 0.7300, Recall(my_algo vs true): 0.7300, Recall(hash vs true): 0.7300, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.9000, Recall: 0.9000, Sizes: |hash|=100, |true|=100, |∩|=90
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.9000, Recall: 0.9000, F1: 0.9000, Sizes: |mlgt|=100, |true|=100, |∩|=90
+Query 48: my_algo time 5.5466s | Precision: 0.9000, Recall(my_algo vs true): 0.9000, Recall(hash vs true): 0.9000, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.9000, Recall: 0.9000, Sizes: |hash|=100, |true|=100, |∩|=90
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.9000, Recall: 0.9000, F1: 0.9000, Sizes: |mlgt|=100, |true|=100, |∩|=90
+Query 49: my_algo time 6.2261s | Precision: 0.9000, Recall(my_algo vs true): 0.9000, Recall(hash vs true): 0.9000, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.8100, Recall: 0.8100, Sizes: |hash|=100, |true|=100, |∩|=81
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 0.8500, Sizes: |mlgt|=85, |hash|=100, |∩|=85
+-- MLGT vs True (End-to-end) -- Precision: 0.8824, Recall: 0.7500, F1: 0.8108, Sizes: |mlgt|=85, |true|=100, |∩|=75
+Query 50: my_algo time 9.8580s | Precision: 0.8824, Recall(my_algo vs true): 0.7500, Recall(hash vs true): 0.8100, Recall(my_algo vs hash): 0.8500
+-- Hash vs True (LSH quality) -- Precision: 0.8400, Recall: 0.8400, Sizes: |hash|=100, |true|=100, |∩|=84
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.8400, Recall: 0.8400, F1: 0.8400, Sizes: |mlgt|=100, |true|=100, |∩|=84
+Query 51: my_algo time 6.4622s | Precision: 0.8400, Recall(my_algo vs true): 0.8400, Recall(hash vs true): 0.8400, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.8200, Recall: 0.8200, Sizes: |hash|=100, |true|=100, |∩|=82
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.8200, Recall: 0.8200, F1: 0.8200, Sizes: |mlgt|=100, |true|=100, |∩|=82
+Query 52: my_algo time 5.5320s | Precision: 0.8200, Recall(my_algo vs true): 0.8200, Recall(hash vs true): 0.8200, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.6600, Recall: 0.6600, Sizes: |hash|=100, |true|=100, |∩|=66
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.6600, Recall: 0.6600, F1: 0.6600, Sizes: |mlgt|=100, |true|=100, |∩|=66
+Query 53: my_algo time 5.8008s | Precision: 0.6600, Recall(my_algo vs true): 0.6600, Recall(hash vs true): 0.6600, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.8100, Recall: 0.8100, Sizes: |hash|=100, |true|=100, |∩|=81
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.8100, Recall: 0.8100, F1: 0.8100, Sizes: |mlgt|=100, |true|=100, |∩|=81
+Query 54: my_algo time 6.3803s | Precision: 0.8100, Recall(my_algo vs true): 0.8100, Recall(hash vs true): 0.8100, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.8800, Recall: 0.8800, Sizes: |hash|=100, |true|=100, |∩|=88
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.8800, Recall: 0.8800, F1: 0.8800, Sizes: |mlgt|=100, |true|=100, |∩|=88
+Query 55: my_algo time 5.9851s | Precision: 0.8800, Recall(my_algo vs true): 0.8800, Recall(hash vs true): 0.8800, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.9600, Recall: 0.9600, Sizes: |hash|=100, |true|=100, |∩|=96
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.9600, Recall: 0.9600, F1: 0.9600, Sizes: |mlgt|=100, |true|=100, |∩|=96
+Query 56: my_algo time 6.9166s | Precision: 0.9600, Recall(my_algo vs true): 0.9600, Recall(hash vs true): 0.9600, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.8300, Recall: 0.8300, Sizes: |hash|=100, |true|=100, |∩|=83
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.8300, Recall: 0.8300, F1: 0.8300, Sizes: |mlgt|=100, |true|=100, |∩|=83
+Query 57: my_algo time 7.2030s | Precision: 0.8300, Recall(my_algo vs true): 0.8300, Recall(hash vs true): 0.8300, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.6800, Recall: 0.6800, Sizes: |hash|=100, |true|=100, |∩|=68
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.6800, Recall: 0.6800, F1: 0.6800, Sizes: |mlgt|=100, |true|=100, |∩|=68
+Query 58: my_algo time 6.9911s | Precision: 0.6800, Recall(my_algo vs true): 0.6800, Recall(hash vs true): 0.6800, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.9100, Recall: 0.9100, Sizes: |hash|=100, |true|=100, |∩|=91
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.9100, Recall: 0.9100, F1: 0.9100, Sizes: |mlgt|=100, |true|=100, |∩|=91
+Query 59: my_algo time 7.0078s | Precision: 0.9100, Recall(my_algo vs true): 0.9100, Recall(hash vs true): 0.9100, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.8700, Recall: 0.8700, Sizes: |hash|=100, |true|=100, |∩|=87
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.8700, Recall: 0.8700, F1: 0.8700, Sizes: |mlgt|=100, |true|=100, |∩|=87
+Query 60: my_algo time 5.7411s | Precision: 0.8700, Recall(my_algo vs true): 0.8700, Recall(hash vs true): 0.8700, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.9600, Recall: 0.9600, Sizes: |hash|=100, |true|=100, |∩|=96
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.9600, Recall: 0.9600, F1: 0.9600, Sizes: |mlgt|=100, |true|=100, |∩|=96
+Query 61: my_algo time 5.4862s | Precision: 0.9600, Recall(my_algo vs true): 0.9600, Recall(hash vs true): 0.9600, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.9100, Recall: 0.9100, Sizes: |hash|=100, |true|=100, |∩|=91
+-- MLGT vs Hash (Recovery quality) -- Precision: 0.9900, Recall: 0.9900, Sizes: |mlgt|=100, |hash|=100, |∩|=99
+-- MLGT vs True (End-to-end) -- Precision: 0.9100, Recall: 0.9100, F1: 0.9100, Sizes: |mlgt|=100, |true|=100, |∩|=91
+Query 62: my_algo time 9.7390s | Precision: 0.9100, Recall(my_algo vs true): 0.9100, Recall(hash vs true): 0.9100, Recall(my_algo vs hash): 0.9900
+-- Hash vs True (LSH quality) -- Precision: 0.7200, Recall: 0.7200, Sizes: |hash|=100, |true|=100, |∩|=72
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.7200, Recall: 0.7200, F1: 0.7200, Sizes: |mlgt|=100, |true|=100, |∩|=72
+Query 63: my_algo time 5.7519s | Precision: 0.7200, Recall(my_algo vs true): 0.7200, Recall(hash vs true): 0.7200, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.9100, Recall: 0.9100, Sizes: |hash|=100, |true|=100, |∩|=91
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.9100, Recall: 0.9100, F1: 0.9100, Sizes: |mlgt|=100, |true|=100, |∩|=91
+Query 64: my_algo time 9.8501s | Precision: 0.9100, Recall(my_algo vs true): 0.9100, Recall(hash vs true): 0.9100, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.6200, Recall: 0.6200, Sizes: |hash|=100, |true|=100, |∩|=62
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.6200, Recall: 0.6200, F1: 0.6200, Sizes: |mlgt|=100, |true|=100, |∩|=62
+Query 65: my_algo time 6.1461s | Precision: 0.6200, Recall(my_algo vs true): 0.6200, Recall(hash vs true): 0.6200, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.9200, Recall: 0.9200, Sizes: |hash|=100, |true|=100, |∩|=92
+-- MLGT vs Hash (Recovery quality) -- Precision: 0.9300, Recall: 0.9300, Sizes: |mlgt|=100, |hash|=100, |∩|=93
+-- MLGT vs True (End-to-end) -- Precision: 0.9100, Recall: 0.9100, F1: 0.9100, Sizes: |mlgt|=100, |true|=100, |∩|=91
+Query 66: my_algo time 9.0171s | Precision: 0.9100, Recall(my_algo vs true): 0.9100, Recall(hash vs true): 0.9200, Recall(my_algo vs hash): 0.9300
+-- Hash vs True (LSH quality) -- Precision: 0.8000, Recall: 0.8000, Sizes: |hash|=100, |true|=100, |∩|=80
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.8000, Recall: 0.8000, F1: 0.8000, Sizes: |mlgt|=100, |true|=100, |∩|=80
+Query 67: my_algo time 5.9197s | Precision: 0.8000, Recall(my_algo vs true): 0.8000, Recall(hash vs true): 0.8000, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.6400, Recall: 0.6400, Sizes: |hash|=100, |true|=100, |∩|=64
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.6400, Recall: 0.6400, F1: 0.6400, Sizes: |mlgt|=100, |true|=100, |∩|=64
+Query 68: my_algo time 6.8426s | Precision: 0.6400, Recall(my_algo vs true): 0.6400, Recall(hash vs true): 0.6400, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.4000, Recall: 0.4000, Sizes: |hash|=100, |true|=100, |∩|=40
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.4000, Recall: 0.4000, F1: 0.4000, Sizes: |mlgt|=100, |true|=100, |∩|=40
+Query 69: my_algo time 6.4231s | Precision: 0.4000, Recall(my_algo vs true): 0.4000, Recall(hash vs true): 0.4000, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.8000, Recall: 0.8000, Sizes: |hash|=100, |true|=100, |∩|=80
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.8000, Recall: 0.8000, F1: 0.8000, Sizes: |mlgt|=100, |true|=100, |∩|=80
+Query 70: my_algo time 7.8102s | Precision: 0.8000, Recall(my_algo vs true): 0.8000, Recall(hash vs true): 0.8000, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.6400, Recall: 0.6400, Sizes: |hash|=100, |true|=100, |∩|=64
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.6400, Recall: 0.6400, F1: 0.6400, Sizes: |mlgt|=100, |true|=100, |∩|=64
+Query 71: my_algo time 7.3164s | Precision: 0.6400, Recall(my_algo vs true): 0.6400, Recall(hash vs true): 0.6400, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.8600, Recall: 0.8600, Sizes: |hash|=100, |true|=100, |∩|=86
+-- MLGT vs Hash (Recovery quality) -- Precision: 0.9900, Recall: 0.9900, Sizes: |mlgt|=100, |hash|=100, |∩|=99
+-- MLGT vs True (End-to-end) -- Precision: 0.8600, Recall: 0.8600, F1: 0.8600, Sizes: |mlgt|=100, |true|=100, |∩|=86
+Query 72: my_algo time 10.1496s | Precision: 0.8600, Recall(my_algo vs true): 0.8600, Recall(hash vs true): 0.8600, Recall(my_algo vs hash): 0.9900
+-- Hash vs True (LSH quality) -- Precision: 0.6900, Recall: 0.6900, Sizes: |hash|=100, |true|=100, |∩|=69
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.6900, Recall: 0.6900, F1: 0.6900, Sizes: |mlgt|=100, |true|=100, |∩|=69
+Query 73: my_algo time 10.2062s | Precision: 0.6900, Recall(my_algo vs true): 0.6900, Recall(hash vs true): 0.6900, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.5300, Recall: 0.5300, Sizes: |hash|=100, |true|=100, |∩|=53
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.5300, Recall: 0.5300, F1: 0.5300, Sizes: |mlgt|=100, |true|=100, |∩|=53
+Query 74: my_algo time 6.2091s | Precision: 0.5300, Recall(my_algo vs true): 0.5300, Recall(hash vs true): 0.5300, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.7600, Recall: 0.7600, Sizes: |hash|=100, |true|=100, |∩|=76
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.7600, Recall: 0.7600, F1: 0.7600, Sizes: |mlgt|=100, |true|=100, |∩|=76
+Query 75: my_algo time 6.1539s | Precision: 0.7600, Recall(my_algo vs true): 0.7600, Recall(hash vs true): 0.7600, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.8100, Recall: 0.8100, Sizes: |hash|=100, |true|=100, |∩|=81
+-- MLGT vs Hash (Recovery quality) -- Precision: 0.9800, Recall: 0.9800, Sizes: |mlgt|=100, |hash|=100, |∩|=98
+-- MLGT vs True (End-to-end) -- Precision: 0.8000, Recall: 0.8000, F1: 0.8000, Sizes: |mlgt|=100, |true|=100, |∩|=80
+Query 76: my_algo time 10.3509s | Precision: 0.8000, Recall(my_algo vs true): 0.8000, Recall(hash vs true): 0.8100, Recall(my_algo vs hash): 0.9800
+-- Hash vs True (LSH quality) -- Precision: 0.9000, Recall: 0.9000, Sizes: |hash|=100, |true|=100, |∩|=90
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.9000, Recall: 0.9000, F1: 0.9000, Sizes: |mlgt|=100, |true|=100, |∩|=90
+Query 77: my_algo time 7.4289s | Precision: 0.9000, Recall(my_algo vs true): 0.9000, Recall(hash vs true): 0.9000, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.8700, Recall: 0.8700, Sizes: |hash|=100, |true|=100, |∩|=87
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.8700, Recall: 0.8700, F1: 0.8700, Sizes: |mlgt|=100, |true|=100, |∩|=87
+Query 78: my_algo time 7.2370s | Precision: 0.8700, Recall(my_algo vs true): 0.8700, Recall(hash vs true): 0.8700, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.8400, Recall: 0.8400, Sizes: |hash|=100, |true|=100, |∩|=84
+-- MLGT vs Hash (Recovery quality) -- Precision: 0.9900, Recall: 0.9900, Sizes: |mlgt|=100, |hash|=100, |∩|=99
+-- MLGT vs True (End-to-end) -- Precision: 0.8400, Recall: 0.8400, F1: 0.8400, Sizes: |mlgt|=100, |true|=100, |∩|=84
+Query 79: my_algo time 10.6207s | Precision: 0.8400, Recall(my_algo vs true): 0.8400, Recall(hash vs true): 0.8400, Recall(my_algo vs hash): 0.9900
+-- Hash vs True (LSH quality) -- Precision: 0.9500, Recall: 0.9500, Sizes: |hash|=100, |true|=100, |∩|=95
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.9500, Recall: 0.9500, F1: 0.9500, Sizes: |mlgt|=100, |true|=100, |∩|=95
+Query 80: my_algo time 6.1409s | Precision: 0.9500, Recall(my_algo vs true): 0.9500, Recall(hash vs true): 0.9500, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.9300, Recall: 0.9300, Sizes: |hash|=100, |true|=100, |∩|=93
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.9300, Recall: 0.9300, F1: 0.9300, Sizes: |mlgt|=100, |true|=100, |∩|=93
+Query 81: my_algo time 7.8176s | Precision: 0.9300, Recall(my_algo vs true): 0.9300, Recall(hash vs true): 0.9300, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.6400, Recall: 0.6400, Sizes: |hash|=100, |true|=100, |∩|=64
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.6400, Recall: 0.6400, F1: 0.6400, Sizes: |mlgt|=100, |true|=100, |∩|=64
+Query 82: my_algo time 6.6260s | Precision: 0.6400, Recall(my_algo vs true): 0.6400, Recall(hash vs true): 0.6400, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.9100, Recall: 0.9100, Sizes: |hash|=100, |true|=100, |∩|=91
+-- MLGT vs Hash (Recovery quality) -- Precision: 0.9800, Recall: 0.9800, Sizes: |mlgt|=100, |hash|=100, |∩|=98
+-- MLGT vs True (End-to-end) -- Precision: 0.9000, Recall: 0.9000, F1: 0.9000, Sizes: |mlgt|=100, |true|=100, |∩|=90
+Query 83: my_algo time 10.5279s | Precision: 0.9000, Recall(my_algo vs true): 0.9000, Recall(hash vs true): 0.9100, Recall(my_algo vs hash): 0.9800
+-- Hash vs True (LSH quality) -- Precision: 0.8700, Recall: 0.8700, Sizes: |hash|=100, |true|=100, |∩|=87
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 0.4500, Sizes: |mlgt|=45, |hash|=100, |∩|=45
+-- MLGT vs True (End-to-end) -- Precision: 1.0000, Recall: 0.4500, F1: 0.6207, Sizes: |mlgt|=45, |true|=100, |∩|=45
+Query 84: my_algo time 10.5661s | Precision: 1.0000, Recall(my_algo vs true): 0.4500, Recall(hash vs true): 0.8700, Recall(my_algo vs hash): 0.4500
+-- Hash vs True (LSH quality) -- Precision: 0.3900, Recall: 0.3900, Sizes: |hash|=100, |true|=100, |∩|=39
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.3900, Recall: 0.3900, F1: 0.3900, Sizes: |mlgt|=100, |true|=100, |∩|=39
+Query 85: my_algo time 7.2847s | Precision: 0.3900, Recall(my_algo vs true): 0.3900, Recall(hash vs true): 0.3900, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.9500, Recall: 0.9500, Sizes: |hash|=100, |true|=100, |∩|=95
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.9500, Recall: 0.9500, F1: 0.9500, Sizes: |mlgt|=100, |true|=100, |∩|=95
+Query 86: my_algo time 7.9250s | Precision: 0.9500, Recall(my_algo vs true): 0.9500, Recall(hash vs true): 0.9500, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.9300, Recall: 0.9300, Sizes: |hash|=100, |true|=100, |∩|=93
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.9300, Recall: 0.9300, F1: 0.9300, Sizes: |mlgt|=100, |true|=100, |∩|=93
+Query 87: my_algo time 7.2204s | Precision: 0.9300, Recall(my_algo vs true): 0.9300, Recall(hash vs true): 0.9300, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.9600, Recall: 0.9600, Sizes: |hash|=100, |true|=100, |∩|=96
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.9600, Recall: 0.9600, F1: 0.9600, Sizes: |mlgt|=100, |true|=100, |∩|=96
+Query 88: my_algo time 7.3692s | Precision: 0.9600, Recall(my_algo vs true): 0.9600, Recall(hash vs true): 0.9600, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.8400, Recall: 0.8400, Sizes: |hash|=100, |true|=100, |∩|=84
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.8400, Recall: 0.8400, F1: 0.8400, Sizes: |mlgt|=100, |true|=100, |∩|=84
+Query 89: my_algo time 6.1530s | Precision: 0.8400, Recall(my_algo vs true): 0.8400, Recall(hash vs true): 0.8400, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.9300, Recall: 0.9300, Sizes: |hash|=100, |true|=100, |∩|=93
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.9300, Recall: 0.9300, F1: 0.9300, Sizes: |mlgt|=100, |true|=100, |∩|=93
+Query 90: my_algo time 8.2338s | Precision: 0.9300, Recall(my_algo vs true): 0.9300, Recall(hash vs true): 0.9300, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.7900, Recall: 0.7900, Sizes: |hash|=100, |true|=100, |∩|=79
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.7900, Recall: 0.7900, F1: 0.7900, Sizes: |mlgt|=100, |true|=100, |∩|=79
+Query 91: my_algo time 7.0804s | Precision: 0.7900, Recall(my_algo vs true): 0.7900, Recall(hash vs true): 0.7900, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.5300, Recall: 0.5300, Sizes: |hash|=100, |true|=100, |∩|=53
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 0.0200, Sizes: |mlgt|=2, |hash|=100, |∩|=2
+-- MLGT vs True (End-to-end) -- Precision: 1.0000, Recall: 0.0200, F1: 0.0392, Sizes: |mlgt|=2, |true|=100, |∩|=2
+Query 92: my_algo time 10.5104s | Precision: 1.0000, Recall(my_algo vs true): 0.0200, Recall(hash vs true): 0.5300, Recall(my_algo vs hash): 0.0200
+-- Hash vs True (LSH quality) -- Precision: 0.9100, Recall: 0.9100, Sizes: |hash|=100, |true|=100, |∩|=91
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.9100, Recall: 0.9100, F1: 0.9100, Sizes: |mlgt|=100, |true|=100, |∩|=91
+Query 93: my_algo time 6.0683s | Precision: 0.9100, Recall(my_algo vs true): 0.9100, Recall(hash vs true): 0.9100, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.7900, Recall: 0.7900, Sizes: |hash|=100, |true|=100, |∩|=79
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.7900, Recall: 0.7900, F1: 0.7900, Sizes: |mlgt|=100, |true|=100, |∩|=79
+Query 94: my_algo time 6.2097s | Precision: 0.7900, Recall(my_algo vs true): 0.7900, Recall(hash vs true): 0.7900, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.8200, Recall: 0.8200, Sizes: |hash|=100, |true|=100, |∩|=82
+-- MLGT vs Hash (Recovery quality) -- Precision: 0.8400, Recall: 0.8400, Sizes: |mlgt|=100, |hash|=100, |∩|=84
+-- MLGT vs True (End-to-end) -- Precision: 0.7300, Recall: 0.7300, F1: 0.7300, Sizes: |mlgt|=100, |true|=100, |∩|=73
+Query 95: my_algo time 10.1518s | Precision: 0.7300, Recall(my_algo vs true): 0.7300, Recall(hash vs true): 0.8200, Recall(my_algo vs hash): 0.8400
+-- Hash vs True (LSH quality) -- Precision: 0.7800, Recall: 0.7800, Sizes: |hash|=100, |true|=100, |∩|=78
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.7800, Recall: 0.7800, F1: 0.7800, Sizes: |mlgt|=100, |true|=100, |∩|=78
+Query 96: my_algo time 6.3587s | Precision: 0.7800, Recall(my_algo vs true): 0.7800, Recall(hash vs true): 0.7800, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.9000, Recall: 0.9000, Sizes: |hash|=100, |true|=100, |∩|=90
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.9000, Recall: 0.9000, F1: 0.9000, Sizes: |mlgt|=100, |true|=100, |∩|=90
+Query 97: my_algo time 7.9684s | Precision: 0.9000, Recall(my_algo vs true): 0.9000, Recall(hash vs true): 0.9000, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.8000, Recall: 0.8000, Sizes: |hash|=100, |true|=100, |∩|=80
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.8000, Recall: 0.8000, F1: 0.8000, Sizes: |mlgt|=100, |true|=100, |∩|=80
+Query 98: my_algo time 7.7359s | Precision: 0.8000, Recall(my_algo vs true): 0.8000, Recall(hash vs true): 0.8000, Recall(my_algo vs hash): 1.0000
+-- Hash vs True (LSH quality) -- Precision: 0.8600, Recall: 0.8600, Sizes: |hash|=100, |true|=100, |∩|=86
+-- MLGT vs Hash (Recovery quality) -- Precision: 1.0000, Recall: 1.0000, Sizes: |mlgt|=100, |hash|=100, |∩|=100
+-- MLGT vs True (End-to-end) -- Precision: 0.8600, Recall: 0.8600, F1: 0.8600, Sizes: |mlgt|=100, |true|=100, |∩|=86
+Query 99: my_algo time 6.1940s | Precision: 0.8600, Recall(my_algo vs true): 0.8600, Recall(hash vs true): 0.8600, Recall(my_algo vs hash): 1.0000
+
+==== Aggregate Statistics ====
+Average Precision: 0.8121
+Average Recall: 0.7343
+Average F1: 0.7434
+Average Recall(MLGT vs hash): 0.9153
+Average Recall(hash vs true): 0.7852
+Average Query Time: 7.4619s

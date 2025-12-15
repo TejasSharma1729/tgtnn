@@ -1,0 +1,40 @@
+
+========================================
+Processing dataset: imagenet
+========================================
+  Loaded Dataset shape: (1281151, 1000)
+  Loaded Queries shape: (10000, 1000)
+Initializing SimHash (Tables=500, Bits=10, Threshold=1, Dim=1000)...
+Running similarity search test...
+Mean Recall for imagenet: 0.5028
+Time taken: 8746.82s
+
+========================================
+Processing dataset: imdb_wiki
+========================================
+  Loaded Dataset shape: (520458, 1000)
+  Loaded Queries shape: (10000, 1000)
+Initializing SimHash (Tables=500, Bits=10, Threshold=1, Dim=1000)...
+Running similarity search test...
+Mean Recall for imdb_wiki: 0.7703
+Time taken: 919.22s
+
+========================================
+Processing dataset: insta_1m
+========================================
+  Loaded Dataset shape: (999991, 1000)
+  Loaded Queries shape: (10000, 1000)
+Initializing SimHash (Tables=500, Bits=10, Threshold=1, Dim=1000)...
+Running similarity search test...
+Mean Recall for insta_1m: 0.7756
+Time taken: 1984.53s
+
+========================================
+Processing dataset: mirflickr
+========================================
+  Loaded Dataset shape: (999993, 1000)
+  Loaded Queries shape: (10000, 1000)
+Initializing SimHash (Tables=500, Bits=10, Threshold=1, Dim=1000)...
+Running similarity search test...
+Mean Recall for mirflickr: 0.7851
+Time taken: 1880.94s

@@ -1,0 +1,6 @@
+To check:
+- Is pooling causing more errors or is hashing causing more errors?
+- Substantial number of queries: number of times pooled test makes a mistake.
+- Show the stats mid-week and discuss the results in the pooled tests.
+- Read SAFFRON and check the link here: https://github.com/Shashankaubaru/He-NMFGT for implementation.
+- Test the sparse track on the updated datasets.
