@@ -1,49 +1,58 @@
 
 import sys
 import os
+import time
 import numpy as np
-from argparse import ArgumentParser
 
-# Add the parent directory to sys.path to allow imports from py_src
+# Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from py_src.sim_hash import SimHash
 from py_src.mlgt import MLGT
 
 def test_mlgt_synthetic():
     print("Testing MLGT with synthetic data...")
-    dim = 16
-    N = 1000
-    Q = 10
-    K = 5
+    dim = 64
+    N = 2000
+    Q = 5
     
     # Generate random data
     np.random.seed(42)
+    # Normalize features for cosine similarity context
     dataset = np.random.randn(N, dim).astype(np.float32)
-    queries = np.random.randn(Q, dim).astype(np.float32)
+    dataset /= np.linalg.norm(dataset, axis=1, keepdims=True)
     
-    # Initialize SimHash
-    # Use small parameters for testing
-    simhash = SimHash(num_hashes=10, num_bits=8, threshold=2, dimension=dim)
+    queries = np.random.randn(Q, dim).astype(np.float32)
+    queries /= np.linalg.norm(queries, axis=1, keepdims=True)
     
     # Initialize MLGT
-    mlgt = MLGT(simhash, max_candidates=100, expansion_radius=1, use_cosine_refine=True)
+    # Using parameters suitable for small test but exercising the global index
+    mlgt = MLGT(
+        num_tables=50,
+        hash_bits=8,
+        input_dim=dim,
+        match_threshold=5,
+        num_pools=100,
+        pools_per_point=3,
+        points_per_pool=100,
+        features=dataset
+    )
     
-    print("Fitting MLGT...")
-    mlgt.fit(dataset)
+    print("Building index...")
+    t0 = time.time()
+    mlgt.build_index()
+    t1 = time.time()
+    print(f"Index built in {t1 - t0:.4f}s")
     
-    print("Querying MLGT...")
+    print("Querying...")
     for i in range(Q):
         query = queries[i]
-        results = mlgt.query(query, k=K)
-        print(f"Query {i}: Found {len(results)} results. Top score: {results[0][1] if results else 'N/A'}")
+        t_start = time.time()
+        # Ensure we test the default algorithm
+        candidates = mlgt.query(query, top_k=10)
+        t_end = time.time()
+        print(f"Query {i}: Found {len(candidates)} candidates in {t_end - t_start:.4f}s")
         
-        # Basic sanity check: scores should be descending
-        scores = [r[1] for r in results]
-        if not all(scores[j] >= scores[j+1] for j in range(len(scores)-1)):
-             print(f"  WARNING: Scores not descending for query {i}: {scores}")
-
-    print("MLGT synthetic test passed (basic execution).")
+    print("MLGT synthetic test passed.")
 
 if __name__ == "__main__":
     test_mlgt_synthetic()

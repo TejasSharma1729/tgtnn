@@ -38,7 +38,6 @@ class SimHash:
             self,
             num_hashes: int,
             num_bits: int,
-            threshold: int,
             dimension: int
     ) -> None:
         """
@@ -47,12 +46,10 @@ class SimHash:
         Args:
             num_hashes (int): Number of hash tables (or hash functions).
             num_bits (int): Number of bits per hash signature.
-            threshold (int): Hamming distance threshold for matching.
             dimension (int): Dimensionality of the input vectors.
         """
         self.num_hashes = num_hashes
         self.num_bits = num_bits
-        self.threshold = threshold
         self.dimension = dimension
 
         self.hash_planes = np.random.randn(self.num_hashes, self.num_bits, self.dimension).astype(np.float64)

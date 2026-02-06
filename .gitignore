@@ -39,6 +39,7 @@ __pycache__/*
 *.npy
 *.npz
 *.pyc
+*.pyi
 
 # Large files
 data/*

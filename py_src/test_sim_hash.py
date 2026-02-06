@@ -29,7 +29,7 @@ DATASETS = ["imagenet", "imdb_wiki", "insta_1m", "mirflickr"]
 if __name__ == "__main__":
     parser = ArgumentParser(description="Test SimHash recall on datasets.")
     parser.add_argument("--num_bits", type=int, default=10, help="Number of bits per hash (default: 10)")
-    parser.add_argument("--threshold", type=int, default=0, help="Hamming distance threshold (default: 0)")
+    # threshold arg removed
     parser.add_argument("--num_hashes", type=int, default=500, help="Number of hash functions/tables (default: 500)")
     parser.add_argument("--num_queries", type=int, default=100, help="Number of queries to test (default: 100)")
     parser.add_argument("--k", type=int, default=100, help="Number of neighbors (K) (default: 100)")
@@ -75,8 +75,8 @@ if __name__ == "__main__":
             print(f"Dimension mismatch: Dataset {D}, Queries {queries.shape[1]}")
             continue
         
-        print(f"Initializing SimHash (Tables={args.num_hashes}, Bits={args.num_bits}, Threshold={args.threshold}, Dim={D})...")
-        simhash = SimHash(num_hashes=args.num_hashes, num_bits=args.num_bits, threshold=args.threshold, dimension=D)
+        print(f"Initializing SimHash (Tables={args.num_hashes}, Bits={args.num_bits}, Dim={D})...")
+        simhash = SimHash(num_hashes=args.num_hashes, num_bits=args.num_bits, dimension=D)
         
         print("Running similarity search test...")
         start_time = time.time()

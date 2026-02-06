@@ -1,0 +1,3 @@
+dataset,is_knns,parameter,double_group,num_queries,avg_query_time_ms,avg_naive_time_ms,avg_recall,avg_precision
+imdb_wiki,True,10,False,100,128.046293258667,0.0,0.9900000000000003,0.9900000000000003
+imdb_wiki,True,10,True,100,161.85742616653442,0.0,0.9900000000000003,0.9900000000000003

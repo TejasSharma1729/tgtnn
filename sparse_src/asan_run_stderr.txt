@@ -1,0 +1,616 @@
+
+=================================================================
+==84094==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 246712 byte(s) in 128 object(s) allocated from:
+    #0 0x7386ff8b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x564cc8 in _PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:62
+    #2 0x564cc8 in PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:948
+    #3 0x564cc8 in _PyObject_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:2154
+    #4 0x564cc8 in PyObject_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:1316
+    #5 0x564cc8 in PyUnicode_New /usr/local/src/conda/python-3.13.5/Objects/unicodeobject.c:1398
+    #6 0x564cc8 in _PyUnicode_FromUCS1 /usr/local/src/conda/python-3.13.5/Objects/unicodeobject.c:2249
+
+Direct leak of 244064 byte(s) in 142 object(s) allocated from:
+    #0 0x7386ff8b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x549236 in _PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:62
+    #2 0x549236 in PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:948
+    #3 0x549236 in _PyObject_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:2154
+    #4 0x549236 in PyMem_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:989
+    #5 0x549236 in new_keys_object /usr/local/src/conda/python-3.13.5/Objects/dictobject.c:823
+    #6 0x549236 in dictresize /usr/local/src/conda/python-3.13.5/Objects/dictobject.c:2024
+
+Direct leak of 73288 byte(s) in 84 object(s) allocated from:
+    #0 0x7386ff8b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x56692a in _PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:62
+    #2 0x56692a in PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:948
+    #3 0x56692a in _PyObject_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:2154
+    #4 0x56692a in PyObject_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:1316
+    #5 0x56692a in _PyObject_NewVar /usr/local/src/conda/python-3.13.5/Objects/object.c:547
+    #6 0x56692a in _PyCode_New /usr/local/src/conda/python-3.13.5/Objects/codeobject.c:713
+
+Direct leak of 30078 byte(s) in 17 object(s) allocated from:
+    #0 0x7386ff8b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x546662 in _PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:62
+    #2 0x546662 in PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:948
+    #3 0x546662 in _PyObject_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:2154
+    #4 0x546662 in PyObject_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:1316
+    #5 0x546662 in PyUnicode_New /usr/local/src/conda/python-3.13.5/Objects/unicodeobject.c:1398
+    #6 0x546662 in unicode_decode_utf8 /usr/local/src/conda/python-3.13.5/Objects/unicodeobject.c:4995
+
+Direct leak of 14456 byte(s) in 14 object(s) allocated from:
+    #0 0x7386ff8b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x5458cb in _PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:62
+    #2 0x5458cb in PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:948
+    #3 0x5458cb in _PyObject_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:2154
+    #4 0x5458cb in PyObject_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:1316
+    #5 0x5458cb in _PyObject_MallocWithType /usr/local/src/conda/python-3.13.5/Include/internal/pycore_object_alloc.h:46
+    #6 0x5458cb in _PyType_AllocNoTrack /usr/local/src/conda/python-3.13.5/Objects/typeobject.c:2041
+
+Direct leak of 10992 byte(s) in 8 object(s) allocated from:
+    #0 0x7386ff8b4c38 in __interceptor_realloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:164
+    #1 0x54d36c in _PyMem_RawRealloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:84
+    #2 0x54d36c in PyMem_RawRealloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:966
+    #3 0x54d36c in _PyObject_Realloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:2529
+    #4 0x54d36c in _PyObject_Realloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:2516
+    #5 0x54d36c in PyObject_Realloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:1338
+    #6 0x54d36c in _PyObject_ReallocWithType /usr/local/src/conda/python-3.13.5/Include/internal/pycore_object_alloc.h:61
+    #7 0x54d36c in _PyObject_GC_Resize /usr/local/src/conda/python-3.13.5/Python/gc.c:1918
+    #8 0x54d36c in _PyTuple_Resize /usr/local/src/conda/python-3.13.5/Objects/tupleobject.c:946
+
+Direct leak of 6144 byte(s) in 8 object(s) allocated from:
+    #0 0x7386ff8b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x550659 in _PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:62
+    #2 0x550659 in PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:948
+    #3 0x550659 in _PyObject_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:2154
+    #4 0x550659 in PyMem_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:989
+    #5 0x550659 in clone_combined_dict_keys /usr/local/src/conda/python-3.13.5/Objects/dictobject.c:977
+    #6 0x550659 in copy_lock_held /usr/local/src/conda/python-3.13.5/Objects/dictobject.c:4041
+
+Direct leak of 3373 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff8b4c38 in __interceptor_realloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:164
+    #1 0x5a695f in _PyMem_RawRealloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:84
+    #2 0x5a695f in PyMem_RawRealloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:966
+    #3 0x5a695f in _PyObject_Realloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:2529
+    #4 0x5a695f in _PyObject_Realloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:2516
+    #5 0x5a695f in PyObject_Realloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:1338
+    #6 0x5a695f in resize_compact /usr/local/src/conda/python-3.13.5/Objects/unicodeobject.c:1182
+
+Direct leak of 2880 byte(s) in 12 object(s) allocated from:
+    #0 0x7386ff8b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x73865860822a in CRYPTO_zalloc (/home/tejassharma/miniconda3/lib/python3.13/lib-dynload/../../libcrypto.so.3+0x20822a)
+
+Direct leak of 1702 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff8b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x53c418 in _PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:62
+    #2 0x53c418 in PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:948
+    #3 0x53c418 in _PyObject_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:2154
+    #4 0x53c418 in PyObject_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:1316
+    #5 0x53c418 in PyUnicode_New /usr/local/src/conda/python-3.13.5/Objects/unicodeobject.c:1398
+
+Direct leak of 1672 byte(s) in 2 object(s) allocated from:
+    #0 0x7386ff8b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x545308 in _PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:62
+    #2 0x545308 in PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:948
+    #3 0x545308 in _PyObject_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:2154
+    #4 0x545308 in PyMem_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:989
+    #5 0x545308 in new_keys_object /usr/local/src/conda/python-3.13.5/Objects/dictobject.c:823
+
+Direct leak of 1024 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff8b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x557ca6 in _PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:62
+    #2 0x557ca6 in PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:948
+    #3 0x557ca6 in _PyObject_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:2154
+    #4 0x557ca6 in PyMem_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:989
+    #5 0x557ca6 in set_table_resize /usr/local/src/conda/python-3.13.5/Objects/setobject.c:296
+
+Direct leak of 832 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff8b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x5df370 in _PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:62
+    #2 0x5df370 in PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:948
+    #3 0x5df370 in _PyObject_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:2154
+    #4 0x5df370 in PyMem_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:989
+    #5 0x5df370 in list_preallocate_exact /usr/local/src/conda/python-3.13.5/Objects/listobject.c:219
+    #6 0x5df370 in list_extend_fast /usr/local/src/conda/python-3.13.5/Objects/listobject.c:1203
+    #7 0x5df370 in list_extend_lock_held /usr/local/src/conda/python-3.13.5/Objects/listobject.c:1310
+    #8 0x5df370 in _list_extend /usr/local/src/conda/python-3.13.5/Objects/listobject.c:1406
+
+Direct leak of 778 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff8b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x5cc808 in _PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:62
+    #2 0x5cc808 in PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:948
+    #3 0x5cc808 in _PyObject_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:2154
+    #4 0x5cc808 in PyObject_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:1316
+    #5 0x5cc808 in PyUnicode_New /usr/local/src/conda/python-3.13.5/Objects/unicodeobject.c:1398
+    #6 0x5cc808 in _PyUnicode_JoinArray /usr/local/src/conda/python-3.13.5/Objects/unicodeobject.c:9931
+
+Direct leak of 448 byte(s) in 42 object(s) allocated from:
+    #0 0x7386ff8b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x7386fb09eb68 in PyUFunc_FromFuncAndDataAndSignatureAndIdentity (/home/tejassharma/miniconda3/lib/python3.13/site-packages/numpy/_core/_multiarray_umath.cpython-313-x86_64-linux-gnu.so+0x29eb68)
+
+Direct leak of 188 byte(s) in 25 object(s) allocated from:
+    #0 0x7386ff8b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x7386faf4a00d in PyDataMem_UserNEW (/home/tejassharma/miniconda3/lib/python3.13/site-packages/numpy/_core/_multiarray_umath.cpython-313-x86_64-linux-gnu.so+0x14a00d)
+
+Direct leak of 136 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff8b61e7 in operator new(unsigned long) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:99
+    #1 0x738656f0deb0 in pybind11::cpp_function::make_function_record() /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:189
+    #2 0x738656f90c9d in void pybind11::cpp_function::initialize<pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem&, float const&)#2}, void, SparseElem&, float const&, pybind11::is_method>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem&, float const&)#2}&&, void (*)(SparseElem&, float const&), pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:203
+    #3 0x738656f662fd in pybind11::cpp_function::cpp_function<pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem&, float const&)#2}, pybind11::is_method, void>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem&, float const&)#2}&&, pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:127
+    #4 0x738656f3a6ac in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1720
+    #5 0x738656ed10df in pybind11_init_sparse_gtnn src/pybind11_module.cpp:18
+    #6 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #7 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Direct leak of 136 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff8b61e7 in operator new(unsigned long) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:99
+    #1 0x738656f0deb0 in pybind11::cpp_function::make_function_record() /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:189
+    #2 0x738656f902fb in void pybind11::cpp_function::initialize<pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem const&)#1}, float const&, SparseElem const&, pybind11::is_method>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem const&)#1}&&, float const& (*)(SparseElem const&), pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:203
+    #3 0x738656f66289 in pybind11::cpp_function::cpp_function<pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem const&)#1}, pybind11::is_method, void>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem const&)#1}&&, pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:127
+    #4 0x738656f3a5f8 in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1719
+    #5 0x738656ed10df in pybind11_init_sparse_gtnn src/pybind11_module.cpp:18
+    #6 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #7 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Direct leak of 136 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff8b61e7 in operator new(unsigned long) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:99
+    #1 0x738656f0deb0 in pybind11::cpp_function::make_function_record() /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:189
+    #2 0x738656fc9faf in void pybind11::cpp_function::initialize<pybind11::object (*&)(pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&), pybind11::object, pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&, pybind11::name, pybind11::is_method, pybind11::sibling>(pybind11::object (*&)(pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&), pybind11::object (*)(pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&), pybind11::name const&, pybind11::is_method const&, pybind11::sibling const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:203
+    #3 0x738656f8e08d in pybind11::cpp_function::cpp_function<pybind11::object, pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&, pybind11::name, pybind11::is_method, pybind11::sibling>(pybind11::object (*)(pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&), pybind11::name const&, pybind11::is_method const&, pybind11::sibling const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:118
+    #4 0x738656f65c3a in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def<pybind11::object (&)(pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&)>(char const*, pybind11::object (&)(pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&)) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1621
+    #5 0x738656f39cde in pybind11::class_<SparseElem>::class_<char [47]>(pybind11::handle, char const*, char const (&) [47]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1606
+    #6 0x738656ed1061 in pybind11_init_sparse_gtnn src/pybind11_module.cpp:15
+    #7 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #8 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Direct leak of 136 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff8b61e7 in operator new(unsigned long) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:99
+    #1 0x738656f0deb0 in pybind11::cpp_function::make_function_record() /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:189
+    #2 0x738656fecdd3 in void pybind11::cpp_function::initialize<pybind11::detail::initimpl::constructor<>::execute<pybind11::class_<SparseElem>, char [35], 0>(pybind11::class_<SparseElem>&, char const (&) [35])::{lambda(pybind11::detail::value_and_holder&)#1}, void, pybind11::detail::value_and_holder&, pybind11::name, pybind11::is_method, pybind11::sibling, pybind11::detail::is_new_style_constructor, char [35]>(pybind11::class_<SparseElem>&&, void (*)(pybind11::detail::value_and_holder&), pybind11::name const&, pybind11::is_method const&, pybind11::sibling const&, pybind11::detail::is_new_style_constructor const&, char const (&) [35]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:203
+    #3 0x738656fca3eb in pybind11::cpp_function::cpp_function<pybind11::detail::initimpl::constructor<>::execute<pybind11::class_<SparseElem>, char [35], 0>(pybind11::class_<SparseElem>&, char const (&) [35])::{lambda(pybind11::detail::value_and_holder&)#1}, pybind11::name, pybind11::is_method, pybind11::sibling, pybind11::detail::is_new_style_constructor, char [35], void>(pybind11::class_<SparseElem>&&, pybind11::name const&, pybind11::is_method const&, pybind11::sibling const&, pybind11::detail::is_new_style_constructor const&, char const (&) [35]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:127
+    #4 0x738656f8e3ba in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def<pybind11::detail::initimpl::constructor<>::execute<pybind11::class_<SparseElem>, char [35], 0>(pybind11::class_<SparseElem>&, char const (&) [35])::{lambda(pybind11::detail::value_and_holder&)#1}, pybind11::detail::is_new_style_constructor, char [35]>(char const*, pybind11::class_<SparseElem>&&, pybind11::detail::is_new_style_constructor const&, char const (&) [35]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1621
+    #5 0x738656f65f7e in void pybind11::detail::initimpl::constructor<>::execute<pybind11::class_<SparseElem>, char [35], 0>(pybind11::class_<SparseElem>&, char const (&) [35]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/detail/init.h:205
+    #6 0x738656f39e54 in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def<, char [35]>(pybind11::detail::initimpl::constructor<> const&, char const (&) [35]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1659
+    #7 0x738656ed109d in pybind11_init_sparse_gtnn src/pybind11_module.cpp:16
+    #8 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #9 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Direct leak of 136 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff8b61e7 in operator new(unsigned long) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:99
+    #1 0x738656f0deb0 in pybind11::cpp_function::make_function_record() /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:189
+    #2 0x738656f8f6d3 in void pybind11::cpp_function::initialize<pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem&, unsigned int const&)#2}, void, SparseElem&, unsigned int const&, pybind11::is_method>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem&, unsigned int const&)#2}&&, void (*)(SparseElem&, unsigned int const&), pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:203
+    #3 0x738656f660ad in pybind11::cpp_function::cpp_function<pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem&, unsigned int const&)#2}, pybind11::is_method, void>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem&, unsigned int const&)#2}&&, pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:127
+    #4 0x738656f3a182 in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1720
+    #5 0x738656ed10be in pybind11_init_sparse_gtnn src/pybind11_module.cpp:17
+    #6 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #7 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Direct leak of 136 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff8b61e7 in operator new(unsigned long) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:99
+    #1 0x738656f0deb0 in pybind11::cpp_function::make_function_record() /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:189
+    #2 0x738656f8ed33 in void pybind11::cpp_function::initialize<pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem const&)#1}, unsigned int const&, SparseElem const&, pybind11::is_method>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem const&)#1}&&, unsigned int const& (*)(SparseElem const&), pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:203
+    #3 0x738656f66039 in pybind11::cpp_function::cpp_function<pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem const&)#1}, pybind11::is_method, void>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem const&)#1}&&, pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:127
+    #4 0x738656f3a0ce in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1719
+    #5 0x738656ed10be in pybind11_init_sparse_gtnn src/pybind11_module.cpp:17
+    #6 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #7 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Direct leak of 56 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff8b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x7386faff7143 in NpyString_new_allocator (/home/tejassharma/miniconda3/lib/python3.13/site-packages/numpy/_core/_multiarray_umath.cpython-313-x86_64-linux-gnu.so+0x1f7143)
+
+Direct leak of 35 byte(s) in 2 object(s) allocated from:
+    #0 0x7386ff8b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x7386fb09eba7 in PyUFunc_FromFuncAndDataAndSignatureAndIdentity (/home/tejassharma/miniconda3/lib/python3.13/site-packages/numpy/_core/_multiarray_umath.cpython-313-x86_64-linux-gnu.so+0x29eba7)
+
+Direct leak of 32 byte(s) in 2 object(s) allocated from:
+    #0 0x7386ff8b4c38 in __interceptor_realloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:164
+    #1 0x7386fb09f0a6 in PyUFunc_FromFuncAndDataAndSignatureAndIdentity (/home/tejassharma/miniconda3/lib/python3.13/site-packages/numpy/_core/_multiarray_umath.cpython-313-x86_64-linux-gnu.so+0x29f0a6)
+
+Direct leak of 32 byte(s) in 2 object(s) allocated from:
+    #0 0x7386ff8b4c38 in __interceptor_realloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:164
+    #1 0x7386fb09f0be in PyUFunc_FromFuncAndDataAndSignatureAndIdentity (/home/tejassharma/miniconda3/lib/python3.13/site-packages/numpy/_core/_multiarray_umath.cpython-313-x86_64-linux-gnu.so+0x29f0be)
+
+Direct leak of 24 byte(s) in 2 object(s) allocated from:
+    #0 0x7386ff8b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x7386fb09ebf7 in PyUFunc_FromFuncAndDataAndSignatureAndIdentity (/home/tejassharma/miniconda3/lib/python3.13/site-packages/numpy/_core/_multiarray_umath.cpython-313-x86_64-linux-gnu.so+0x29ebf7)
+
+Direct leak of 24 byte(s) in 2 object(s) allocated from:
+    #0 0x7386ff8b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x7386fb09ec08 in PyUFunc_FromFuncAndDataAndSignatureAndIdentity (/home/tejassharma/miniconda3/lib/python3.13/site-packages/numpy/_core/_multiarray_umath.cpython-313-x86_64-linux-gnu.so+0x29ec08)
+
+Direct leak of 16 byte(s) in 2 object(s) allocated from:
+    #0 0x7386ff8b4c38 in __interceptor_realloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:164
+    #1 0x7386fb09f0d9 in PyUFunc_FromFuncAndDataAndSignatureAndIdentity (/home/tejassharma/miniconda3/lib/python3.13/site-packages/numpy/_core/_multiarray_umath.cpython-313-x86_64-linux-gnu.so+0x29f0d9)
+
+Direct leak of 15 byte(s) in 15 object(s) allocated from:
+    #0 0x7386ff8b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x541e77 in _PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:62
+    #2 0x541e77 in PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:948
+    #3 0x541e77 in _PyObject_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:2154
+    #4 0x541e77 in PyMem_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:989
+
+Indirect leak of 197944 byte(s) in 196 object(s) allocated from:
+    #0 0x7386ff8b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x5458cb in _PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:62
+    #2 0x5458cb in PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:948
+    #3 0x5458cb in _PyObject_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:2154
+    #4 0x5458cb in PyObject_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:1316
+    #5 0x5458cb in _PyObject_MallocWithType /usr/local/src/conda/python-3.13.5/Include/internal/pycore_object_alloc.h:46
+    #6 0x5458cb in _PyType_AllocNoTrack /usr/local/src/conda/python-3.13.5/Objects/typeobject.c:2041
+
+Indirect leak of 59904 byte(s) in 78 object(s) allocated from:
+    #0 0x7386ff8b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x545308 in _PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:62
+    #2 0x545308 in PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:948
+    #3 0x545308 in _PyObject_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:2154
+    #4 0x545308 in PyMem_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:989
+    #5 0x545308 in new_keys_object /usr/local/src/conda/python-3.13.5/Objects/dictobject.c:823
+
+Indirect leak of 24567 byte(s) in 20 object(s) allocated from:
+    #0 0x7386ff8b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x541e77 in _PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:62
+    #2 0x541e77 in PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:948
+    #3 0x541e77 in _PyObject_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:2154
+    #4 0x541e77 in PyMem_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:989
+
+Indirect leak of 11924 byte(s) in 10 object(s) allocated from:
+    #0 0x7386ff8b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x564cc8 in _PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:62
+    #2 0x564cc8 in PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:948
+    #3 0x564cc8 in _PyObject_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:2154
+    #4 0x564cc8 in PyObject_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:1316
+    #5 0x564cc8 in PyUnicode_New /usr/local/src/conda/python-3.13.5/Objects/unicodeobject.c:1398
+    #6 0x564cc8 in _PyUnicode_FromUCS1 /usr/local/src/conda/python-3.13.5/Objects/unicodeobject.c:2249
+
+Indirect leak of 9379 byte(s) in 12 object(s) allocated from:
+    #0 0x7386ff8b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x53c69b in _PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:62
+    #2 0x53c69b in PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:948
+    #3 0x53c69b in _PyObject_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:2154
+    #4 0x53c69b in PyObject_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:1316
+    #5 0x53c69b in _PyBytes_FromSize /usr/local/src/conda/python-3.13.5/Objects/bytesobject.c:123
+    #6 0x53c69b in PyBytes_FromStringAndSize /usr/local/src/conda/python-3.13.5/Objects/bytesobject.c:153
+
+Indirect leak of 7529 byte(s) in 5 object(s) allocated from:
+    #0 0x7386ff8b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x546662 in _PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:62
+    #2 0x546662 in PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:948
+    #3 0x546662 in _PyObject_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:2154
+    #4 0x546662 in PyObject_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:1316
+    #5 0x546662 in PyUnicode_New /usr/local/src/conda/python-3.13.5/Objects/unicodeobject.c:1398
+    #6 0x546662 in unicode_decode_utf8 /usr/local/src/conda/python-3.13.5/Objects/unicodeobject.c:4995
+
+Indirect leak of 5736 byte(s) in 3 object(s) allocated from:
+    #0 0x7386ff8b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x543170 in _PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:62
+    #2 0x543170 in PyMem_RawMalloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:948
+    #3 0x543170 in _PyObject_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:2154
+    #4 0x543170 in PyObject_Malloc /usr/local/src/conda/python-3.13.5/Objects/obmalloc.c:1316
+    #5 0x543170 in _PyObject_MallocWithType /usr/local/src/conda/python-3.13.5/Include/internal/pycore_object_alloc.h:46
+    #6 0x543170 in gc_alloc /usr/local/src/conda/python-3.13.5/Python/gc.c:1848
+    #7 0x543170 in _PyObject_GC_NewVar /usr/local/src/conda/python-3.13.5/Python/gc.c:1887
+
+Indirect leak of 1128 byte(s) in 17 object(s) allocated from:
+    #0 0x7386ff8b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x73865860822a in CRYPTO_zalloc (/home/tejassharma/miniconda3/lib/python3.13/lib-dynload/../../libcrypto.so.3+0x20822a)
+
+Indirect leak of 101 byte(s) in 12 object(s) allocated from:
+    #0 0x7386ff8b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x738658609960 in CRYPTO_strndup (/home/tejassharma/miniconda3/lib/python3.13/lib-dynload/../../libcrypto.so.3+0x209960)
+
+Indirect leak of 84 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff85b9a7 in __interceptor_strdup ../../../../src/libsanitizer/asan/asan_interceptors.cpp:454
+    #1 0x738656f12894 in pybind11::cpp_function::initialize_generic(std::unique_ptr<pybind11::detail::function_record, pybind11::cpp_function::InitializingFunctionRecordDeleter>&&, char const*, std::type_info const* const*, unsigned long) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:642
+    #2 0x738656fecfdd in void pybind11::cpp_function::initialize<pybind11::detail::initimpl::constructor<>::execute<pybind11::class_<SparseElem>, char [35], 0>(pybind11::class_<SparseElem>&, char const (&) [35])::{lambda(pybind11::detail::value_and_holder&)#1}, void, pybind11::detail::value_and_holder&, pybind11::name, pybind11::is_method, pybind11::sibling, pybind11::detail::is_new_style_constructor, char [35]>(pybind11::class_<SparseElem>&&, void (*)(pybind11::detail::value_and_holder&), pybind11::name const&, pybind11::is_method const&, pybind11::sibling const&, pybind11::detail::is_new_style_constructor const&, char const (&) [35]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:328
+    #3 0x738656fca3eb in pybind11::cpp_function::cpp_function<pybind11::detail::initimpl::constructor<>::execute<pybind11::class_<SparseElem>, char [35], 0>(pybind11::class_<SparseElem>&, char const (&) [35])::{lambda(pybind11::detail::value_and_holder&)#1}, pybind11::name, pybind11::is_method, pybind11::sibling, pybind11::detail::is_new_style_constructor, char [35], void>(pybind11::class_<SparseElem>&&, pybind11::name const&, pybind11::is_method const&, pybind11::sibling const&, pybind11::detail::is_new_style_constructor const&, char const (&) [35]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:127
+    #4 0x738656f8e3ba in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def<pybind11::detail::initimpl::constructor<>::execute<pybind11::class_<SparseElem>, char [35], 0>(pybind11::class_<SparseElem>&, char const (&) [35])::{lambda(pybind11::detail::value_and_holder&)#1}, pybind11::detail::is_new_style_constructor, char [35]>(char const*, pybind11::class_<SparseElem>&&, pybind11::detail::is_new_style_constructor const&, char const (&) [35]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1621
+    #5 0x738656f65f7e in void pybind11::detail::initimpl::constructor<>::execute<pybind11::class_<SparseElem>, char [35], 0>(pybind11::class_<SparseElem>&, char const (&) [35]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/detail/init.h:205
+    #6 0x738656f39e54 in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def<, char [35]>(pybind11::detail::initimpl::constructor<> const&, char const (&) [35]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1659
+    #7 0x738656ed109d in pybind11_init_sparse_gtnn src/pybind11_module.cpp:16
+    #8 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #9 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Indirect leak of 66 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff85b9a7 in __interceptor_strdup ../../../../src/libsanitizer/asan/asan_interceptors.cpp:454
+    #1 0x738656f0e1a6 in pybind11::cpp_function::strdup_guard::operator()(char const*) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:356
+    #2 0x738656f108dc in pybind11::cpp_function::initialize_generic(std::unique_ptr<pybind11::detail::function_record, pybind11::cpp_function::InitializingFunctionRecordDeleter>&&, char const*, std::type_info const* const*, unsigned long) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:488
+    #3 0x738656fca1eb in void pybind11::cpp_function::initialize<pybind11::object (*&)(pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&), pybind11::object, pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&, pybind11::name, pybind11::is_method, pybind11::sibling>(pybind11::object (*&)(pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&), pybind11::object (*)(pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&), pybind11::name const&, pybind11::is_method const&, pybind11::sibling const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:328
+    #4 0x738656f8e08d in pybind11::cpp_function::cpp_function<pybind11::object, pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&, pybind11::name, pybind11::is_method, pybind11::sibling>(pybind11::object (*)(pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&), pybind11::name const&, pybind11::is_method const&, pybind11::sibling const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:118
+    #5 0x738656f65c3a in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def<pybind11::object (&)(pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&)>(char const*, pybind11::object (&)(pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&)) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1621
+    #6 0x738656f39cde in pybind11::class_<SparseElem>::class_<char [47]>(pybind11::handle, char const*, char const (&) [47]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1606
+    #7 0x738656ed1061 in pybind11_init_sparse_gtnn src/pybind11_module.cpp:15
+    #8 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #9 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Indirect leak of 53 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff85b9a7 in __interceptor_strdup ../../../../src/libsanitizer/asan/asan_interceptors.cpp:454
+    #1 0x738656f12894 in pybind11::cpp_function::initialize_generic(std::unique_ptr<pybind11::detail::function_record, pybind11::cpp_function::InitializingFunctionRecordDeleter>&&, char const*, std::type_info const* const*, unsigned long) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:642
+    #2 0x738656f90ed1 in void pybind11::cpp_function::initialize<pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem&, float const&)#2}, void, SparseElem&, float const&, pybind11::is_method>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem&, float const&)#2}&&, void (*)(SparseElem&, float const&), pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:328
+    #3 0x738656f662fd in pybind11::cpp_function::cpp_function<pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem&, float const&)#2}, pybind11::is_method, void>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem&, float const&)#2}&&, pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:127
+    #4 0x738656f3a6ac in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1720
+    #5 0x738656ed10df in pybind11_init_sparse_gtnn src/pybind11_module.cpp:18
+    #6 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #7 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Indirect leak of 52 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff85b9a7 in __interceptor_strdup ../../../../src/libsanitizer/asan/asan_interceptors.cpp:454
+    #1 0x738656f0e1a6 in pybind11::cpp_function::strdup_guard::operator()(char const*) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:356
+    #2 0x738656f108dc in pybind11::cpp_function::initialize_generic(std::unique_ptr<pybind11::detail::function_record, pybind11::cpp_function::InitializingFunctionRecordDeleter>&&, char const*, std::type_info const* const*, unsigned long) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:488
+    #3 0x738656f90ed1 in void pybind11::cpp_function::initialize<pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem&, float const&)#2}, void, SparseElem&, float const&, pybind11::is_method>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem&, float const&)#2}&&, void (*)(SparseElem&, float const&), pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:328
+    #4 0x738656f662fd in pybind11::cpp_function::cpp_function<pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem&, float const&)#2}, pybind11::is_method, void>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem&, float const&)#2}&&, pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:127
+    #5 0x738656f3a6ac in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1720
+    #6 0x738656ed10df in pybind11_init_sparse_gtnn src/pybind11_module.cpp:18
+    #7 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #8 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Indirect leak of 51 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff85b9a7 in __interceptor_strdup ../../../../src/libsanitizer/asan/asan_interceptors.cpp:454
+    #1 0x738656f12894 in pybind11::cpp_function::initialize_generic(std::unique_ptr<pybind11::detail::function_record, pybind11::cpp_function::InitializingFunctionRecordDeleter>&&, char const*, std::type_info const* const*, unsigned long) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:642
+    #2 0x738656f8f907 in void pybind11::cpp_function::initialize<pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem&, unsigned int const&)#2}, void, SparseElem&, unsigned int const&, pybind11::is_method>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem&, unsigned int const&)#2}&&, void (*)(SparseElem&, unsigned int const&), pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:328
+    #3 0x738656f660ad in pybind11::cpp_function::cpp_function<pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem&, unsigned int const&)#2}, pybind11::is_method, void>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem&, unsigned int const&)#2}&&, pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:127
+    #4 0x738656f3a182 in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1720
+    #5 0x738656ed10be in pybind11_init_sparse_gtnn src/pybind11_module.cpp:17
+    #6 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #7 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Indirect leak of 50 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff85b9a7 in __interceptor_strdup ../../../../src/libsanitizer/asan/asan_interceptors.cpp:454
+    #1 0x738656f0e1a6 in pybind11::cpp_function::strdup_guard::operator()(char const*) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:356
+    #2 0x738656f108dc in pybind11::cpp_function::initialize_generic(std::unique_ptr<pybind11::detail::function_record, pybind11::cpp_function::InitializingFunctionRecordDeleter>&&, char const*, std::type_info const* const*, unsigned long) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:488
+    #3 0x738656f8f907 in void pybind11::cpp_function::initialize<pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem&, unsigned int const&)#2}, void, SparseElem&, unsigned int const&, pybind11::is_method>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem&, unsigned int const&)#2}&&, void (*)(SparseElem&, unsigned int const&), pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:328
+    #4 0x738656f660ad in pybind11::cpp_function::cpp_function<pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem&, unsigned int const&)#2}, pybind11::is_method, void>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem&, unsigned int const&)#2}&&, pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:127
+    #5 0x738656f3a182 in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1720
+    #6 0x738656ed10be in pybind11_init_sparse_gtnn src/pybind11_module.cpp:17
+    #7 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #8 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Indirect leak of 41 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff85b9a7 in __interceptor_strdup ../../../../src/libsanitizer/asan/asan_interceptors.cpp:454
+    #1 0x738656f12894 in pybind11::cpp_function::initialize_generic(std::unique_ptr<pybind11::detail::function_record, pybind11::cpp_function::InitializingFunctionRecordDeleter>&&, char const*, std::type_info const* const*, unsigned long) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:642
+    #2 0x738656f9052f in void pybind11::cpp_function::initialize<pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem const&)#1}, float const&, SparseElem const&, pybind11::is_method>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem const&)#1}&&, float const& (*)(SparseElem const&), pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:328
+    #3 0x738656f66289 in pybind11::cpp_function::cpp_function<pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem const&)#1}, pybind11::is_method, void>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem const&)#1}&&, pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:127
+    #4 0x738656f3a5f8 in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1719
+    #5 0x738656ed10df in pybind11_init_sparse_gtnn src/pybind11_module.cpp:18
+    #6 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #7 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Indirect leak of 40 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff85b9a7 in __interceptor_strdup ../../../../src/libsanitizer/asan/asan_interceptors.cpp:454
+    #1 0x738656f0e1a6 in pybind11::cpp_function::strdup_guard::operator()(char const*) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:356
+    #2 0x738656f108dc in pybind11::cpp_function::initialize_generic(std::unique_ptr<pybind11::detail::function_record, pybind11::cpp_function::InitializingFunctionRecordDeleter>&&, char const*, std::type_info const* const*, unsigned long) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:488
+    #3 0x738656f9052f in void pybind11::cpp_function::initialize<pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem const&)#1}, float const&, SparseElem const&, pybind11::is_method>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem const&)#1}&&, float const& (*)(SparseElem const&), pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:328
+    #4 0x738656f66289 in pybind11::cpp_function::cpp_function<pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem const&)#1}, pybind11::is_method, void>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem const&)#1}&&, pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:127
+    #5 0x738656f3a5f8 in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1719
+    #6 0x738656ed10df in pybind11_init_sparse_gtnn src/pybind11_module.cpp:18
+    #7 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #8 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Indirect leak of 39 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff85b9a7 in __interceptor_strdup ../../../../src/libsanitizer/asan/asan_interceptors.cpp:454
+    #1 0x738656f0e1a6 in pybind11::cpp_function::strdup_guard::operator()(char const*) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:356
+    #2 0x738656f108dc in pybind11::cpp_function::initialize_generic(std::unique_ptr<pybind11::detail::function_record, pybind11::cpp_function::InitializingFunctionRecordDeleter>&&, char const*, std::type_info const* const*, unsigned long) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:488
+    #3 0x738656fecfdd in void pybind11::cpp_function::initialize<pybind11::detail::initimpl::constructor<>::execute<pybind11::class_<SparseElem>, char [35], 0>(pybind11::class_<SparseElem>&, char const (&) [35])::{lambda(pybind11::detail::value_and_holder&)#1}, void, pybind11::detail::value_and_holder&, pybind11::name, pybind11::is_method, pybind11::sibling, pybind11::detail::is_new_style_constructor, char [35]>(pybind11::class_<SparseElem>&&, void (*)(pybind11::detail::value_and_holder&), pybind11::name const&, pybind11::is_method const&, pybind11::sibling const&, pybind11::detail::is_new_style_constructor const&, char const (&) [35]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:328
+    #4 0x738656fca3eb in pybind11::cpp_function::cpp_function<pybind11::detail::initimpl::constructor<>::execute<pybind11::class_<SparseElem>, char [35], 0>(pybind11::class_<SparseElem>&, char const (&) [35])::{lambda(pybind11::detail::value_and_holder&)#1}, pybind11::name, pybind11::is_method, pybind11::sibling, pybind11::detail::is_new_style_constructor, char [35], void>(pybind11::class_<SparseElem>&&, pybind11::name const&, pybind11::is_method const&, pybind11::sibling const&, pybind11::detail::is_new_style_constructor const&, char const (&) [35]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:127
+    #5 0x738656f8e3ba in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def<pybind11::detail::initimpl::constructor<>::execute<pybind11::class_<SparseElem>, char [35], 0>(pybind11::class_<SparseElem>&, char const (&) [35])::{lambda(pybind11::detail::value_and_holder&)#1}, pybind11::detail::is_new_style_constructor, char [35]>(char const*, pybind11::class_<SparseElem>&&, pybind11::detail::is_new_style_constructor const&, char const (&) [35]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1621
+    #6 0x738656f65f7e in void pybind11::detail::initimpl::constructor<>::execute<pybind11::class_<SparseElem>, char [35], 0>(pybind11::class_<SparseElem>&, char const (&) [35]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/detail/init.h:205
+    #7 0x738656f39e54 in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def<, char [35]>(pybind11::detail::initimpl::constructor<> const&, char const (&) [35]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1659
+    #8 0x738656ed109d in pybind11_init_sparse_gtnn src/pybind11_module.cpp:16
+    #9 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #10 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Indirect leak of 39 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff85b9a7 in __interceptor_strdup ../../../../src/libsanitizer/asan/asan_interceptors.cpp:454
+    #1 0x738656f12894 in pybind11::cpp_function::initialize_generic(std::unique_ptr<pybind11::detail::function_record, pybind11::cpp_function::InitializingFunctionRecordDeleter>&&, char const*, std::type_info const* const*, unsigned long) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:642
+    #2 0x738656f8ef67 in void pybind11::cpp_function::initialize<pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem const&)#1}, unsigned int const&, SparseElem const&, pybind11::is_method>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem const&)#1}&&, unsigned int const& (*)(SparseElem const&), pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:328
+    #3 0x738656f66039 in pybind11::cpp_function::cpp_function<pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem const&)#1}, pybind11::is_method, void>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem const&)#1}&&, pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:127
+    #4 0x738656f3a0ce in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1719
+    #5 0x738656ed10be in pybind11_init_sparse_gtnn src/pybind11_module.cpp:17
+    #6 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #7 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Indirect leak of 38 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff85b9a7 in __interceptor_strdup ../../../../src/libsanitizer/asan/asan_interceptors.cpp:454
+    #1 0x738656f0e1a6 in pybind11::cpp_function::strdup_guard::operator()(char const*) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:356
+    #2 0x738656f108dc in pybind11::cpp_function::initialize_generic(std::unique_ptr<pybind11::detail::function_record, pybind11::cpp_function::InitializingFunctionRecordDeleter>&&, char const*, std::type_info const* const*, unsigned long) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:488
+    #3 0x738656f8ef67 in void pybind11::cpp_function::initialize<pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem const&)#1}, unsigned int const&, SparseElem const&, pybind11::is_method>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem const&)#1}&&, unsigned int const& (*)(SparseElem const&), pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:328
+    #4 0x738656f66039 in pybind11::cpp_function::cpp_function<pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem const&)#1}, pybind11::is_method, void>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem const&)#1}&&, pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:127
+    #5 0x738656f3a0ce in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1719
+    #6 0x738656ed10be in pybind11_init_sparse_gtnn src/pybind11_module.cpp:17
+    #7 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #8 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Indirect leak of 37 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff85b9a7 in __interceptor_strdup ../../../../src/libsanitizer/asan/asan_interceptors.cpp:454
+    #1 0x738656f8fc1b in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_property_static<pybind11::is_method, pybind11::return_value_policy, char [37]>(char const*, pybind11::cpp_function const&, pybind11::cpp_function const&, pybind11::is_method const&, pybind11::return_value_policy const&, char const (&) [37]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1843
+    #2 0x738656f661de in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_property<pybind11::return_value_policy, char [37]>(char const*, pybind11::cpp_function const&, pybind11::cpp_function const&, pybind11::return_value_policy const&, char const (&) [37]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1806
+    #3 0x738656f3a226 in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1721
+    #4 0x738656ed10be in pybind11_init_sparse_gtnn src/pybind11_module.cpp:17
+    #5 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #6 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Indirect leak of 37 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff85b9a7 in __interceptor_strdup ../../../../src/libsanitizer/asan/asan_interceptors.cpp:454
+    #1 0x738656f8fb13 in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_property_static<pybind11::is_method, pybind11::return_value_policy, char [37]>(char const*, pybind11::cpp_function const&, pybind11::cpp_function const&, pybind11::is_method const&, pybind11::return_value_policy const&, char const (&) [37]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1835
+    #2 0x738656f661de in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_property<pybind11::return_value_policy, char [37]>(char const*, pybind11::cpp_function const&, pybind11::cpp_function const&, pybind11::return_value_policy const&, char const (&) [37]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1806
+    #3 0x738656f3a226 in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1721
+    #4 0x738656ed10be in pybind11_init_sparse_gtnn src/pybind11_module.cpp:17
+    #5 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #6 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Indirect leak of 35 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff85b9a7 in __interceptor_strdup ../../../../src/libsanitizer/asan/asan_interceptors.cpp:454
+    #1 0x738656f0e1a6 in pybind11::cpp_function::strdup_guard::operator()(char const*) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:356
+    #2 0x738656f0e812 in pybind11::cpp_function::initialize_generic(std::unique_ptr<pybind11::detail::function_record, pybind11::cpp_function::InitializingFunctionRecordDeleter>&&, char const*, std::type_info const* const*, unsigned long) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:388
+    #3 0x738656fecfdd in void pybind11::cpp_function::initialize<pybind11::detail::initimpl::constructor<>::execute<pybind11::class_<SparseElem>, char [35], 0>(pybind11::class_<SparseElem>&, char const (&) [35])::{lambda(pybind11::detail::value_and_holder&)#1}, void, pybind11::detail::value_and_holder&, pybind11::name, pybind11::is_method, pybind11::sibling, pybind11::detail::is_new_style_constructor, char [35]>(pybind11::class_<SparseElem>&&, void (*)(pybind11::detail::value_and_holder&), pybind11::name const&, pybind11::is_method const&, pybind11::sibling const&, pybind11::detail::is_new_style_constructor const&, char const (&) [35]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:328
+    #4 0x738656fca3eb in pybind11::cpp_function::cpp_function<pybind11::detail::initimpl::constructor<>::execute<pybind11::class_<SparseElem>, char [35], 0>(pybind11::class_<SparseElem>&, char const (&) [35])::{lambda(pybind11::detail::value_and_holder&)#1}, pybind11::name, pybind11::is_method, pybind11::sibling, pybind11::detail::is_new_style_constructor, char [35], void>(pybind11::class_<SparseElem>&&, pybind11::name const&, pybind11::is_method const&, pybind11::sibling const&, pybind11::detail::is_new_style_constructor const&, char const (&) [35]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:127
+    #5 0x738656f8e3ba in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def<pybind11::detail::initimpl::constructor<>::execute<pybind11::class_<SparseElem>, char [35], 0>(pybind11::class_<SparseElem>&, char const (&) [35])::{lambda(pybind11::detail::value_and_holder&)#1}, pybind11::detail::is_new_style_constructor, char [35]>(char const*, pybind11::class_<SparseElem>&&, pybind11::detail::is_new_style_constructor const&, char const (&) [35]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1621
+    #6 0x738656f65f7e in void pybind11::detail::initimpl::constructor<>::execute<pybind11::class_<SparseElem>, char [35], 0>(pybind11::class_<SparseElem>&, char const (&) [35]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/detail/init.h:205
+    #7 0x738656f39e54 in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def<, char [35]>(pybind11::detail::initimpl::constructor<> const&, char const (&) [35]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1659
+    #8 0x738656ed109d in pybind11_init_sparse_gtnn src/pybind11_module.cpp:16
+    #9 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #10 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Indirect leak of 32 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff8b61e7 in operator new(unsigned long) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:99
+    #1 0x738656f10fe5 in pybind11::cpp_function::initialize_generic(std::unique_ptr<pybind11::detail::function_record, pybind11::cpp_function::InitializingFunctionRecordDeleter>&&, char const*, std::type_info const* const*, unsigned long) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:526
+    #2 0x738656f90ed1 in void pybind11::cpp_function::initialize<pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem&, float const&)#2}, void, SparseElem&, float const&, pybind11::is_method>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem&, float const&)#2}&&, void (*)(SparseElem&, float const&), pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:328
+    #3 0x738656f662fd in pybind11::cpp_function::cpp_function<pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem&, float const&)#2}, pybind11::is_method, void>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem&, float const&)#2}&&, pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:127
+    #4 0x738656f3a6ac in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1720
+    #5 0x738656ed10df in pybind11_init_sparse_gtnn src/pybind11_module.cpp:18
+    #6 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #7 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Indirect leak of 32 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff8b61e7 in operator new(unsigned long) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:99
+    #1 0x738656f10fe5 in pybind11::cpp_function::initialize_generic(std::unique_ptr<pybind11::detail::function_record, pybind11::cpp_function::InitializingFunctionRecordDeleter>&&, char const*, std::type_info const* const*, unsigned long) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:526
+    #2 0x738656f9052f in void pybind11::cpp_function::initialize<pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem const&)#1}, float const&, SparseElem const&, pybind11::is_method>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem const&)#1}&&, float const& (*)(SparseElem const&), pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:328
+    #3 0x738656f66289 in pybind11::cpp_function::cpp_function<pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem const&)#1}, pybind11::is_method, void>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem const&)#1}&&, pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:127
+    #4 0x738656f3a5f8 in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1719
+    #5 0x738656ed10df in pybind11_init_sparse_gtnn src/pybind11_module.cpp:18
+    #6 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #7 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Indirect leak of 32 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff8b61e7 in operator new(unsigned long) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:99
+    #1 0x738656f10fe5 in pybind11::cpp_function::initialize_generic(std::unique_ptr<pybind11::detail::function_record, pybind11::cpp_function::InitializingFunctionRecordDeleter>&&, char const*, std::type_info const* const*, unsigned long) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:526
+    #2 0x738656f8f907 in void pybind11::cpp_function::initialize<pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem&, unsigned int const&)#2}, void, SparseElem&, unsigned int const&, pybind11::is_method>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem&, unsigned int const&)#2}&&, void (*)(SparseElem&, unsigned int const&), pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:328
+    #3 0x738656f660ad in pybind11::cpp_function::cpp_function<pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem&, unsigned int const&)#2}, pybind11::is_method, void>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem&, unsigned int const&)#2}&&, pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:127
+    #4 0x738656f3a182 in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1720
+    #5 0x738656ed10be in pybind11_init_sparse_gtnn src/pybind11_module.cpp:17
+    #6 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #7 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Indirect leak of 32 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff8b61e7 in operator new(unsigned long) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:99
+    #1 0x738656f10fe5 in pybind11::cpp_function::initialize_generic(std::unique_ptr<pybind11::detail::function_record, pybind11::cpp_function::InitializingFunctionRecordDeleter>&&, char const*, std::type_info const* const*, unsigned long) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:526
+    #2 0x738656f8ef67 in void pybind11::cpp_function::initialize<pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem const&)#1}, unsigned int const&, SparseElem const&, pybind11::is_method>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem const&)#1}&&, unsigned int const& (*)(SparseElem const&), pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:328
+    #3 0x738656f66039 in pybind11::cpp_function::cpp_function<pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem const&)#1}, pybind11::is_method, void>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem const&)#1}&&, pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:127
+    #4 0x738656f3a0ce in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1719
+    #5 0x738656ed10be in pybind11_init_sparse_gtnn src/pybind11_module.cpp:17
+    #6 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #7 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Indirect leak of 32 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff8b61e7 in operator new(unsigned long) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:99
+    #1 0x738656f10fe5 in pybind11::cpp_function::initialize_generic(std::unique_ptr<pybind11::detail::function_record, pybind11::cpp_function::InitializingFunctionRecordDeleter>&&, char const*, std::type_info const* const*, unsigned long) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:526
+    #2 0x738656fecfdd in void pybind11::cpp_function::initialize<pybind11::detail::initimpl::constructor<>::execute<pybind11::class_<SparseElem>, char [35], 0>(pybind11::class_<SparseElem>&, char const (&) [35])::{lambda(pybind11::detail::value_and_holder&)#1}, void, pybind11::detail::value_and_holder&, pybind11::name, pybind11::is_method, pybind11::sibling, pybind11::detail::is_new_style_constructor, char [35]>(pybind11::class_<SparseElem>&&, void (*)(pybind11::detail::value_and_holder&), pybind11::name const&, pybind11::is_method const&, pybind11::sibling const&, pybind11::detail::is_new_style_constructor const&, char const (&) [35]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:328
+    #3 0x738656fca3eb in pybind11::cpp_function::cpp_function<pybind11::detail::initimpl::constructor<>::execute<pybind11::class_<SparseElem>, char [35], 0>(pybind11::class_<SparseElem>&, char const (&) [35])::{lambda(pybind11::detail::value_and_holder&)#1}, pybind11::name, pybind11::is_method, pybind11::sibling, pybind11::detail::is_new_style_constructor, char [35], void>(pybind11::class_<SparseElem>&&, pybind11::name const&, pybind11::is_method const&, pybind11::sibling const&, pybind11::detail::is_new_style_constructor const&, char const (&) [35]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:127
+    #4 0x738656f8e3ba in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def<pybind11::detail::initimpl::constructor<>::execute<pybind11::class_<SparseElem>, char [35], 0>(pybind11::class_<SparseElem>&, char const (&) [35])::{lambda(pybind11::detail::value_and_holder&)#1}, pybind11::detail::is_new_style_constructor, char [35]>(char const*, pybind11::class_<SparseElem>&&, pybind11::detail::is_new_style_constructor const&, char const (&) [35]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1621
+    #5 0x738656f65f7e in void pybind11::detail::initimpl::constructor<>::execute<pybind11::class_<SparseElem>, char [35], 0>(pybind11::class_<SparseElem>&, char const (&) [35]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/detail/init.h:205
+    #6 0x738656f39e54 in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def<, char [35]>(pybind11::detail::initimpl::constructor<> const&, char const (&) [35]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1659
+    #7 0x738656ed109d in pybind11_init_sparse_gtnn src/pybind11_module.cpp:16
+    #8 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #9 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Indirect leak of 32 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff8b61e7 in operator new(unsigned long) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:99
+    #1 0x738656f10fe5 in pybind11::cpp_function::initialize_generic(std::unique_ptr<pybind11::detail::function_record, pybind11::cpp_function::InitializingFunctionRecordDeleter>&&, char const*, std::type_info const* const*, unsigned long) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:526
+    #2 0x738656fca1eb in void pybind11::cpp_function::initialize<pybind11::object (*&)(pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&), pybind11::object, pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&, pybind11::name, pybind11::is_method, pybind11::sibling>(pybind11::object (*&)(pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&), pybind11::object (*)(pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&), pybind11::name const&, pybind11::is_method const&, pybind11::sibling const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:328
+    #3 0x738656f8e08d in pybind11::cpp_function::cpp_function<pybind11::object, pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&, pybind11::name, pybind11::is_method, pybind11::sibling>(pybind11::object (*)(pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&), pybind11::name const&, pybind11::is_method const&, pybind11::sibling const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:118
+    #4 0x738656f65c3a in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def<pybind11::object (&)(pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&)>(char const*, pybind11::object (&)(pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&)) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1621
+    #5 0x738656f39cde in pybind11::class_<SparseElem>::class_<char [47]>(pybind11::handle, char const*, char const (&) [47]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1606
+    #6 0x738656ed1061 in pybind11_init_sparse_gtnn src/pybind11_module.cpp:15
+    #7 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #8 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Indirect leak of 32 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff8b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x738658683f4f in OPENSSL_sk_deep_copy (/home/tejassharma/miniconda3/lib/python3.13/lib-dynload/../../libcrypto.so.3+0x283f4f)
+
+Indirect leak of 30 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff85b9a7 in __interceptor_strdup ../../../../src/libsanitizer/asan/asan_interceptors.cpp:454
+    #1 0x738656f911e5 in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_property_static<pybind11::is_method, pybind11::return_value_policy, char [30]>(char const*, pybind11::cpp_function const&, pybind11::cpp_function const&, pybind11::is_method const&, pybind11::return_value_policy const&, char const (&) [30]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1843
+    #2 0x738656f6642e in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_property<pybind11::return_value_policy, char [30]>(char const*, pybind11::cpp_function const&, pybind11::cpp_function const&, pybind11::return_value_policy const&, char const (&) [30]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1806
+    #3 0x738656f3a750 in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1721
+    #4 0x738656ed10df in pybind11_init_sparse_gtnn src/pybind11_module.cpp:18
+    #5 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #6 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Indirect leak of 30 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff85b9a7 in __interceptor_strdup ../../../../src/libsanitizer/asan/asan_interceptors.cpp:454
+    #1 0x738656f910dd in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_property_static<pybind11::is_method, pybind11::return_value_policy, char [30]>(char const*, pybind11::cpp_function const&, pybind11::cpp_function const&, pybind11::is_method const&, pybind11::return_value_policy const&, char const (&) [30]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1835
+    #2 0x738656f6642e in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_property<pybind11::return_value_policy, char [30]>(char const*, pybind11::cpp_function const&, pybind11::cpp_function const&, pybind11::return_value_policy const&, char const (&) [30]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1806
+    #3 0x738656f3a750 in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1721
+    #4 0x738656ed10df in pybind11_init_sparse_gtnn src/pybind11_module.cpp:18
+    #5 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #6 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Indirect leak of 27 byte(s) in 2 object(s) allocated from:
+    #0 0x7386ff8b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x738658609818 in CRYPTO_strdup (/home/tejassharma/miniconda3/lib/python3.13/lib-dynload/../../libcrypto.so.3+0x209818)
+
+Indirect leak of 22 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff85b9a7 in __interceptor_strdup ../../../../src/libsanitizer/asan/asan_interceptors.cpp:454
+    #1 0x738656f0e1a6 in pybind11::cpp_function::strdup_guard::operator()(char const*) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:356
+    #2 0x738656f0e78f in pybind11::cpp_function::initialize_generic(std::unique_ptr<pybind11::detail::function_record, pybind11::cpp_function::InitializingFunctionRecordDeleter>&&, char const*, std::type_info const* const*, unsigned long) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:386
+    #3 0x738656fca1eb in void pybind11::cpp_function::initialize<pybind11::object (*&)(pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&), pybind11::object, pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&, pybind11::name, pybind11::is_method, pybind11::sibling>(pybind11::object (*&)(pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&), pybind11::object (*)(pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&), pybind11::name const&, pybind11::is_method const&, pybind11::sibling const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:328
+    #4 0x738656f8e08d in pybind11::cpp_function::cpp_function<pybind11::object, pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&, pybind11::name, pybind11::is_method, pybind11::sibling>(pybind11::object (*)(pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&), pybind11::name const&, pybind11::is_method const&, pybind11::sibling const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:118
+    #5 0x738656f65c3a in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def<pybind11::object (&)(pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&)>(char const*, pybind11::object (&)(pybind11::handle, pybind11::bytes const&, pybind11::capsule const&, pybind11::bytes const&)) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1621
+    #6 0x738656f39cde in pybind11::class_<SparseElem>::class_<char [47]>(pybind11::handle, char const*, char const (&) [47]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1606
+    #7 0x738656ed1061 in pybind11_init_sparse_gtnn src/pybind11_module.cpp:15
+    #8 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #9 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Indirect leak of 9 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff85b9a7 in __interceptor_strdup ../../../../src/libsanitizer/asan/asan_interceptors.cpp:454
+    #1 0x738656f0e1a6 in pybind11::cpp_function::strdup_guard::operator()(char const*) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:356
+    #2 0x738656f0e78f in pybind11::cpp_function::initialize_generic(std::unique_ptr<pybind11::detail::function_record, pybind11::cpp_function::InitializingFunctionRecordDeleter>&&, char const*, std::type_info const* const*, unsigned long) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:386
+    #3 0x738656fecfdd in void pybind11::cpp_function::initialize<pybind11::detail::initimpl::constructor<>::execute<pybind11::class_<SparseElem>, char [35], 0>(pybind11::class_<SparseElem>&, char const (&) [35])::{lambda(pybind11::detail::value_and_holder&)#1}, void, pybind11::detail::value_and_holder&, pybind11::name, pybind11::is_method, pybind11::sibling, pybind11::detail::is_new_style_constructor, char [35]>(pybind11::class_<SparseElem>&&, void (*)(pybind11::detail::value_and_holder&), pybind11::name const&, pybind11::is_method const&, pybind11::sibling const&, pybind11::detail::is_new_style_constructor const&, char const (&) [35]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:328
+    #4 0x738656fca3eb in pybind11::cpp_function::cpp_function<pybind11::detail::initimpl::constructor<>::execute<pybind11::class_<SparseElem>, char [35], 0>(pybind11::class_<SparseElem>&, char const (&) [35])::{lambda(pybind11::detail::value_and_holder&)#1}, pybind11::name, pybind11::is_method, pybind11::sibling, pybind11::detail::is_new_style_constructor, char [35], void>(pybind11::class_<SparseElem>&&, pybind11::name const&, pybind11::is_method const&, pybind11::sibling const&, pybind11::detail::is_new_style_constructor const&, char const (&) [35]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:127
+    #5 0x738656f8e3ba in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def<pybind11::detail::initimpl::constructor<>::execute<pybind11::class_<SparseElem>, char [35], 0>(pybind11::class_<SparseElem>&, char const (&) [35])::{lambda(pybind11::detail::value_and_holder&)#1}, pybind11::detail::is_new_style_constructor, char [35]>(char const*, pybind11::class_<SparseElem>&&, pybind11::detail::is_new_style_constructor const&, char const (&) [35]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1621
+    #6 0x738656f65f7e in void pybind11::detail::initimpl::constructor<>::execute<pybind11::class_<SparseElem>, char [35], 0>(pybind11::class_<SparseElem>&, char const (&) [35]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/detail/init.h:205
+    #7 0x738656f39e54 in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def<, char [35]>(pybind11::detail::initimpl::constructor<> const&, char const (&) [35]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1659
+    #8 0x738656ed109d in pybind11_init_sparse_gtnn src/pybind11_module.cpp:16
+    #9 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #10 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Indirect leak of 1 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff85b9a7 in __interceptor_strdup ../../../../src/libsanitizer/asan/asan_interceptors.cpp:454
+    #1 0x738656f0e1a6 in pybind11::cpp_function::strdup_guard::operator()(char const*) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:356
+    #2 0x738656f0e78f in pybind11::cpp_function::initialize_generic(std::unique_ptr<pybind11::detail::function_record, pybind11::cpp_function::InitializingFunctionRecordDeleter>&&, char const*, std::type_info const* const*, unsigned long) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:386
+    #3 0x738656f8f907 in void pybind11::cpp_function::initialize<pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem&, unsigned int const&)#2}, void, SparseElem&, unsigned int const&, pybind11::is_method>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem&, unsigned int const&)#2}&&, void (*)(SparseElem&, unsigned int const&), pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:328
+    #4 0x738656f660ad in pybind11::cpp_function::cpp_function<pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem&, unsigned int const&)#2}, pybind11::is_method, void>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem&, unsigned int const&)#2}&&, pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:127
+    #5 0x738656f3a182 in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1720
+    #6 0x738656ed10be in pybind11_init_sparse_gtnn src/pybind11_module.cpp:17
+    #7 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #8 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Indirect leak of 1 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff85b9a7 in __interceptor_strdup ../../../../src/libsanitizer/asan/asan_interceptors.cpp:454
+    #1 0x738656f0e1a6 in pybind11::cpp_function::strdup_guard::operator()(char const*) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:356
+    #2 0x738656f0e78f in pybind11::cpp_function::initialize_generic(std::unique_ptr<pybind11::detail::function_record, pybind11::cpp_function::InitializingFunctionRecordDeleter>&&, char const*, std::type_info const* const*, unsigned long) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:386
+    #3 0x738656f8ef67 in void pybind11::cpp_function::initialize<pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem const&)#1}, unsigned int const&, SparseElem const&, pybind11::is_method>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem const&)#1}&&, unsigned int const& (*)(SparseElem const&), pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:328
+    #4 0x738656f66039 in pybind11::cpp_function::cpp_function<pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem const&)#1}, pybind11::is_method, void>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37])::{lambda(SparseElem const&)#1}&&, pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:127
+    #5 0x738656f3a0ce in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_readwrite<SparseElem, unsigned int, char [37]>(char const*, unsigned int SparseElem::*, char const (&) [37]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1719
+    #6 0x738656ed10be in pybind11_init_sparse_gtnn src/pybind11_module.cpp:17
+    #7 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #8 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Indirect leak of 1 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff85b9a7 in __interceptor_strdup ../../../../src/libsanitizer/asan/asan_interceptors.cpp:454
+    #1 0x738656f0e1a6 in pybind11::cpp_function::strdup_guard::operator()(char const*) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:356
+    #2 0x738656f0e78f in pybind11::cpp_function::initialize_generic(std::unique_ptr<pybind11::detail::function_record, pybind11::cpp_function::InitializingFunctionRecordDeleter>&&, char const*, std::type_info const* const*, unsigned long) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:386
+    #3 0x738656f90ed1 in void pybind11::cpp_function::initialize<pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem&, float const&)#2}, void, SparseElem&, float const&, pybind11::is_method>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem&, float const&)#2}&&, void (*)(SparseElem&, float const&), pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:328
+    #4 0x738656f662fd in pybind11::cpp_function::cpp_function<pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem&, float const&)#2}, pybind11::is_method, void>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem&, float const&)#2}&&, pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:127
+    #5 0x738656f3a6ac in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1720
+    #6 0x738656ed10df in pybind11_init_sparse_gtnn src/pybind11_module.cpp:18
+    #7 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #8 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Indirect leak of 1 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff85b9a7 in __interceptor_strdup ../../../../src/libsanitizer/asan/asan_interceptors.cpp:454
+    #1 0x738656f0e1a6 in pybind11::cpp_function::strdup_guard::operator()(char const*) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:356
+    #2 0x738656f0e78f in pybind11::cpp_function::initialize_generic(std::unique_ptr<pybind11::detail::function_record, pybind11::cpp_function::InitializingFunctionRecordDeleter>&&, char const*, std::type_info const* const*, unsigned long) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:386
+    #3 0x738656f9052f in void pybind11::cpp_function::initialize<pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem const&)#1}, float const&, SparseElem const&, pybind11::is_method>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem const&)#1}&&, float const& (*)(SparseElem const&), pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:328
+    #4 0x738656f66289 in pybind11::cpp_function::cpp_function<pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem const&)#1}, pybind11::is_method, void>(pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30])::{lambda(SparseElem const&)#1}&&, pybind11::is_method const&) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:127
+    #5 0x738656f3a5f8 in pybind11::class_<SparseElem>& pybind11::class_<SparseElem>::def_readwrite<SparseElem, float, char [30]>(char const*, float SparseElem::*, char const (&) [30]) /home/tejassharma/miniconda3/lib/python3.13/site-packages/pybind11/include/pybind11/pybind11.h:1719
+    #6 0x738656ed10df in pybind11_init_sparse_gtnn src/pybind11_module.cpp:18
+    #7 0x738656ed052e in PyInit_sparse_gtnn src/pybind11_module.cpp:11
+    #8 0x68fe72 in _PyImport_RunModInitFunc /usr/local/src/conda/python-3.13.5/Python/importdl.c:429
+
+Indirect leak of 1 byte(s) in 1 object(s) allocated from:
+    #0 0x7386ff8b4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x738658613186 in ossl_provider_set_operation_bit (/home/tejassharma/miniconda3/lib/python3.13/lib-dynload/../../libcrypto.so.3+0x213186)
+
+SUMMARY: AddressSanitizer: 958902 byte(s) leaked in 906 allocation(s).

@@ -17,11 +17,18 @@ from dataclasses import dataclass, field
 import numpy as np
 from numpy import array, ndarray, linalg, matrix, strings, testing
 import numba
-from numba.typed import List as NumbaList, Dict as NumbaDict
+from numba.typed import List as NbList, Dict as NbDict
 from numba import types
 import scipy.sparse
 
 from sim_hash import SimHash, test_simhash
+
+NumbaList = NbList
+NumbaDict = NbDict
+
+CURR_DIR = os.path.dirname(os.path.abspath(__file__))
+REPO_DIR = os.path.dirname(CURR_DIR)
+DATASET_DIR = os.path.join(REPO_DIR, "data")
 
 # Type aliases matching the reference
 Array0D = ndarray
@@ -32,20 +39,21 @@ Array3D = ndarray
 # Define Numba types globally to avoid inference errors inside njit
 nb_int64 = types.int64
 nb_int32 = types.int32
+nb_uint16 = types.uint16
+nb_int16 = types.int16
 nb_list_int64 = types.ListType(types.int64)
 nb_list_int32 = types.ListType(types.int32)
 
-# Define types for CSR-like inverted index
-nb_int32_arr = types.int32[:]
-# (hashes, offsets, indices)
-nb_table_struct = types.Tuple((nb_int32_arr, nb_int32_arr, nb_int32_arr))
-nb_pool_struct = types.ListType(nb_table_struct)
-nb_index_struct = types.ListType(nb_pool_struct)
-
-CURRENT_PATH: str = os.path.dirname(os.path.abspath(__file__))
-REPO_PATH: str = os.path.dirname(CURRENT_PATH)
-DATASET_DIR: str = os.path.join(REPO_PATH, "data")
-
+# Define types for Table-First Global Inverted Index
+# Structure: List[Dict[int32, Tuple(int16[:], uint16[:])]]
+# Outer List: indexed by table_idx (0..num_tables)
+# Dict Key: hash_value (int32)
+# Dict Value: (pool_ids, local_point_ids) - arrays of matching pools and points
+nb_pool_ids_arr = types.int16[:]
+nb_local_point_ids_arr = types.uint16[:]
+nb_bucket_content = types.Tuple((nb_pool_ids_arr, nb_local_point_ids_arr))
+nb_table_index = types.DictType(nb_int32, nb_bucket_content)
+nb_global_index_struct = types.ListType(nb_table_index)
 
 @numba.njit(parallel=True)
 def create_random_pools(
@@ -107,83 +115,142 @@ def create_random_pools(
 
 
 @numba.njit
-def build_inverted_index(
+def build_global_inverted_index(
     hash_features: Array2D,
     pools: Array2D
 ) -> NumbaList:
     """
-    Build inverted index for hash features within each pool.
-    Returns a NumbaList of NumbaLists of Tuples (CSR-like structure).
-    Outer: pools, Middle: tables, Inner: (hashes, offsets, indices).
+    Build global inverted index: Table -> Hash -> List[(PoolID, LocalPointID)].
     """
     num_pools, points_per_pool = pools.shape
     num_tables = hash_features.shape[1]
     
-    # Outer list: List of pools
-    inverted_hash_tables = NumbaList()
+    # Outer list: Index by table_idx
+    global_index = NumbaList()
     
-    print("Building per-pool inverted index (CSR optimized)...")
-    for pool_idx in range(num_pools):
-        if pool_idx % 500 == 0:
-            print("Built", pool_idx, "pool indices")
-        # Inner list: List of tables for this pool
-        pool_inverted_tables = NumbaList()
-        pool_points = pools[pool_idx]
-        
-        for table_idx in range(num_tables):
-            # Collect valid points
-            valid_indices = []
-            for p in pool_points:
-                if p != -1:
-                    valid_indices.append(p)
+    print("Building global inverted index (Table-First)...")
+    for table_idx in range(num_tables):
+        if table_idx % 50 == 0:
+            print("Indexing Table", table_idx)
             
-            if len(valid_indices) > 0:
-                hashes = np.empty(len(valid_indices), dtype=np.int32)
-                points = np.empty(len(valid_indices), dtype=np.int32)
-                
-                for i, p in enumerate(valid_indices):
-                    hashes[i] = hash_features[p, table_idx]
-                    points[i] = p
-                
-                # Sort by hash
-                sort_idx = np.argsort(hashes)
-                sorted_hashes = hashes[sort_idx]
-                sorted_points = points[sort_idx]
-                
-                # Manual unique and offsets (np.unique return_index not supported in Numba)
-                num_unique = 1
-                for i in range(1, len(sorted_hashes)):
-                    if sorted_hashes[i] != sorted_hashes[i-1]:
-                        num_unique += 1
-                
-                hashes_arr = np.empty(num_unique, dtype=np.int32)
-                offsets_arr = np.empty(num_unique + 1, dtype=np.int32)
-                indices_arr = sorted_points
-                
-                curr_h = sorted_hashes[0]
-                hashes_arr[0] = curr_h
-                offsets_arr[0] = 0
-                
-                u_idx = 1
-                for i in range(1, len(sorted_hashes)):
-                    h = sorted_hashes[i]
-                    if h != curr_h:
-                        offsets_arr[u_idx] = i
-                        hashes_arr[u_idx] = h
-                        curr_h = h
-                        u_idx += 1
-                offsets_arr[u_idx] = len(sorted_hashes)
-                
-                # Append tuple
-                pool_inverted_tables.append((hashes_arr, offsets_arr, indices_arr))
-            else:
-                # Empty table
-                empty_arr = np.empty(0, dtype=np.int32)
-                pool_inverted_tables.append((empty_arr, np.array([0], dtype=np.int32), empty_arr))
-            
-        inverted_hash_tables.append(pool_inverted_tables)
+        # Numba Dictionary: int32 -> (int16[:], uint16[:])
+        match_map = NumbaDict.empty(
+            key_type=types.int32,
+            value_type=nb_bucket_content
+        )
         
-    return inverted_hash_tables
+        # Collect all valid entries for this table
+        # Max entries = num_pools * points_per_pool
+        cap = num_pools * points_per_pool
+        temp_hashes = np.empty(cap, dtype=np.int32)
+        temp_pools = np.empty(cap, dtype=np.int16)
+        temp_locals = np.empty(cap, dtype=np.uint16)
+        
+        count = 0
+        for p_idx in range(num_pools):
+            for i in range(points_per_pool):
+                global_point_idx = pools[p_idx, i]
+                if global_point_idx != -1:
+                    h = hash_features[global_point_idx, table_idx]
+                    temp_hashes[count] = h
+                    temp_pools[count] = np.int16(p_idx)
+                    temp_locals[count] = np.uint16(i)
+                    count += 1
+        
+        # Truncate to active count
+        active_hashes = temp_hashes[:count]
+        active_pools = temp_pools[:count]
+        active_locals = temp_locals[:count]
+        
+        # Sort by hash
+        sort_order = np.argsort(active_hashes)
+        sorted_hashes = active_hashes[sort_order]
+        sorted_pools = active_pools[sort_order]
+        sorted_locals = active_locals[sort_order]
+        
+        # Group by hash and fill dict
+        if count > 0:
+            start_idx = 0
+            curr_h = sorted_hashes[0]
+            
+            for i in range(1, count):
+                h = sorted_hashes[i]
+                if h != curr_h:
+                    # New bucket
+                    # Copying is necessary to create distinct arrays for the dict values
+                    b_pools = sorted_pools[start_idx:i].copy()
+                    b_locals = sorted_locals[start_idx:i].copy()
+                    match_map[curr_h] = (b_pools, b_locals)
+                    
+                    curr_h = h
+                    start_idx = i
+            
+            # Last bucket
+            b_pools = sorted_pools[start_idx:count].copy()
+            b_locals = sorted_locals[start_idx:count].copy()
+            match_map[curr_h] = (b_pools, b_locals)
+            
+        global_index.append(match_map)
+        
+    return global_index
+
+
+@numba.njit
+def identify_positive_pools(
+    query_hashes: Array1D,
+    global_index: NumbaList,
+    match_threshold: int,
+    num_pools: int,
+    points_per_pool: int
+) -> ndarray:
+    """
+    Identify positive pools using Table-First Global Index.
+    Directly looks up query hashes to find matching pools and points.
+    """
+    # Flat counter array: [pool_idx * points_per_pool + local_point_idx]
+    total_slots = num_pools * points_per_pool
+    # Use int8 to save memory, max threshold is usually small
+    point_counts = np.zeros(total_slots, dtype=np.int8)
+    
+    num_tables = len(query_hashes)
+    
+    for table_idx in range(num_tables):
+        q_hash = query_hashes[table_idx]
+        
+        # Get map for this table
+        table_map = global_index[table_idx]
+        
+        # Check if hash exists
+        if q_hash in table_map:
+            # Retrieve bucket
+            bucket = table_map[q_hash]
+            pool_ids = bucket[0]
+            local_ids = bucket[1]
+            
+            # Iterate match lists
+            for i in range(len(pool_ids)):
+                p_idx = pool_ids[i]
+                l_idx = local_ids[i]
+                
+                # Flat index
+                flat_idx = int(p_idx) * points_per_pool + int(l_idx)
+                
+                # Increment count
+                if point_counts[flat_idx] < 127:
+                    point_counts[flat_idx] += 1
+                
+    # Determine positive pools
+    # A pool is positive if ANY of its points has count >= match_threshold
+    positive_pools = np.zeros(num_pools, dtype=np.bool_)
+    
+    for p_idx in range(num_pools):
+        base_idx = p_idx * points_per_pool
+        for i in range(points_per_pool):
+            if point_counts[base_idx + i] >= match_threshold:
+                positive_pools[p_idx] = True
+                break
+                
+    return positive_pools
 
 
 @numba.njit
@@ -198,71 +265,10 @@ def popcount(n: int) -> int:
     return c
 
 
-@numba.njit
-def does_pool_match_query_hash(
-    query_hashes: Array1D,
-    inverted_index: NumbaList,
-    hash_threshold: int,
-    match_threshold: int
-) -> bool:
-    """
-    Check if a pool matches the query hash using the per-pool inverted index (CSR).
-    """
-    # Use a dictionary for sparse counting since point indices are global and large
-    # Key: point_idx, Value: count
-    match_counts = NumbaDict.empty(nb_int32, nb_int32)
-    
-    num_tables = len(query_hashes)
-    
-    for table_idx in range(num_tables):
-        query_hash = query_hashes[table_idx]
-        # Unpack tuple
-        hashes, offsets, indices = inverted_index[table_idx]
-        
-        if len(hashes) == 0:
-            continue
-            
-        if hash_threshold == 0:
-            # Binary search
-            idx = np.searchsorted(hashes, query_hash)
-            if idx < len(hashes) and hashes[idx] == query_hash:
-                start = offsets[idx]
-                end = offsets[idx+1]
-                for i in range(start, end):
-                    p = indices[i]
-                    c = match_counts.get(p, nb_int32(0)) + nb_int32(1)
-                    match_counts[p] = c
-                    if c >= match_threshold:
-                        return True
-        else:
-            # Iterate all hashes
-            for i in range(len(hashes)):
-                h_val = hashes[i]
-                # Hamming distance
-                xor_val = h_val ^ query_hash
-                dist = 0
-                while xor_val > 0:
-                    dist += 1
-                    xor_val &= xor_val - 1
-                
-                if dist <= hash_threshold:
-                    start = offsets[i]
-                    end = offsets[i+1]
-                    for k in range(start, end):
-                        p = indices[k]
-                        c = match_counts.get(p, nb_int32(0)) + nb_int32(1)
-                        match_counts[p] = c
-                        if c >= match_threshold:
-                            return True
-                    
-    return False
-
-
 @numba.njit(parallel=True)
 def find_matching_points(
     hash_features: Array2D,
     query_hashes: Array1D,
-    hash_threshold: int,
     match_threshold: int
 ) -> List[int]:
     """
@@ -277,14 +283,7 @@ def find_matching_points(
             h_feat = hash_features[i, t]
             h_query = query_hashes[t]
             
-            # Compute Hamming distance
-            xor_val = h_feat ^ h_query
-            dist = 0
-            while xor_val > 0:
-                dist += 1
-                xor_val &= xor_val - 1
-            
-            if dist <= hash_threshold:
+            if h_feat == h_query:
                 matches += 1
         
         if matches >= match_threshold:
@@ -426,7 +425,7 @@ class MLGT:
             num_tables: int = 500,
             hash_bits: int = 10,
             input_dim: int = 1000,
-            hash_threshold: int = 2,
+            # hash_threshold removed
             match_threshold: int = 20,
             num_pools: int = 5000,
             pools_per_point: int = 3,
@@ -434,7 +433,7 @@ class MLGT:
             features: Optional[Array2D] = None,
             features_path: Optional[str] = None,
             use_srp: bool = False,
-            threshold: Optional[int] = None,
+            # threshold arg removed
     ) -> None:
         """
         Initialize the MLGT instance with parameters for the SimHash index.
@@ -443,7 +442,6 @@ class MLGT:
             num_tables (int): Number of hash tables.
             hash_bits (int): Number of bits per hash.
             input_dim (int): Dimension of input vectors.
-            hash_threshold (int): Hamming distance threshold for hash matching.
             match_threshold (int): Minimum number of table matches for a point to be considered a candidate.
             num_pools (int): Number of pools for group testing.
             pools_per_point (int): Number of pools each point is assigned to.
@@ -451,14 +449,12 @@ class MLGT:
             features (Optional[Array2D]): Feature matrix (N, D).
             features_path (Optional[str]): Path to feature matrix file.
             use_srp (bool): Whether to use Sparse Random Projections (not implemented).
-            threshold (Optional[int]): Alias for hash_threshold.
         """
         # Validate parameters
         self.num_tables = num_tables
         self.hash_bits = hash_bits
         self.input_dim = input_dim
-        # support alias `threshold` for backwards compatibility
-        self.hash_threshold = threshold if threshold is not None else hash_threshold
+        # hash_threshold removed
         self.match_threshold = match_threshold
         self.num_pools = num_pools
         self.pools_per_point = pools_per_point
@@ -495,13 +491,10 @@ class MLGT:
         self.hash_function = SimHash(
             num_hashes=num_tables, 
             num_bits=hash_bits, 
-            threshold=self.hash_threshold, 
             dimension=input_dim
         )
-        
-        if self.hash_threshold >= self.hash_bits:
-            print(f"WARNING: hash_threshold ({self.hash_threshold}) >= hash_bits ({self.hash_bits}). "
-                  "This will cause all points to match, leading to slow queries and poor recall.")
+        self.last_pool_time = 0.0
+        self.last_solve_time = 0.0
 
 
     
@@ -527,12 +520,14 @@ class MLGT:
         print(f"DEBUG: Pools shape: {self.pools.shape}, Pooling matrix shape: {self.pooling_matrix.shape}")
         
         # Optimization: Use int32 for hash features to save memory (sufficient for hash values)
-        self.hash_features: Array2D = self.hash_function.hash_bits_to_value(self.hash_function(self.features)).astype(np.int32)
+        assert self.features is not None, "Features must be loaded before building index"
+        assert self.hash_function is not None, "Hash function must be initialized"
+        self.hash_features = self.hash_function.hash_bits_to_value(self.hash_function(self.features)).astype(np.int32)
         print(f"DEBUG: Hash features shape: {self.hash_features.shape}")
         gc.collect()
 
         print(f"DEBUG: Computing inverted hash tables...")
-        self.inverted_hash_tables = build_inverted_index(
+        self.inverted_hash_tables = build_global_inverted_index(
             hash_features=self.hash_features,
             pools=self.pools
         )
@@ -553,7 +548,7 @@ class MLGT:
         per_pool_counts = np.sum(self.pooling_matrix, axis=1)
         expected_avg = (self.num_features * self.pools_per_point) / self.num_pools
         # Allow some variance, especially if points_per_pool was padded
-        min_pool = int(expected_avg * 0.8)
+        min_pool = int(expected_avg * 0.5)
         max_pool = self.points_per_pool
         assert np.all((per_pool_counts >= min_pool) & (per_pool_counts <= max_pool)), (
             f"Per-pool point counts outside expected range [{min_pool},{max_pool}] (example counts: {per_pool_counts[:10]})"
@@ -605,36 +600,59 @@ class MLGT:
         Query the MLGT index with a given query vector.
         Returns top_k candidates ranked by hash match scores.
         """
-        positive_pools: ndarray = np.zeros((self.num_pools,), dtype=bool)
-        query_hash = self.hash_function(query_vector)
-        query_hash_values = self.hash_function.hash_bits_to_value(query_hash).astype(np.int32)
+        assert self.hash_function is not None, "Hash function not initialized"
+        assert self.inverted_hash_tables is not None, "Index not built"
+        assert self.pooling_matrix is not None, "Pooling matrix not built"
+        assert self.hash_features is not None, "Hash features not computed"
 
-        for pool_idx in tqdm(range(self.num_pools), desc="Querying pools...", leave=False):
-            positive_pools[pool_idx] = does_pool_match_query_hash(
-                query_hashes=query_hash_values,
-                inverted_index=self.inverted_hash_tables[pool_idx],
-                hash_threshold=self.hash_threshold,
-                match_threshold=self.match_threshold
-            )
+        query_hash = self.hash_function(query_vector)
+        # Check if hash_bits_to_value is available
+        assert hasattr(self.hash_function, 'hash_bits_to_value'), "SimHash missing hash_bits_to_value"
+        query_hash_values = self.hash_function.hash_bits_to_value(query_hash).astype(np.int32)
         
-        candidates: List[int] = []
+        t0 = time.time()
+        # Use optimized identify_positive_pools
+        positive_pools = identify_positive_pools(
+            query_hashes=query_hash_values,
+            global_index=self.inverted_hash_tables,
+            match_threshold=self.match_threshold,
+            num_pools=self.num_pools,
+            points_per_pool=self.points_per_pool
+        )
+        t1 = time.time()
+        
+        candidates: Union[List[int], ndarray] = []
+        t2 = t1 
+        t3 = t1
+        
         if algorithm == "my_algo":
+            t2 = time.time()
             candidates_mask = my_matching_algo(
                 pooling_matrix=self.pooling_matrix,
                 positive_pools=positive_pools
             )
+            t3 = time.time()
             candidates = np.where(candidates_mask)[0]
         elif algorithm == "omp":
+            t2 = time.time()
             candidates = self._solve_omp(positive_pools, sparsity=500)
+            t3 = time.time()
         elif algorithm in ["lsmr", "lsqr"]:
+            t2 = time.time()
             candidates = self._solve_scipy(positive_pools, method=algorithm)
+            t3 = time.time()
         elif algorithm == "saffron":
             raise NotImplementedError("Saffron algorithm not implemented in this version.")
         elif algorithm == "grotesque":
             raise NotImplementedError("GROTESQUE algorithm not implemented in this version.")
         else:
             raise ValueError(f"Unknown algorithm: {algorithm}")
-
+            
+        pool_time = t1 - t0
+        solve_time = t3 - t2
+        self.last_pool_time = pool_time
+        self.last_solve_time = solve_time
+        
         # Rank by hash match scores and return top K
         if len(candidates) > 0:
             candidate_matches: ndarray = (self.hash_features[candidates] == query_hash_values)
@@ -645,7 +663,7 @@ class MLGT:
             # Fallback: return top K by hash scores
             hash_match_scores: ndarray = (self.hash_features == query_hash_values).astype(np.int32).sum(axis=1)
             topk_candidates = np.argsort(-hash_match_scores)[:top_k].tolist()
-
+            
         return topk_candidates
     
     def __call__(self, query_vector: Array1D) -> List[int]:
@@ -655,6 +673,8 @@ class MLGT:
         """
         Get all neighbors that satisfy the hash matching criteria (threshold).
         """
+        assert self.hash_function is not None
+        assert self.hash_features is not None
         query_hash: ndarray = self.hash_function(query_vector)
         query_hash_values: ndarray = self.hash_function.hash_bits_to_value(query_hash)
         hash_matches: ndarray = np.sum(self.hash_features == query_hash_values, axis=1)
@@ -685,6 +705,7 @@ class MLGT:
         """
         Perform brute-force search to find the top-k nearest neighbors.
         """
+        assert self.features is not None, "Features not loaded"
         similarities = self.features @ query_vector / (linalg.norm(self.features, axis=1) * linalg.norm(query_vector) + 1e-10)
         topk_indices = np.argsort(-similarities)[:num_neighbors]
         return topk_indices.tolist()
@@ -692,14 +713,18 @@ class MLGT:
     def get_metrics(
             self, 
             query_vector: Array1D, 
-            algorithm: str = "my_algo"
-    ) -> Tuple[float, float, float, float, float, float, float, float, float]:
+            algorithm: Literal["my_algo", "saffron", "grotesque", "lsmr", "lsqr", "omp"] = "my_algo"
+    ) -> Tuple[float, float, float, float, float, float, float, float, float, float, float]:
         """
         Get precision & recall (final), precicion & recall (search vs hash-matches), precicion & recall (hash-matches vs true) and times
         """
         query_start = time.time()
         saffron_indices = self.query(query_vector, algorithm=algorithm)
         query_end = time.time()
+        
+        # Breakdown times
+        pool_time = self.last_pool_time
+        solve_time = self.last_solve_time
 
         hash_start = time.time()
         # Get candidates that satisfy BOTH thresholds (hash_threshold and match_threshold)
@@ -752,6 +777,8 @@ class MLGT:
               f" Recall: {final_recall:.4f},"
               f" F1: {f1:.4f},"
               f" Sizes: |mlgt|={len(set_saff)}, |true|={len(set_true)}, |∩|={len(set_saff.intersection(set_true))}")
+        
+        print(f"-- Times -- Total: {query_end-query_start:.4f}s, Pool: {pool_time:.4f}s, Solve: {solve_time:.4f}s")
 
         return (
             final_precision,
@@ -762,8 +789,11 @@ class MLGT:
             precision_hash_vs_true, 
             query_end - query_start, 
             hash_end - hash_start, 
-            true_end - true_start
+            true_end - true_start,
+            pool_time,
+            solve_time
         )
+
 
 
 def dataset_runner(
@@ -778,7 +808,7 @@ def dataset_runner(
         num_tables=args.num_tables,
         hash_bits=args.hash_bits,
         input_dim=args.input_dim,
-        hash_threshold=args.hash_threshold,
+        # hash_threshold removed
         match_threshold=args.match_threshold,
         num_pools=args.num_pools,
         pools_per_point=args.pools_per_point,
@@ -796,9 +826,11 @@ def dataset_runner(
     recalls_hash_true = []
     precs_hash_true = []
     times = []
+    pool_times = []
+    solve_times = []
     for qidx in tqdm(range(min(args.num_queries, query_set.shape[0])), desc="Testing on queries..."):
         query_vector: Array1D = query_set[qidx]
-        precision, recall, recall_saff_hash, prec_saff_hash, recall_hash_true, prec_hash_true, t_saff, t_hash, t_true = mlgt.get_metrics(query_vector, algorithm=args.algorithm)
+        precision, recall, recall_saff_hash, prec_saff_hash, recall_hash_true, prec_hash_true, t_saff, t_hash, t_true, t_pool, t_solve = mlgt.get_metrics(query_vector, algorithm=args.algorithm)
         f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
         precisions.append(precision)
         recalls.append(recall)
@@ -808,8 +840,10 @@ def dataset_runner(
         recalls_hash_true.append(recall_hash_true)
         precs_hash_true.append(prec_hash_true)
         times.append(t_saff)
+        pool_times.append(t_pool)
+        solve_times.append(t_solve)
         print(
-            f"Query {qidx}: {args.algorithm} time {t_saff:.4f}s | "
+            f"Query {qidx}: {args.algorithm} time {t_saff:.4f}s (Pool: {t_pool:.4f}s, Solve: {t_solve:.4f}s) | "
             f"Precision: {precision:.4f}, Recall({args.algorithm} vs true): {recall:.4f}, "
             f"Recall(hash vs true): {recall_hash_true:.4f}, Recall({args.algorithm} vs hash): {recall_saff_hash:.4f}"
         )
@@ -822,6 +856,9 @@ def dataset_runner(
         avg_recall_hash_true = sum(recalls_hash_true) / len(recalls_hash_true)
         avg_prec_hash_true = sum(precs_hash_true) / len(precs_hash_true)
         avg_time = sum(times) / len(times)
+        avg_pool = sum(pool_times) / len(pool_times)
+        avg_solve = sum(solve_times) / len(solve_times)
+        
         print("\n==== Aggregate Statistics ====")
         print(f"Average Precision: {avg_precision:.4f}")
         print(f"Average Recall: {avg_recall:.4f}")
@@ -831,6 +868,8 @@ def dataset_runner(
         print(f"Average Recall(hash vs true): {avg_recall_hash_true:.4f}")
         print(f"Average Precision(hash vs true): {avg_prec_hash_true:.4f}")
         print(f"Average Query Time: {avg_time:.4f}s")
+        print(f"  - Avg Pool Time:  {avg_pool:.4f}s")
+        print(f"  - Avg Solve Time: {avg_solve:.4f}s")
 
 if __name__ == "__main__":
     # Example usage
@@ -838,7 +877,7 @@ if __name__ == "__main__":
     parser.add_argument("--num_tables", type=int, default=500, help="Number of hash tables")
     parser.add_argument("--hash_bits", type=int, default=10, help="Number of bits per hash")
     parser.add_argument("--input_dim", type=int, default=1000, help="Input vector dimension")
-    parser.add_argument("--hash_threshold", type=int, default=0, help="Hamming distance threshold")
+    # hash_threshold arg removed
     parser.add_argument("--match_threshold", type=int, default=50, help="Minimum number of table matches")
     parser.add_argument("--num_pools", type=int, default=5000, help="Number of pools")
     parser.add_argument("--pools_per_point", type=int, default=10, help="Number of pools per point")

@@ -1,0 +1,20 @@
+Query 0: Found 0 results, Time taken: 4.30 ms
+  Verification - Time: 0.23 ms, Recall: 1.0000, Precision: 1.0000
+Query 1: Found 0 results, Time taken: 2.58 ms
+  Verification - Time: 0.20 ms, Recall: 1.0000, Precision: 1.0000
+Query 2: Found 0 results, Time taken: 3.00 ms
+  Verification - Time: 0.26 ms, Recall: 1.0000, Precision: 1.0000
+Query 3: Found 0 results, Time taken: 2.59 ms
+  Verification - Time: 0.21 ms, Recall: 1.0000, Precision: 1.0000
+Query 4: Found 0 results, Time taken: 2.59 ms
+  Verification - Time: 0.23 ms, Recall: 1.0000, Precision: 1.0000
+Query 5: Found 0 results, Time taken: 2.56 ms
+  Verification - Time: 0.23 ms, Recall: 1.0000, Precision: 1.0000
+Query 6: Found 0 results, Time taken: 2.67 ms
+  Verification - Time: 0.21 ms, Recall: 1.0000, Precision: 1.0000
+Query 7: Found 0 results, Time taken: 2.60 ms
+  Verification - Time: 0.22 ms, Recall: 1.0000, Precision: 1.0000
+Query 8: Found 0 results, Time taken: 2.50 ms
+  Verification - Time: 0.22 ms, Recall: 1.0000, Precision: 1.0000
+Query 9: Found 0 results, Time taken: 2.76 ms
+  Verification - Time: 0.21 ms, Recall: 1.0000, Precision: 1.0000
