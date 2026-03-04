@@ -2,59 +2,7 @@
 #define F938C541_109E_4EC0_AE90_E0FED079CBC9
 
 #include "headers.hpp"
-
-
-/**
- * @brief Represents the mapping between items and pools for the SAFFRON algorithm.
- */
-struct PoolingMatrix {
-    vector<vector<uint>> pools_to_items; ///< List of vectors, where each vector contains the item indices in that pool.
-    vector<vector<uint>> items_to_pools; ///< List of vectors, where each vector contains the pool indices the item belongs to.
-    uint num_features; ///< Total number of features/items (n).
-    uint num_pools; ///< Total number of pools (m).
-};
-
-/**
- * @brief Computes the pooling matrix for SAFFRON.
- * 
- * @param num_features Total number of features (n).
- * @param sparsity Expected sparsity level (k).
- * @param debug Debug level.
- * @return PoolingMatrix The mapping between items and pools.
- */
-inline PoolingMatrix computePools(uint num_features, uint sparsity, int debug = 0) {
-    uint num_pools = sparsity * NUM_POOLS_COEFF;
-    uint pools_per_item = POOLS_PER_ITEM;
-    
-    PoolingMatrix pooling_matrix;
-    pooling_matrix.num_features = num_features;
-    pooling_matrix.num_pools = num_pools;
-    pooling_matrix.pools_to_items.resize(num_pools);
-    pooling_matrix.items_to_pools.resize(num_features);
-
-    mt19937 gen(random_device{}());
-    uniform_int_distribution<uint> dis(0, num_pools - 1);
-    
-    for (uint item_idx = 0; item_idx < num_features; ++item_idx) {
-        unordered_set<uint> chosen_pools;
-        while (chosen_pools.size() < pools_per_item) {
-            chosen_pools.insert(dis(gen));
-        }
-        for (uint pool_idx : chosen_pools) {
-            pooling_matrix.pools_to_items[pool_idx].push_back(item_idx);
-            pooling_matrix.items_to_pools[item_idx].push_back(pool_idx);
-        }
-    }
-    
-    if (debug > 0) {
-        cout << "[Compute Pools] num_features=" << num_features
-             << ", sparsity=" << sparsity
-             << ", num_pools=" << num_pools
-             << ", pools_per_item=" << pools_per_item << endl;
-    }
-    
-    return pooling_matrix;
-}
+#include "PoolingMatrix.hpp"
 
 
 /**
@@ -128,7 +76,18 @@ inline vector<uint> decodeSignature(
     // 1. Try singleton decoding from Block 1
     vector<bool> block1(measurement.begin(), measurement.begin() + block_len);
     optional<uint> s = decodeBlock(block1);
-    if (s.has_value()) return { s.value() };
+    if (s.has_value()) {
+        uint val = s.value();
+        vector<bool> expected = getSignature(val, signature_length);
+        bool match = true;
+        for (uint i = 0; i < signature_length; ++i) {
+            if (expected[i] != measurement[i]) {
+                match = false;
+                break;
+            }
+        }
+        if (match) return { val };
+    }
     
     // 2. Try doubleton recovery if block 1 parity is 0
     if (!block1[0]) {
@@ -146,8 +105,18 @@ inline vector<uint> decodeSignature(
             if (i1.has_value()) {
                 uint val1 = i1.value();
                 uint val2 = S ^ val1;
-                // Doubleton recovered: {val1, val2}
-                return { val1, val2 };
+                
+                // Verify doubleton
+                vector<bool> s1 = getSignature(val1, signature_length);
+                vector<bool> s2 = getSignature(val2, signature_length);
+                bool match = true;
+                for (uint i = 0; i < signature_length; ++i) {
+                    if ((s1[i] ^ s2[i]) != measurement[i]) {
+                        match = false;
+                        break;
+                    }
+                }
+                if (match) return { val1, val2 };
             }
         }
     }
@@ -157,15 +126,11 @@ inline vector<uint> decodeSignature(
 
 
 /**
- * @brief Represents a candidate item found in a pool.
- */
-struct Candidate {
-    uint pool_idx;
-    uint item_idx;
-};
-
-/**
- * @brief The core Saffron algorithm implementation for sparse recovery.
+ * @brief Base class for the Sparse All-Fast Fourier Transform (SAFFRON) recovery algorithm.
+ * 
+ * Provides core mechanisms for pooling, signature generation, and the iterative peeling 
+ * algorithm used to recover sparse components (singletons and doubletons) from 
+ * XOR-sum binary residuals across multiple pools.
  */
 class Saffron {
 protected:
@@ -196,13 +161,19 @@ public:
     }
 
     /**
-     * @brief Returns the number of features.
+     * @brief Returns the number of features (n).
      * @return uint 
      */
     inline uint num_features() const { return num_features_; }
 
     /**
-     * @brief Returns the sparsity level.
+     * @brief Returns the total number of features (n).
+     * @return uint 
+     */
+    inline uint size() const { return num_features_; }
+
+    /**
+     * @brief Returns the expected sparsity level (k).
      * @return uint 
      */
     inline uint sparsity() const { return sparsity_; }
@@ -246,7 +217,7 @@ public:
             check_pool(pool_idx);
         }
 
-        if (debug_ > 0) {
+        if (debug_ > 0 || debug > 0) {
             cout << "Initialized peeling with " << candidates.size() 
                 << " candidates." << endl;
         }

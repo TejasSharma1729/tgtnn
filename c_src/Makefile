@@ -1,6 +1,10 @@
 CXX = g++
 CXXFLAGS = -O3 -Wall -shared -std=c++17 -fPIC -fopenmp
-INCLUDES = $(shell python3 -m pybind11 --includes) -I./src -I$(shell python3 -c "import eigenpip; print(eigenpip.get_include())")
+# Add paths manually if Python/environment settings are missing
+INCLUDES = $(shell python3 -m pybind11 --includes) -I./src \
+           -I../assets/SHNSW/hnswlib \
+           -I../assets/Eigen \
+           -I../assets
 LIB_SUFFIX = $(shell python3-config --extension-suffix)
 TARGET = gtnn.so
 SRCS = src/pybind11_module.cpp

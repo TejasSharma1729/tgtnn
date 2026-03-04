@@ -1,0 +1,99 @@
+#!/usr/bin/env python3
+from dataclasses import dataclass, field
+from typing import List, Optional
+import sys, os, time, gc
+import argparse
+import csv
+
+import math, cmath, random, statistics
+from tqdm import tqdm
+
+import numpy as np
+from numpy import array, ndarray, linalg, random as npr, matrix
+from matplotlib import pyplot as plt
+
+CUR_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(CUR_DIR)
+REPO_DIR = os.path.abspath(os.path.join(CUR_DIR, '..'))
+DATA_DIR = os.path.join(REPO_DIR, 'data')
+
+DATASETS: List[str] = ["imagenet", "imdb_wiki", "insta_1m", "mirflickr"]
+ALGOS: List[str] = ["single", "single_threaded", "double", "double_threaded"]
+
+import gtnn
+from gtnn import KNNSIndexDataset, read_matrix, save_matrix
+
+# Plot time vs N and time vs K for all datasets, 4 algoithms in a figure, 4 dataset-figures in 1 plot
+N_vals = [1000, 2000, 4000, 8000, 16000, 32000, 64000, 128000, 256000, 512000]
+N_times = {dset: {algo: [] for algo in ALGOS} for dset in DATASETS}
+
+# The second plot: similar
+K_vals = [1, 2, 5, 10, 25, 50, 100, 200, 500, 1000]
+K_times = {dset: {algo: [] for algo in ALGOS} for dset in DATASETS}
+
+Nq = 128
+
+for dset in DATASETS:
+    print(f"--- Processing dataset: {dset} ---")
+    X = np.load(os.path.join(DATA_DIR, dset, "X.npy"))
+    Q = np.load(os.path.join(DATA_DIR, dset, "Q.npy"))
+    Qidxes = npr.choice(Q.shape[0], Nq, replace=False)
+    Q = Q[Qidxes]
+    for N in N_vals:
+        print(f"  N={N}")
+        knn_index = gtnn.KNNSIndexDataset(X[:N], k_val=10)
+        for algo in ALGOS:
+            print(f"    Algorithm: {algo}")
+            t0 = time.time()
+            if algo == "single":
+                knn_index.search_batch_binary(Q, use_threading=False)
+            elif algo == "single_threaded":
+                knn_index.search_batch_binary(Q, use_threading=True)
+            elif algo == "double":
+                knn_index.search_multiple(Q, use_threading=False)
+            elif algo == "double_threaded":
+                knn_index.search_multiple(Q, use_threading=True)
+            N_times[dset][algo].append((time.time() - t0) * 1000 / Nq) # Convert to milliseconds
+
+    for K in K_vals:
+        print(f"  K={K}")
+        for algo in ALGOS:
+            print(f"    Algorithm: {algo}")
+            knn_index = gtnn.KNNSIndexDataset(X, k_val=K)
+            t0 = time.time()
+            if algo == "single":
+                knn_index.search_batch_binary(Q, use_threading=False)
+            elif algo == "single_threaded":
+                knn_index.search_batch_binary(Q, use_threading=True)
+            elif algo == "double":
+                knn_index.search_multiple(Q, use_threading=False)
+            elif algo == "double_threaded":
+                knn_index.search_multiple(Q, use_threading=True)
+            K_times[dset][algo].append((time.time() - t0) * 1000 / Nq) # Convert to milliseconds
+    
+    print()
+
+# Now do the plotting --> 2 .png images
+fig, ax = plt.subplots(2, 2, figsize=(12, 10))
+for i, dset in enumerate(DATASETS):
+    ax[i//2, i%2].set_title(f"{dset} - Time vs N")
+    for algo in ALGOS:
+        ax[i//2, i%2].plot([N for N in N_vals], N_times[dset][algo], label=algo)
+    ax[i//2, i%2].set_xlabel("N (number of data points)")
+    ax[i//2, i%2].set_ylabel("Time (ms)")
+    ax[i//2, i%2].legend()
+plt.tight_layout()
+plt.savefig(os.path.join(CUR_DIR, "ablation_N.png"))
+plt.clf()
+
+fig, ax = plt.subplots(2, 2, figsize=(12, 10))
+for i, dset in enumerate(DATASETS):
+    ax[i//2, i%2].set_title(f"{dset} - Time vs K")
+    for algo in ALGOS:
+        ax[i//2, i%2].plot(K_vals, K_times[dset][algo], label=algo)
+    ax[i//2, i%2].set_xlabel("K (number of neighbors)")
+    ax[i//2, i%2].set_ylabel("Time (ms)")
+    ax[i//2, i%2].legend()
+plt.tight_layout()
+plt.savefig(os.path.join(CUR_DIR, "ablation_K.png"))
+plt.clf()

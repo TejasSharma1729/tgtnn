@@ -4,7 +4,7 @@ from typing import List, Set
 CUR_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(CUR_DIR)
 
-from mlgt_saffron import SaffronIndex
+from mlgt_saffron import SaffronIndex, MLGTSaffron
 
 # Load small subset
 data_path = "../data/imagenet"
@@ -15,7 +15,7 @@ print(f"Dataset shape: {dataset.shape}, Query shape: {query_set.shape}")
 print(f"Dataset dtype: {dataset.dtype}, Query dtype: {query_set.dtype}")
 
 # Create index with debug=1
-saffron_index = SaffronIndex(dataset, num_neighbors=10, num_hash_bits=18, debug=1)
+saffron_index = MLGTSaffron(dataset, num_neighbors=10, debug=1)
 
 # Test first query
 query = query_set[0]

@@ -2,135 +2,161 @@
 #define D06ED106_555D_4C4D_8C5F_06CF6C90B5F0
 
 #include <bits/stdc++.h>
+#include <Eigen/Dense>
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include <pybind11/stl.h>
+#include <pybind11/eigen.h>
 
 typedef unsigned int uint;
 
-const uint NUM_POOLS_COEFF = 10; // c_m; num_pools = K * c_m
+const uint NUM_POOLS_COEFF = 400; // Increased to 400 for 1M+ points to ensure better isolation.
 const uint POOLS_PER_ITEM = 3; // c_d; each item appears in c_d pools
 const uint SIGNATURE_COEFF = 6; // c_L; num_signature_bits =  ceil(log2(n)) * c_L
-const uint NUM_HASH_BITS = 18; // Increased from 10 to 18 to reduce collisions in large datasets
-using namespace std;
+
+using std::vector, std::array, std::pair;
+using std::set, std::map, std::queue, std::unordered_map, std::unordered_set;
+using std::cout, std::endl;
+using std::optional, std::nullopt;
+
+/**
+ * @brief Efficiently scores a query against a set of identified items using Eigen.
+ * 
+ * Performs parallel inner product computations for all candidate items and uses 
+ * an efficient selection algorithm (nth_element) to find the top K.
+ * 
+ * @param query The query vector (Eigen).
+ * @param data The global data matrix containing the point vectors.
+ * @param identified A set of item indices recovered by the peeling algorithm.
+ * @param k The number of neighbors to return.
+ * @return vector<uint> The k nearest neighbor indices among the identified set.
+ */
+inline vector<uint> getTopKEigen(
+    const Eigen::VectorXf &query,
+    const Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> &data,
+    const std::set<uint> &identified,
+    uint k
+) {
+    if (identified.empty()) return {};
+    vector<pair<float, uint>> scores;
+    scores.reserve(identified.size());
+    
+    // Convert identifying set to a vector for parallelization
+    vector<uint> indices(identified.begin(), identified.end());
+    
+    #pragma omp parallel
+    {
+        vector<pair<float, uint>> local_scores;
+        #pragma omp for nowait
+        for (size_t i = 0; i < indices.size(); ++i) {
+            uint idx = indices[i];
+            float dp = data.row(idx).dot(query);
+            local_scores.push_back({dp, idx});
+        }
+        #pragma omp critical
+        scores.insert(scores.end(), local_scores.begin(), local_scores.end());
+    }
+
+    auto cmp = [](const pair<float, uint> &a, const pair<float, uint> &b) {
+        return a.first > b.first; // Max heap for descending order
+    };
+    
+    if (scores.size() > k) {
+        std::nth_element(scores.begin(), scores.begin() + k, scores.end(), cmp);
+        scores.resize(k);
+    }
+    std::sort(scores.begin(), scores.end(), cmp);
+
+    vector<uint> topK;
+    for (const auto &p : scores) topK.push_back(p.second);
+    std::sort(topK.begin(), topK.end());
+    return topK;
+}
+
+/**
+ * @brief Normalizes a single data point to have unit L2 norm, if requested.
+ * 
+ * @param data_point_arr 1D numpy array of floats.
+ * @param normalize If true, the output vector is normalized.
+ * @return vector<float> The (possibly normalized) data point.
+ */
+vector<float> normalizeDataPoint(
+    const pybind11::array_t<float> &data_point_arr, 
+    bool normalize
+) {
+    auto r = data_point_arr.unchecked<1>();
+    vector<float> data_point(r.shape(0), 0.0f);
+    float norm_sq = 0;
+    for (uint i = 0; i < r.shape(0); ++i) {
+        norm_sq += r(i) * r(i);
+    }
+    float norm = sqrt(norm_sq);
+    if (normalize && norm > 1e-9) {
+        for (uint i = 0; i < r.shape(0); ++i) {
+            data_point[i] = r(i) / norm;
+        }
+    } else {
+        for (uint i = 0; i < r.shape(0); ++i) {
+            data_point[i] = r(i);
+        }
+    }
+    return data_point;
+}
+
+/**
+ * @brief Normalizes an entire dataset to have unit L2 norm for each point, if requested.
+ * 
+ * @param data_points_arr 2D numpy array of floats.
+ * @param normalize If true, each output vector is normalized.
+ * @return vector<vector<float>> The (possibly normalized) dataset as a list of vectors.
+ */
+vector<vector<float>> normalizeDataset(
+    const pybind11::array_t<float> &data_points_arr,
+    bool normalize
+) {
+    auto r = data_points_arr.unchecked<2>();
+    vector<vector<float>> data_points(
+        r.shape(0), 
+        vector<float>(r.shape(1), 0.0f)
+    );
+    for (uint i = 0; i < r.shape(0); ++i) {
+        float norm_sq = 0;
+        for (uint j = 0; j < r.shape(1); ++j) {
+            norm_sq += r(i, j) * r(i, j);
+        }
+        float norm = sqrt(norm_sq);
+        if (normalize && norm > 1e-9) {
+            for (uint j = 0; j < r.shape(1); ++j) {
+                data_points[i][j] = r(i, j) / norm;
+            }
+        } else {
+            for (uint j = 0; j < r.shape(1); ++j) {
+                data_points[i][j] = r(i, j);
+            }
+        }
+    }
+    return data_points;
+}
 
 
 /**
- * @brief A Locality Sensitive Hashing (LSH) function using random projections.
+ * @brief A simple struct to represent hash buckets for debugging and analysis.
  */
-class HashFunction {
-protected:
-    vector<vector<float>> hash_bits_; // Each hash bit is defined by a random projection vector
-    uint num_hash_bits_ = NUM_HASH_BITS; // Number of bits in the hash
-    uint dimension_; // Dimensionality of the input points
-    int debug_ = 0; // Debug level (0 for none, higher values for more verbose output)
-
-    
-public:
-    /**
-     * @brief Initializes a HashFunction with a given dimension and number of hash bits.
-     * 
-     * @param dimension The dimensionality of the input points.
-     * @param num_hash_bits The number of bits in the generated hash (default: NUM_HASH_BITS).
-     * @param debug Debug level (0 for none).
-     */
-    HashFunction(uint dimension, uint num_hash_bits = NUM_HASH_BITS, int debug = 0) :
-        hash_bits_(num_hash_bits, vector<float>(dimension, 0.0f)),
-        num_hash_bits_(num_hash_bits),
-        dimension_(dimension),
-        debug_(debug)
-    {
-        random_device rd;
-        mt19937 gen(rd());
-        normal_distribution<float> dis(0.0, 1.0);
-        for (uint i = 0; i < num_hash_bits_; ++i) {
-            for (uint j = 0; j < dimension_; ++j) {
-                hash_bits_[i][j] = dis(gen);
-            }
-        }
-        if (debug_ > 0) {
-            cout << "[HashFunction] Initialized with dimension=" << dimension_
-                 << ", num_hash_bits=" << num_hash_bits_ << endl;
-        }
-    }
-
-    /**
-     * @brief Returns the dimension of the hash function.
-     * @return uint Dimensionality.
-     */
-    inline uint dimension() const { return dimension_; }
-
-    /**
-     * @brief Returns the number of bits in the hash.
-     * @return uint Number of bits.
-     */
-    inline uint num_hash_bits() const { return num_hash_bits_; }
-
-    ~HashFunction() = default;
-
-    /**
-     * @brief Computes the hash value for a given point from a raw pointer.
-     * 
-     * @param data Pointer to the float array.
-     * @param size Size of the array.
-     * @return uint The computed hash value.
-     */
-    inline uint computeHash(const float* data, size_t size) const {
-        assert(size == dimension_ && "Point dimension mismatch");
-        uint hash_value = 0;
-        for (uint i = 0; i < num_hash_bits_; ++i) {
-            float dot_product = 0;
-            for (uint j = 0; j < dimension_; ++j) {
-                dot_product += hash_bits_[i][j] * data[j];
-            }
-            if (dot_product >= 0) {
-                hash_value |= (1 << i);
-            }
-        }
-        return hash_value;
-    }
-
-    /**
-     * @brief Computes the hash value for a given point (vector version).
-     * 
-     * @param point A vector of floats representing the point.
-     * @return uint The computed hash value.
-     */
-    inline uint computeHash(const vector<float>& point) const {
-        return computeHash(point.data(), point.size());
-    }
-
-    /**
-     * @brief Computes the hash value for a given point (numpy version).
-     * 
-     * @param point_arr A 1D numpy array of floats representing the point.
-     * @return uint The computed hash value as an integer.
-     */
-    inline uint computeHash(pybind11::array_t<float> point_arr) const {
-        auto r = point_arr.unchecked<1>();
-        return computeHash(r.data(0), r.shape(0));
-    }
-
-    /**
-     * @brief Computes the hash value for a given point (callable interface, numpy).
-     * 
-     * @param point_arr A 1D numpy array of floats representing the point.
-     * @return uint The computed hash value.
-     */
-    inline uint operator()(pybind11::array_t<float> point_arr) const {
-        return computeHash(point_arr);
-    }
-
-    /**
-     * @brief Computes the hash value for a given point (callable interface, vector).
-     * 
-     * @param point A vector of floats representing the point.
-     * @return uint The computed hash value.
-     */
-    inline uint operator()(const vector<float>& point) const {
-        return computeHash(point);
-    }
+struct HashBucket {
+    uint hash_val; // The hash value corresponding to this bucket
+    uint start_idx; // Starting index in the global doc_index_ for items in this bucket
+    uint num_items; // Number of items that hash to this bucket
 };
+
+
+/**
+ * @brief Represents a candidate item found in a pool.
+ */
+struct Candidate {
+    uint pool_idx; // Index of the pool where the candidate was found
+    uint item_idx; // Index of the candidate item within the pool
+};
+
 
 
 #endif /* D06ED106_555D_4C4D_8C5F_06CF6C90B5F0 */
