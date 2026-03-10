@@ -93,27 +93,8 @@ with open(CSV_FILE, mode='w', newline='') as csvfile:
             for K, time_ms in zip(K_vals, K_times[dset][algo]):
                 writer.writerow([dset, algo, f"K={K}", "", time_ms])
 
-# Now do the plotting --> 2 .png images
-fig, ax = plt.subplots(2, 2, figsize=(12, 10))
-for i, dset in enumerate(DATASETS):
-    ax[i//2, i%2].set_title(f"{dset} - Time vs N")
-    for algo in ALGOS:
-        ax[i//2, i%2].plot([N for N in N_vals], N_times[dset][algo], label=algo)
-    ax[i//2, i%2].set_xlabel("N (number of data points)")
-    ax[i//2, i%2].set_ylabel("Time (ms)")
-    ax[i//2, i%2].legend()
-plt.tight_layout()
-plt.savefig(os.path.join(CUR_DIR, "ablation_N.png"))
-plt.clf()
-
-fig, ax = plt.subplots(2, 2, figsize=(12, 10))
-for i, dset in enumerate(DATASETS):
-    ax[i//2, i%2].set_title(f"{dset} - Time vs K")
-    for algo in ALGOS:
-        ax[i//2, i%2].plot(K_vals, K_times[dset][algo], label=algo)
-    ax[i//2, i%2].set_xlabel("K (number of neighbors)")
-    ax[i//2, i%2].set_ylabel("Time (ms)")
-    ax[i//2, i%2].legend()
-plt.tight_layout()
-plt.savefig(os.path.join(CUR_DIR, "ablation_K.png"))
-plt.clf()
+# Run the plotting script
+print("--- Results saved to ablation_results.csv ---")
+print("--- Generating plots using plot_ablation.py ---")
+import subprocess
+subprocess.run(["python3", os.path.join(CUR_DIR, "plot_ablation.py")], check=True)
