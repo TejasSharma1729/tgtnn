@@ -18,7 +18,7 @@ REPO_DIR = os.path.abspath(os.path.join(CUR_DIR, '..'))
 DATA_DIR = os.path.join(REPO_DIR, 'data')
 
 DATASETS: List[str] = ["imagenet", "imdb_wiki", "insta_1m", "mirflickr"]
-ALGOS: List[str] = ["single", "single_threaded", "double", "double_threaded"]
+ALGOS: List[str] = ["single", "single_threaded", "single_parallel", "double", "double_threaded"]
 
 import gtnn
 from gtnn import KNNSIndexDataset, read_matrix, save_matrix
@@ -46,8 +46,12 @@ for dset in DATASETS:
             print(f"    Algorithm: {algo}")
             t0 = time.time()
             if algo == "single":
-                knn_index.search_batch_binary(Q, use_threading=False)
+                for q in Q:
+                    knn_index.search(q, use_threading=False)
             elif algo == "single_threaded":
+                for q in Q:
+                    knn_index.search(q, use_threading=True)
+            elif algo == "single_parallel":
                 knn_index.search_batch_binary(Q, use_threading=True)
             elif algo == "double":
                 knn_index.search_multiple(Q, use_threading=False)
@@ -62,8 +66,12 @@ for dset in DATASETS:
             knn_index = gtnn.KNNSIndexDataset(X, k_val=K)
             t0 = time.time()
             if algo == "single":
-                knn_index.search_batch_binary(Q, use_threading=False)
+                for q in Q:
+                    knn_index.search(q, use_threading=False)
             elif algo == "single_threaded":
+                for q in Q:
+                    knn_index.search(q, use_threading=True)
+            elif algo == "single_parallel":
                 knn_index.search_batch_binary(Q, use_threading=True)
             elif algo == "double":
                 knn_index.search_multiple(Q, use_threading=False)
@@ -72,6 +80,18 @@ for dset in DATASETS:
             K_times[dset][algo].append((time.time() - t0) * 1000 / Nq) # Convert to milliseconds
     
     print()
+
+# Plot to CSV file
+CSV_FILE = os.path.join(CUR_DIR, "ablation_results.csv")
+with open(CSV_FILE, mode='w', newline='') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(["Dataset", "Algorithm", "N/K", "Value", "Time (ms)"])
+    for dset in DATASETS:
+        for algo in ALGOS:
+            for N, time_ms in zip(N_vals, N_times[dset][algo]):
+                writer.writerow([dset, algo, f"N={N}", "", time_ms])
+            for K, time_ms in zip(K_vals, K_times[dset][algo]):
+                writer.writerow([dset, algo, f"K={K}", "", time_ms])
 
 # Now do the plotting --> 2 .png images
 fig, ax = plt.subplots(2, 2, figsize=(12, 10))
