@@ -1,6 +1,9 @@
+#!/usr/bin/env python3
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
+
+CUR_DIR: str = os.path.dirname(os.path.abspath(__file__))
 
 # Define mappings for labels and datasets
 ALGO_MAPPING = {
@@ -24,7 +27,7 @@ DATA_TYPES = {
 }
 
 # Load data
-csv_path = "c_src/ablation_results.csv"
+csv_path = os.path.join(CUR_DIR, "ablation_results.csv")
 df = pd.read_csv(csv_path)
 
 # Set global plot parameters for better visibility in papers

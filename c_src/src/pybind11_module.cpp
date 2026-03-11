@@ -1,5 +1,6 @@
 #include "header.hpp"
 #include "knns_dataset.hpp"
+#include "knns_dataset_reordered.hpp"
 #include "tnns_dataset.hpp"
 #include "algorithms_adapted.hpp"
 
@@ -62,6 +63,58 @@ PYBIND11_MODULE(gtnn, m) {
              "    tuple: (list of lists of neighbor indices per query, total dot products computed)")
              
         .def("verify_results", &KNNSIndexDataset::verify_results, 
+             py::arg("query"), py::arg("result"),
+             "Verify the accuracy of the search results against a brute-force ground truth. "
+             "Handles ties in dot products by checking if retrieved neighbors are at least as similar as the K-th true neighbor.\n\n"
+             "Args:\n"
+             "    query (np.ndarray): The query vector.\n"
+             "    result (list): The list of neighbor indices returned by search.\n\n"
+             "Returns:\n"
+             "    list: [time_taken_ms, recall/accuracy]");
+
+    // KNNReorderedIndexDataset bindings
+    py::class_<KNNReorderedIndexDataset>(m, "KNNReorderedIndexDataset")
+        .def(py::init<matrix_t &, size_t>(), 
+             py::arg("mat"), py::arg("k_val") = 10,
+             "Initialize the Reordered KNNS dataset structure.\n\n"
+             "Args:\n"
+             "    mat (np.ndarray): The dataset matrix.\n"
+             "    k_val (int): The number of nearest neighbors to find (default: 10).")
+          
+        .def("streaming_update", &KNNReorderedIndexDataset::streaming_update,
+             py::arg("mat"),
+             "Add a new data point to the dataset and update the reordered index structure.\n\n"
+             "Args:\n"
+             "    mat (np.ndarray): The new data point to add.")
+             
+        .def("search", &KNNReorderedIndexDataset::search, 
+             py::arg("query"), py::arg("use_threading") = true,
+             "Search for the K nearest neighbors of a single query vector using reordered index.\n\n"
+             "Args:\n"
+             "    query (np.ndarray): The query vector.\n"
+             "    use_threading (bool): Use multi-threaded search (default: True).\n\n"
+             "Returns:\n"
+             "    tuple: (list of neighbor indices, number of dot products computed)")
+             
+        .def("search_batch_binary", &KNNReorderedIndexDataset::search_batch_binary,
+             py::arg("query_set"), py::arg("use_threading") = true,
+             "Search for the K nearest neighbors of multiple queries using binary group testing on reordered index.\n\n"
+             "Args:\n"
+             "    query_set (np.ndarray): The query vectors.\n"
+             "    use_threading (bool): Use multi-threaded search (default: True).\n\n"
+             "Returns:\n"
+             "    tuple: (list of list of neighbor indices, total dot products computed)")
+
+        .def("search_multiple", &KNNReorderedIndexDataset::search_multiple, 
+             py::arg("query_set"), py::arg("use_threading") = true,
+             "Search for K nearest neighbors for a batch of queries using optimized double group testing on reordered index.\n\n"
+             "Args:\n"
+             "    query_set (np.ndarray): The matrix of query vectors.\n"
+             "    use_threading (bool): Use multi-threaded search (default: True).\n\n"
+             "Returns:\n"
+             "    tuple: (list of lists of neighbor indices per query, total dot products computed)")
+             
+        .def("verify_results", &KNNReorderedIndexDataset::verify_results, 
              py::arg("query"), py::arg("result"),
              "Verify the accuracy of the search results against a brute-force ground truth. "
              "Handles ties in dot products by checking if retrieved neighbors are at least as similar as the K-th true neighbor.\n\n"

@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import numpy as np
 from numpy import array, ndarray, linalg, random as npr
 import numba
@@ -8,6 +9,8 @@ import argparse
 import sys, os
 import csv
 import gc
+
+CUR_DIR: str = os.path.dirname(os.path.abspath(__file__))
 
 DATASETS = ["imagenet", "imdb_wiki", "insta_1m", "mirflickr"]  # Expected datasets in data/
 
@@ -297,7 +300,7 @@ if __name__ == "__main__":
             gc.collect()
 
     if results_records:
-        csv_file = "benchmark_results.csv"
+        csv_file = os.path.join(CUR_DIR, "benchmark_results.csv")
         print(f"\nSaving results to {csv_file}...")
         with open(csv_file, 'w', newline='') as f:
             writer = csv.DictWriter(f, fieldnames=results_records[0].keys())

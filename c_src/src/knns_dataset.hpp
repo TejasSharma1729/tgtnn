@@ -209,9 +209,9 @@ public:
         
         // Strategy Decision: Double GT is more efficient than Binary only for large query batches.
         // For small batches (Q < 256), just use the faster Binary algorithm.
-        if (num_queries < 256) {
-            return this->search_batch_binary(query_set, use_threading);
-        }
+        // if (num_queries < 256) {
+        //     return this->search_batch_binary(query_set, use_threading);
+        // }
 
         knns_inverted_index_t query_pools = build_index<KNNS_INVERTED_LEVELS, knns_inverted_index_t>(query_set);
         const uint num_pools = query_pools.size();
