@@ -70,6 +70,7 @@ def plot_ablation(data_type, output_name, title):
         ax.grid(True, linestyle='--', alpha=0.7)
         ax.legend(frameon=True, shadow=True, markerscale=1.5)
         ax.set_xscale('log')
+        ax.set_yscale('log')
 
     plt.tight_layout()
     plt.savefig(os.path.join(CUR_DIR, output_name), bbox_inches='tight', dpi=300)

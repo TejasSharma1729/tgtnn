@@ -10,7 +10,6 @@
 #include <queue>
 #include <algorithm>
 #include <limits>
-#include <omp.h>
 #include <atomic>
 
 #ifndef KNNS_TREE_LEVELS
@@ -136,39 +135,34 @@ public:
         if (this->index.trees.empty()) return {vector<uint>(), 0};
 
         const uint num_trees = this->index.trees.size();
-        if (use_threading) {
+        if (use_threading && num_trees >= NUM_THREADS) {
+            vector<pair<vector<pair<double, uint>>, size_t>> async_results(num_trees);
+            vector<thread> threads(NUM_THREADS);
+            auto worker = [this, &async_results, &query] (uint start, uint end) {
+                for (uint i = start; i < end; i++)
+                    async_results[i] = this->search_pool_single(this->index.trees[i], this->index.reorder_maps[i], query, i);
+            };
+
+            for (uint i = 0; i < NUM_THREADS; i++) {
+                uint start = (i * num_trees) / NUM_THREADS;
+                uint end = ((i + 1) * num_trees) / NUM_THREADS;
+                if (i == NUM_THREADS - 1) end = num_trees;
+                threads[i] = thread(worker, start, end);
+            }
+            for (auto &t : threads) if (t.joinable()) t.join();
+
+            vector<pair<double, uint>> all_candidates;
             size_t total_dots = 0;
-            vector<pair<double, uint>> root_dots(num_trees);
-            
-            #pragma omp parallel for reduction(+:total_dots) num_threads(NUM_THREADS)
-            for (uint i = 0; i < num_trees; i++) {
-                root_dots[i] = {query.dot(this->index.trees[i][1]), i};
-                total_dots++;
+            for (auto &res : async_results) {
+                all_candidates.insert(all_candidates.end(), res.first.begin(), res.first.end());
+                total_dots += res.second;
             }
-            
-            sort(root_dots.begin(), root_dots.end(), greater<pair<double, uint>>());
-            
-            vector<pair<double, uint>> candidates;
-            double threshold = -1e18;
-            
-            // To maintain pruning, we check trees in order.
-            // If a root dot product is lower than the 10th best neighbor found so far, we stop.
-            for (const auto& rd : root_dots) {
-                if (candidates.size() >= this->k_val && rd.first < threshold - 1e-9) break;
-                
-                auto [tree_candidates, dots] = this->search_pool_single(this->index.trees[rd.second], 
-                                                                       this->index.reorder_maps[rd.second], 
-                                                                       query, rd.second);
-                total_dots += dots;
-                candidates.insert(candidates.end(), tree_candidates.begin(), tree_candidates.end());
-                
-                sort(candidates.begin(), candidates.end(), greater<pair<double, uint>>());
-                if (candidates.size() > this->k_val) candidates.resize(this->k_val);
-                if (candidates.size() == this->k_val) threshold = candidates.back().first;
-            }
+            sort(all_candidates.begin(), all_candidates.end(), greater<pair<double, uint>>());
             
             vector<uint> final_results;
-            for (auto& c : candidates) final_results.push_back(c.second);
+            for (uint i = 0; i < min((size_t)all_candidates.size(), this->k_val); i++) {
+                final_results.push_back(all_candidates[i].second);
+            }
             sort(final_results.begin(), final_results.end());
             return {final_results, total_dots};
         }
