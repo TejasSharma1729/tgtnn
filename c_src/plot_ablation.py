@@ -8,10 +8,10 @@ CUR_DIR: str = os.path.dirname(os.path.abspath(__file__))
 # Define mappings for labels and datasets
 ALGO_MAPPING = {
     "single": "K-btnn (serial)",
-    "single_threaded": "K-btnn (T = 16, threaded)",
-    "single_parallel": "K-btnn (T = 16, parallel)",
+    "single_threaded": "K-btnn ($N_T = 16$, threaded)",
+    "single_parallel": "K-btnn ($N_T = 16$, parallel)",
     "double": "K-dgtnn (serial)",
-    "double_threaded": "K-dgtnn (T = 16)"
+    "double_threaded": "K-dgtnn ($N_T = 16$)"
 }
 
 DATASET_MAPPING = {
@@ -72,7 +72,7 @@ def plot_ablation(data_type, output_name, title):
         ax.set_xscale('log')
 
     plt.tight_layout()
-    plt.savefig(os.path.join("c_src", output_name), bbox_inches='tight', dpi=300)
+    plt.savefig(os.path.join(CUR_DIR, output_name), bbox_inches='tight', dpi=300)
     print(f"Saved {output_name}")
 
 if __name__ == "__main__":
