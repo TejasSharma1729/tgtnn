@@ -7,10 +7,14 @@
  * @brief Represents the mapping between items and pools for the SAFFRON algorithm.
  */
 struct PoolingMatrix {
-    vector<vector<uint>> pools_to_items; ///< List of vectors, where each vector contains the item indices in that pool.
-    vector<vector<uint>> items_to_pools; ///< List of vectors, where each vector contains the pool indices the item belongs to.
-    uint num_features; ///< Total number of features/items (n).
-    uint num_pools; ///< Total number of pools (m).
+    /** @brief Adjacency list: for each pool, which items are included. */
+    vector<vector<uint>> pools_to_items; 
+    /** @brief Adjacency list: for each item, which pools it belongs to. */
+    vector<vector<uint>> items_to_pools; 
+    /** @brief Total number of features/items (n). */
+    uint num_features; 
+    /** @brief Total number of pools (m). */
+    uint num_pools; 
 };
 
 /**

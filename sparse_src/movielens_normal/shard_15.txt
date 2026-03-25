@@ -1,6 +1,0 @@
-Mean search time: 18.8944 ms
-Mean naive time: 400.086 ms
-Mean precision: 1
-Mean recall: 1
-Net number of dot products: 6110806
-Naive: number of dot products: 136576000

@@ -4,35 +4,66 @@
 #include "headers.hpp"
 #include "BaseHasher.hpp"
 
-const uint BLOOM_HASH_BITS = 16; 
-const uint BLOOM_NUM_HASHES = 10; 
-const uint BLOOM_THRESHOLD = 5; 
+const uint BLOOM_HASH_BITS = 20; 
+const uint BLOOM_NUM_HASHES = 50; 
+const uint BLOOM_THRESHOLD = 20; 
 
+/**
+ * @brief Bloom Filter-inspired hasher generating multiple compound hash values.
+ * 
+ * This hasher uses Sparse Signed Random Projection to map vectors into multiple 
+ * integer hash values. It is the primary hasher used by the standard MLGT 
+ * implementation.
+ */
 class BloomHashFunction : public BaseHasher {
 public:
+    /** @brief Number of bits to pack into each compound hash value. */
     uint num_bits; 
+    /** @brief Expected dimensionality of the input vectors. */
     uint dimension; 
+    /** @brief Minimum number of hash matches required for identification. */
     uint threshold; 
+    /** @brief Debug verbosity level. */
     int debug;
 
 public:
+    /**
+     * @brief Construct a new Bloom Hash Function.
+     * @param dimension Input dimensionality.
+     * @param num_hashes Number of compound hash functions.
+     * @param num_bits Bits per compound hash.
+     * @param threshold Recovery threshold.
+     * @param debug Debug level.
+     */
     BloomHashFunction(
         uint dimension,
         uint num_hashes = BLOOM_NUM_HASHES, 
         uint num_bits = BLOOM_HASH_BITS,
         uint threshold = BLOOM_THRESHOLD,
-        int debug = 0
+        int debug = 0,
+        uint seed = 0
     ) :
-        BaseHasher(num_hashes=num_hashes, seed=0),
+        BaseHasher(num_hashes, seed),
         num_bits(num_bits),
         dimension(dimension),
         threshold(threshold),
         debug(debug)
     {
-        std::random_device rd;
-        seed = rd();
+        if (seed == 0) {
+            std::random_device rd;
+            this->seed = rd();
+        }
     }
 
+    /**
+     * @brief Internal helper to compute a single compound hash value.
+     * 
+     * @param data Pointer to CSR float values.
+     * @param indices Pointer to CSR column indices.
+     * @param nnz Number of non-zero elements.
+     * @param hash_idx Index of the hash function to use.
+     * @return uint The computed hash value.
+     */
     inline uint compute_single_hash(
         const float* data, 
         const uint32_t* indices, 
@@ -72,6 +103,14 @@ public:
         return hash_val;
     }
 
+    /**
+     * @brief Implementation of sparse hashing interface.
+     * 
+     * @param data Pointer to CSR non-zero float values.
+     * @param indices Pointer to CSR column indices.
+     * @param nnz Number of non-zero elements.
+     * @return vector<uint32_t> The computed set of compound hashes.
+     */
     virtual vector<uint> operator()(
         const float* data, 
         const uint32_t* indices, 
@@ -84,6 +123,12 @@ public:
         return res;
     }
 
+    /**
+     * @brief Implementation of dense hashing interface.
+     * 
+     * @param q Dense query vector.
+     * @return vector<uint32_t> The computed set of compound hashes.
+     */
     virtual vector<uint> operator()(const Eigen::VectorXf& q) const override {
         vector<uint> res(num_hashes);
         for (uint h = 0; h < num_hashes; ++h) {

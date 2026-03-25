@@ -5,97 +5,72 @@
 #include "BaseHasher.hpp"
 
 /**
- * @brief Dense Signed Random Projection (SRP).
- * For dense input vectors. Stores a dense projection matrix for speed if requested,
- * or generates on-the-fly.
+ * @brief Dense Signed Random Projection (SRP) hasher.
+ * 
+ * Stores a full projection matrix for high-precision locality sensitive hashing.
+ * Optimized for dense vectors using Eigen's matrix multiplication, but supports
+ * sparse inputs by indexing into the matrix rows.
  */
 class DenseSRPHasher : public BaseHasher {
 public:
+    /** @brief Number of bits to pack into each integer hash value. */
     uint32_t num_bits;
+    /** @brief Expected dimensionality of the input vectors. */
     uint32_t dimension;
-    std::vector<std::vector<std::vector<int8_t>>> stored_weights; // [num_hashes][num_bits][dimension]
+    /** @brief The projection matrix [num_hashes * num_bits][dimension]. */
+    Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> projection_matrix;
 
-    DenseSRPHasher(uint32_t b = 16, uint32_t d = 0, uint32_t s = 42, uint32_t nh = 1, bool store = false) 
+    /**
+     * @brief Construct a new Dense SRP Hasher.
+     * @param b Number of projection bits per hash.
+     * @param d Dimensionality of input points.
+     * @param s Random seed.
+     * @param nh Number of independent hash values to generate.
+     * @param store Unused (matrix is always stored in this robust version).
+     */
+    DenseSRPHasher(uint32_t b = 16, uint32_t d = 0, uint32_t s = 42, uint32_t nh = 1, bool store = true) 
         : BaseHasher(nh, s), num_bits(b), dimension(d) {
-        if (store && d > 0) {
-            stored_weights.resize(num_hashes, std::vector<std::vector<int8_t>>(num_bits, std::vector<int8_t>(dimension)));
-            for (uint32_t h = 0; h < num_hashes; ++h) {
-                for (uint32_t i = 0; i < num_bits; ++i) {
-                    uint32_t bit_seed = seed ^ h ^ i;
-                    std::mt19937 gen(bit_seed);
-                    std::bernoulli_distribution dist(0.5);
-                    for (uint32_t j = 0; j < dimension; ++j) {
-                        stored_weights[h][i][j] = dist(gen) ? 1 : -1;
-                    }
+        if (d > 0) {
+            projection_matrix.resize(num_hashes * num_bits, dimension);
+            std::mt19937 gen(seed);
+            std::normal_distribution<float> dist(0.0, 1.0);
+            for (int i = 0; i < projection_matrix.rows(); ++i) {
+                for (int j = 0; j < projection_matrix.cols(); ++j) {
+                    projection_matrix(i, j) = dist(gen);
                 }
             }
         }
     }
 
+    /**
+     * @brief Internal helper to hash a raw float pointer (dense).
+     */
     inline vector<uint32_t> hash_dense(const float* data) const {
-        vector<uint32_t> res(num_hashes);
-        for (uint32_t h = 0; h < num_hashes; ++h) {
-            uint32_t hash_val = 0;
-            if (!stored_weights.empty()) {
-                for (uint32_t b = 0; b < num_bits; ++b) {
-                    float sum = 0;
-                    const int8_t* weights = stored_weights[h][b].data();
-                    for (uint32_t d = 0; d < dimension; ++d) {
-                        sum += data[d] * weights[d];
-                    }
-                    if (sum > 0) hash_val |= (1 << b);
-                }
-            } else {
-                std::vector<float> sums(num_bits, 0.0f);
-                uint32_t local_seed = seed ^ h;
-                for (uint32_t d = 0; d < dimension; ++d) {
-                    float val = data[d];
-                    if (std::abs(val) < 1e-9) continue;
-                    uint64_t random_bits = splitmix64(d ^ local_seed);
-                    for (uint32_t b = 0; b < num_bits; ++b) {
-                        if ((random_bits >> (b % 64)) & 1) sums[b] += val;
-                        else sums[b] -= val;
-                        if (b % 64 == 63 && b + 1 < num_bits) random_bits = splitmix64(random_bits);
-                    }
-                }
-                for (uint32_t b = 0; b < num_bits; ++b) {
-                    if (sums[b] > 0) hash_val |= (1 << b);
-                }
-            }
-            res[h] = hash_val;
-        }
-        return res;
+        Eigen::Map<const Eigen::VectorXf> q(data, dimension);
+        return operator()(q);
     }
 
+    /**
+     * @brief Implementation of sparse hashing interface.
+     */
     virtual vector<uint32_t> operator()(const float* data, const uint32_t* indices, uint32_t nnz) const override {
-        // Even though it's a dense hasher, we can implement sparse input support
-        vector<uint32_t> res(num_hashes);
+        vector<uint32_t> res(num_hashes, 0);
+        vector<float> projections(num_hashes * num_bits, 0.0f);
+
+        // Sparse-dense dot product against every row of the projection matrix
+        for (uint32_t i = 0; i < nnz; ++i) {
+            uint32_t col = indices[i];
+            float val = data[i];
+            for (uint32_t r = 0; r < num_hashes * num_bits; ++r) {
+                projections[r] += val * projection_matrix(r, col);
+            }
+        }
+
         for (uint32_t h = 0; h < num_hashes; ++h) {
             uint32_t hash_val = 0;
-            if (!stored_weights.empty()) {
-                for (uint32_t b = 0; b < num_bits; ++b) {
-                    float sum = 0;
-                    const int8_t* weights = stored_weights[h][b].data();
-                    for (uint32_t i = 0; i < nnz; ++i) {
-                        sum += data[i] * weights[indices[i]];
-                    }
-                    if (sum > 0) hash_val |= (1 << b);
-                }
-            } else {
-                std::vector<float> sums(num_bits, 0.0f);
-                uint32_t local_seed = seed ^ h;
-                for (uint32_t i = 0; i < nnz; ++i) {
-                    float val = data[i];
-                    uint32_t d = indices[i];
-                    uint64_t random_bits = splitmix64(d ^ local_seed);
-                    for (uint32_t b = 0; b < num_bits; ++b) {
-                        if ((random_bits >> (b % 64)) & 1) sums[b] += val;
-                        else sums[b] -= val;
-                        if (b % 64 == 63 && b + 1 < num_bits) random_bits = splitmix64(random_bits);
-                    }
-                }
-                for (uint32_t b = 0; b < num_bits; ++b) {
-                    if (sums[b] > 0) hash_val |= (1 << b);
+            for (uint32_t b = 0; b < num_bits; ++b) {
+                if (projections[h * num_bits + b] >= 0) {
+                    hash_val |= (1 << b);
                 }
             }
             res[h] = hash_val;
@@ -103,11 +78,32 @@ public:
         return res;
     }
 
+    /**
+     * @brief Implementation of dense hashing interface using Eigen BLAS.
+     * 
+     * @param q The query vector (sparse or dense)
+     * @return vector<uint32_t> the computed set of hashes
+     */
     virtual vector<uint32_t> operator()(const Eigen::VectorXf& q) const override {
-        return hash_dense(q.data());
+        assert(q.size() == (int)dimension && "Dimension mismatch in DenseSRPHasher");
+        Eigen::VectorXf projections = projection_matrix * q;
+        
+        vector<uint32_t> res(num_hashes, 0);
+        for (uint32_t h = 0; h < num_hashes; ++h) {
+            uint32_t hash_val = 0;
+            for (uint32_t b = 0; b < num_bits; ++b) {
+                if (projections(h * num_bits + b) >= 0) {
+                    hash_val |= (1 << b);
+                }
+            }
+            res[h] = hash_val;
+        }
+        return res;
     }
 
-    // Original hash method for backward compatibility/pybind
+    /**
+     * @brief Legacy hash method for backward compatibility.
+     */
     void hash(uint64_t *result, const float *data) const {
         vector<uint32_t> res = hash_dense(data);
         *result = res[0];

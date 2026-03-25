@@ -9,22 +9,51 @@
 
 /**
  * @brief Generic Sparse Multi-Label Group Testing (MLGT) Saffron implementation.
+ * 
+ * This class implements a sub-linear time nearest neighbor search algorithm based 
+ * on Group Testing and the SAFFRON recovery scheme. It uses a templated Hasher 
+ * to project vectors into a discrete space, and a GlobalInvertedIndex to 
+ * perform thresholded lookups across multiple pools.
+ * 
+ * @tparam Hasher A type that satisfies the HasherType concept (inherits from BaseHasher).
  */
 template <HasherType Hasher>
 class MLGTSaffron : public Saffron {
 public:
+    /** @brief Alias for the template hasher type. */
     using HasherAlias = Hasher;
 protected:
+    /** @brief The hashing engine used for indexing and queries. */
     Hasher shared_hasher_; 
+    /** @brief A collection of inverted indices, one for each pool. */
     vector<GlobalInvertedIndex> pool_indices_;
+    /** @brief The indexed sparse dataset in CSR format. */
     SparseDataset dataset_;
+    /** @brief XOR-sum signatures used by SAFFRON for recovery. */
     vector<vector<bool>> item_signatures_;
+    /** @brief Cached number of hashes from the hasher. */
     uint num_hashes_;
+    /** @brief Minimum match threshold for candidate identification. */
     uint threshold_;
+    /** @brief Dimensionality of the data. */
     uint dimension_;
+    /** @brief Whether to L2-normalize vectors during search. */
     bool normalize_; 
 
 public:
+    /**
+     * @brief Construct a new MLGTSaffron index and populate internal structures.
+     * 
+     * @param data_arr 1D numpy array of float32 values (CSR data).
+     * @param indices_arr 1D numpy array of uint32 indices (CSR indices).
+     * @param indptr_arr 1D numpy array of uint64 pointers (CSR indptr).
+     * @param num_cols Total number of columns (features).
+     * @param hasher An instance of the chosen Hasher.
+     * @param num_neighbors The number of nearest neighbors to recover (target sparsity).
+     * @param threshold Identification match threshold.
+     * @param debug Debug verbosity level.
+     * @param normalize If true, L2-normalizes vectors before processing.
+     */
     MLGTSaffron(
         pybind11::array_t<float> data_arr,
         pybind11::array_t<uint32_t> indices_arr,
@@ -109,6 +138,12 @@ public:
     ~MLGTSaffron() = default;
 
 protected:
+    /**
+     * @brief Computes residuals for a query by querying the pool-specific inverted indices.
+     * 
+     * @param query_vec The dense query vector.
+     * @return vector<vector<bool>> Residual matrix (num_pools x signature_bits).
+     */
     inline vector<vector<bool>> getResiduals(const Eigen::VectorXf& query_vec) const {
         vector<uint> query_hashes = shared_hasher_(query_vec);
         vector<vector<bool>> residuals(num_pools_, vector<bool>(signature_length_, false));
@@ -129,6 +164,12 @@ protected:
     }
 
 public:
+    /**
+     * @brief Searches for the top K nearest neighbors.
+     * 
+     * @param query_arr 1D numpy array representing the query point.
+     * @return vector<uint> Indices of the top neighbors found.
+     */
     inline vector<uint> search(pybind11::array_t<float> query_arr) {
         Eigen::Map<const Eigen::VectorXf> q_raw(query_arr.data(), dimension_);
         Eigen::VectorXf query = q_raw;
@@ -142,6 +183,12 @@ public:
         return getTopKSparse(query, dataset_, identified, sparsity_);
     }
 
+    /**
+     * @brief Callable interface for search.
+     * 
+     * @param query_arr 1D numpy array.
+     * @return vector<uint> Indices of the top neighbors.
+     */
     inline vector<uint> operator()(pybind11::array_t<float> query_arr) {
         return search(query_arr);
     }

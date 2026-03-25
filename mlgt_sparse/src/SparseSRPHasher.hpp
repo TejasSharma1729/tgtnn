@@ -5,16 +5,34 @@
 #include "BaseHasher.hpp"
 
 /**
- * @brief Sparse Signed Random Projection (SRP).
- * Checks values (float32). Uses on-the-fly weight generation.
+ * @brief Sparse Signed Random Projection (SRP) hasher.
+ * 
+ * Sparse SRP projects high-dimensional sparse vectors onto a lower-dimensional 
+ * space using a random projection matrix. It estimates cosine similarity between 
+ * vectors. This implementation generates weights on-the-fly to save memory.
  */
 class SparseSRPHasher : public BaseHasher {
 public:
+    /** @brief Number of bits to pack into each integer hash value. */
     uint32_t num_bits;
 
+    /**
+     * @brief Construct a new Sparse SRP Hasher.
+     * @param b Number of projection bits per hash (default 16).
+     * @param s Random seed.
+     * @param nh Number of independent hash values to generate.
+     */
     SparseSRPHasher(uint32_t b = 16, uint32_t s = 42, uint32_t nh = 1) 
         : BaseHasher(nh, s), num_bits(b) {}
 
+    /**
+     * @brief Implementation of sparse hashing interface.
+     * 
+     * @param data Pointer to CSR non-zero float values.
+     * @param indices Pointer to CSR column indices.
+     * @param nnz Number of non-zero elements.
+     * @return vector<uint32_t> The computed set of hashes.
+     */
     virtual vector<uint32_t> operator()(const float* data, const uint32_t* indices, uint32_t nnz) const override {
         vector<uint32_t> res(num_hashes);
         for (uint32_t h = 0; h < num_hashes; ++h) {
@@ -44,6 +62,12 @@ public:
         return res;
     }
 
+    /**
+     * @brief Implementation of dense hashing interface.
+     * 
+     * @param q Dense query vector.
+     * @return vector<uint32_t> The computed set of hashes.
+     */
     virtual vector<uint32_t> operator()(const Eigen::VectorXf& q) const override {
         vector<uint32_t> res(num_hashes);
         for (uint32_t h = 0; h < num_hashes; ++h) {
@@ -73,7 +97,14 @@ public:
         return res;
     }
 
-    // Original hash method for backward compatibility/pybind
+    /**
+     * @brief Legacy hash method for backward compatibility.
+     * 
+     * @param result Pointer to output array (uint64_t).
+     * @param data Pointer to CSR non-zero values.
+     * @param indices Pointer to CSR column indices.
+     * @param nnz Number of non-zeros.
+     */
     void hash(uint64_t *result, const float *data, const uint32_t *indices, uint32_t nnz) const {
         vector<uint32_t> res = operator()(data, indices, nnz);
         *result = res[0];

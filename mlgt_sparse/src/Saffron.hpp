@@ -40,10 +40,10 @@ inline vector<bool> getSignature(uint j, uint signature_length) {
 
 
 /**
- * @brief Decodes a single block of a signature.
+ * @brief Decodes a single block of a signature to extract an index.
  * 
  * @param measurement A slice of the measurement vector for one block.
- * @return optional<uint> The decoded item index, or nullopt if 0 or multi-pool.
+ * @return optional<uint> The decoded item index, or nullopt if 0 or multi-pool collision.
  */
 inline optional<uint> decodeBlock(const vector<bool>& measurement) {
     if (!measurement[0]) return nullopt; // Parity 0 -> even/zero items
@@ -60,7 +60,7 @@ inline optional<uint> decodeBlock(const vector<bool>& measurement) {
 
 
 /**
- * @brief Decodes a signature from a measurement vector, supporting doubleton resolution.
+ * @brief Decodes a full signature from a measurement vector, supporting doubleton resolution.
  * 
  * @param measurement A boolean vector of measurement bits (6L).
  * @param signature_length Length of the signature.
@@ -134,12 +134,18 @@ inline vector<uint> decodeSignature(
  */
 class Saffron {
 protected:
-    PoolingMatrix pools_; // The pooling matrix defining the item-to-pool and pool-to-item mappings.
-    uint num_features_; // Total number of features/items (n).
-    uint sparsity_; // Expected sparsity level (k).
-    uint num_pools_; // Total number of pools (m).
-    uint signature_length_; // Length of the signatures.
-    int debug_ = 0; // Debug level (0 for none, higher values for more verbose output)
+    /** @brief The pooling matrix defining the item-to-pool and pool-to-item mappings. */
+    PoolingMatrix pools_; 
+    /** @brief Total number of features/items (n). */
+    uint num_features_; 
+    /** @brief Expected sparsity level (k). */
+    uint sparsity_; 
+    /** @brief Total number of pools (m). */
+    uint num_pools_; 
+    /** @brief Length of the SAFFRON signatures. */
+    uint signature_length_; 
+    /** @brief Debug verbosity level. */
+    int debug_ = 0; 
 
 public:
     /**
@@ -161,32 +167,32 @@ public:
     }
 
     /**
-     * @brief Returns the number of features (n).
-     * @return uint 
+     * @brief Returns the total number of features (n).
+     * @return uint Number of features.
      */
     inline uint num_features() const { return num_features_; }
 
     /**
-     * @brief Returns the total number of features (n).
-     * @return uint 
+     * @brief Returns the total number of features (n). Alias for num_features().
+     * @return uint Number of features.
      */
     inline uint size() const { return num_features_; }
 
     /**
      * @brief Returns the expected sparsity level (k).
-     * @return uint 
+     * @return uint Sparsity level.
      */
     inline uint sparsity() const { return sparsity_; }
 
     /**
-     * @brief Returns the number of pools.
-     * @return uint 
+     * @brief Returns the total number of pools (m).
+     * @return uint Pool count.
      */
     inline uint num_pools() const { return num_pools_; }
 
     /**
      * @brief Returns the length of the signatures.
-     * @return uint 
+     * @return uint Signature length.
      */
     inline uint signature_length() const { return signature_length_; }
 
@@ -195,8 +201,12 @@ public:
     /**
      * @brief Executes the peeling algorithm to recover identified items from residuals.
      * 
+     * The peeling algorithm iteratively identifies singletons and doubletons from 
+     * pool residuals, peels them off by XORing their signatures, and repeats until 
+     * no more items can be identified.
+     * 
      * @param residuals A 2D vector of booleans (num_pools x signature_bits).
-     * @param debug Debug level.
+     * @param debug Local debug level.
      * @return set<uint> A set of identified item indices.
      */
     inline set<uint> peelingAlgorithm(vector<vector<bool>> residuals, int debug = 0) {
@@ -213,6 +223,7 @@ public:
             }
         };
 
+        // Initialize queue with all identifiable items from initial residuals
         for (uint pool_idx = 0; pool_idx < pools_.num_pools; ++pool_idx) {
             check_pool(pool_idx);
         }
@@ -230,11 +241,13 @@ public:
             
             identified.insert(cand.item_idx);
             
+            // Peel off the identified item from all pools it belongs to
             vector<bool> sig = getSignature(cand.item_idx, signature_length_);
             for (uint p_idx : pools_.items_to_pools[cand.item_idx]) {
                 for (uint b = 0; b < signature_length_; ++b) {
                     if (sig[b]) residuals[p_idx][b].flip();
                 }
+                // Re-check the modified pool for new identifiable items
                 check_pool(p_idx);
             }
         }
