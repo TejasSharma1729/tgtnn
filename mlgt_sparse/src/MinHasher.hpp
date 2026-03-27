@@ -39,13 +39,17 @@ public:
     template<typename T>
     void hash_internal(uint32_t *result, const T *indices, uint32_t len) const {
         uint32_t num_hashes_to_generate = num_hashes * hashes_per_table;
+        if (num_hashes_to_generate == 0) {
+            return;
+        }
+
         std::vector<uint64_t> prelim_result(num_hashes_to_generate, UINT64_MAX);
-        uint64_t binsize = (UINT64_MAX / num_hashes_to_generate) + 1;
 
         for (uint32_t i = 0; i < len; i++) {
             uint64_t val = (uint64_t)indices[i] ^ seed;
             val = splitmix64(val);
-            uint32_t binid = (uint32_t)std::min(val / binsize, (uint64_t)num_hashes_to_generate - 1);
+            // Map 64-bit hash to [0, num_hashes_to_generate) without division or overflow
+            uint32_t binid = static_cast<uint32_t>((static_cast<uint128_t>(val) * static_cast<uint128_t>(num_hashes_to_generate)) >> 64);
             if (prelim_result[binid] > val) {
                 prelim_result[binid] = val;
             }
@@ -58,7 +62,7 @@ public:
             uint64_t next = UINT64_MAX;
             while (next == UINT64_MAX && count < 100) {
                 count++;
-                uint32_t index = (uint32_t)(combine_hashes(i, count) % num_hashes_to_generate);
+                uint32_t index = static_cast<uint32_t>(combine_hashes(i, count) % num_hashes_to_generate);
                 next = prelim_result[index];
             }
             prelim_result[i] = (next == UINT64_MAX) ? 0 : next;
@@ -70,7 +74,7 @@ public:
             for (uint32_t h = 1; h < hashes_per_table; h++) {
                 combined = combine_hashes(combined, prelim_result[table * hashes_per_table + h]);
             }
-            result[table] = (uint32_t)(combined >> (64 - hash_range_pow));
+            result[table] = static_cast<uint32_t>(combined >> (64 - hash_range_pow));
         }
     }
 

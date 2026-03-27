@@ -17,7 +17,7 @@ PYLIBS := $(shell $(PYTHON) -c 'import sysconfig; print("{} {}".format(sysconfig
 LDFLAGS := -L$(PYLIBDIR) $(PYLIBS) -Wl,-rpath,$(PYLIBDIR)
 
 TARGET := mlgt_sparse$(shell $(PYTHON)-config --extension-suffix)
-SRC := src/mlgt_saffron.cpp
+SRC := src/mlgt_sparse.cpp
 HDR := $(wildcard src/*.hpp)
 
 .PHONY: all build clean help

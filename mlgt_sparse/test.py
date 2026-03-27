@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-import mlgt
-from mlgt import BloomHashFunction, DenseSRPHasher, MinHasher, SparseSRPHasher
-from mlgt import MLGTSaffronBloom, MLGTSaffronDenseSRP, MLGTSaffronMinHash, MLGTSaffronSparseSRP
+import mlgt_sparse
+from mlgt_sparse import BloomHashFunction, DenseSRPHasher, MinHasher, WeightedMinHasher, SparseSRPHasher
+from mlgt_sparse import MLGTSaffronBloom, MLGTSaffronDenseSRP, MLGTSaffronMinHash, MLGTSaffronWeightedMinHash, MLGTSaffronSparseSRP
 
 import numpy as np
 from scipy.sparse import csr_matrix
@@ -72,7 +72,7 @@ def calculate_recall(found_indices, ground_truth_indices, k):
 
 def run_benchmarks(X, Q, args):
     """Runs recall and latency benchmarks for the specified MLGT variants."""
-    k = args.k
+    k = args.num_neighbors
     num_f = args.num_features
     num_q = args.num_queries
     
@@ -84,8 +84,8 @@ def run_benchmarks(X, Q, args):
     print(f"Calculating ground truth for {num_q} queries...")
     gt_indices = []
     # Batch process for speed
-    batch_size = 500
-    for i in range(0, num_q, batch_size):
+    batch_size = 10
+    for i in tqdm(range(0, num_q, batch_size), desc="GT computation"):
         end = min(i + batch_size, num_q)
         q_batch = Q[i:end]
         scores_batch = X.dot(q_batch.T).toarray()
@@ -97,10 +97,11 @@ def run_benchmarks(X, Q, args):
 
     # Variant definitions
     all_variants = {
-        "Bloom": (lambda: BloomHashFunction(dimension=D, num_hashes=args.nh, num_bits=args.bits, threshold=args.threshold), MLGTSaffronBloom),
-        "MinHash": (lambda: MinHasher(num_hashes=args.nh, hashes_per_table=1, hash_range_pow=args.bits, seed=args.seed), MLGTSaffronMinHash),
-        "SparseSRP": (lambda: SparseSRPHasher(num_bits=args.bits, seed=args.seed, num_hashes=args.nh), MLGTSaffronSparseSRP),
-        "DenseSRP": (lambda: DenseSRPHasher(num_bits=args.bits, dimension=D, seed=args.seed, num_hashes=args.nh, store=False), MLGTSaffronDenseSRP),
+        "Bloom": (lambda: BloomHashFunction(dimension=D, num_hashes=args.num_hashes, num_bits=args.bits, threshold=args.threshold), MLGTSaffronBloom),
+        "MinHash": (lambda: MinHasher(num_hashes=args.num_hashes, hashes_per_table=1, hash_range_pow=args.bits, seed=args.seed), MLGTSaffronMinHash),
+        "WeightedMinHash": (lambda: WeightedMinHasher(num_hashes=args.num_hashes, hash_range_pow=args.bits, seed=args.seed), MLGTSaffronWeightedMinHash),
+        "SparseSRP": (lambda: SparseSRPHasher(num_bits=args.bits, seed=args.seed, num_hashes=args.num_hashes), MLGTSaffronSparseSRP),
+        "DenseSRP": (lambda: DenseSRPHasher(num_bits=args.bits, dimension=D, seed=args.seed, num_hashes=args.num_hashes, store=False), MLGTSaffronDenseSRP),
     }
 
     selected_names = args.variants.split(",")
@@ -117,7 +118,7 @@ def run_benchmarks(X, Q, args):
 
     for name, (hasher_gen, algo_class) in variants_to_run.items():
         print(f"\n--- Testing {name} ---")
-        print(f"Configuration: nh={args.nh}, bits={args.bits}, threshold={args.threshold}, target_sparsity={args.target_sparsity}, normalize={args.normalize}")
+        print(f"Configuration: nh={args.num_hashes}, bits={args.bits}, threshold={args.threshold}, target_sparsity={args.target_sparsity}, normalize={args.normalize}")
         
         hasher = hasher_gen()
         
@@ -162,21 +163,21 @@ if __name__ == "__main__":
     parser.add_argument("--dataset", "-d", type=str, default="sparse1M", choices=DATASETS, help="Dataset for testing (default: sparse1M)")
     parser.add_argument("--num-features", "-n", type=int, default=-1, help="N, the dataset size (-1 for full)")
     parser.add_argument("--num-queries", "-q", type=int, default=100, help="Number of queries to benchmark (default: 100)")
-    parser.add_argument("--k", "-k", type=int, default=10, help="K for Recall@K (default: 10)")
+    parser.add_argument("--num-neighbors", "-k", type=int, default=10, help="K for Recall@K (default: 10)")
     
     # Hashing Parameters
-    parser.add_argument("--nh", type=int, default=50, help="Number of independent hashes (default: 50)")
+    parser.add_argument("--num-hashes", "-H", type=int, default=50, help="Number of independent hashes (default: 50)")
     parser.add_argument("--bits", "-b", type=int, default=20, help="Bits per hash (or range power for MinHash) (default: 20)")
     parser.add_argument("--threshold", "-t", type=int, default=20, help="Match threshold for inverted index (default: 20)")
     
     # Saffron Parameters
     parser.add_argument("--target-sparsity", "-s", type=int, default=100, help="Target sparsity (num_neighbors) for recovery (default: 100)")
-    parser.add_argument("--normalize", action="store_true", help="Enable L2 normalization of vectors")
+    parser.add_argument("--normalize", "-l", action="store_true", help="Enable L2 normalization of vectors")
     
     # Execution options
-    parser.add_argument("--variants", type=str, default="all", help="Comma-separated variants to test (Bloom,MinHash,SparseSRP,DenseSRP) or 'all'")
-    parser.add_argument("--seed", type=int, default=42, help="Random seed for hashers (default: 42)")
-    parser.add_argument("--debug", type=int, default=0, help="Debug verbosity level (default: 0)")
+    parser.add_argument("--variants", "-V", type=str, default="all", help="Comma-separated variants to test (Bloom,MinHash,WeightedMinHash,SparseSRP,DenseSRP) or 'all'")
+    parser.add_argument("--seed", "-S", type=int, default=42, help="Random seed for hashers (default: 42)")
+    parser.add_argument("--debug", "-v", type=int, default=0, help="Debug verbosity level (default: 0)")
     
     args = parser.parse_args()
 
@@ -199,7 +200,7 @@ if __name__ == "__main__":
     if results:
         print("\n" + "="*70)
         n_display = args.num_features if args.num_features > 0 else X.shape[0]
-        header = f"FINAL PERFORMANCE SUMMARY (Recall@{args.k}, N={n_display})"
+        header = f"FINAL PERFORMANCE SUMMARY (Recall@{args.num_neighbors}, N={n_display})"
         print(f"{header:^70}")
         print("="*70)
         print(f"{'Variant':<15} | {'Build (s)':<10} | {'Latency (ms)':<15} | {'Recall':<10}")

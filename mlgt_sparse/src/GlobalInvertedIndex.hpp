@@ -20,12 +20,14 @@ private:
     uint num_hashes_;
     /** @brief Minimum match threshold. */
     uint threshold_;
+    /** @brief Max global item index for bounding array counts. */
+    uint max_item_id_;
 
 public:
     /**
      * @brief Empty constructor.
      */
-    GlobalInvertedIndex() : num_hashes_(0), threshold_(0) {}
+    GlobalInvertedIndex() : num_hashes_(0), threshold_(0), max_item_id_(0) {}
 
     /**
      * @brief Construct a new Global Inverted Index.
@@ -33,7 +35,7 @@ public:
      * @param threshold Minimum number of matches for a candidate.
      */
     GlobalInvertedIndex(uint num_hashes, uint threshold) 
-        : num_hashes_(num_hashes), threshold_(threshold) {}
+        : num_hashes_(num_hashes), threshold_(threshold), max_item_id_(0) {}
 
     /**
      * @brief Builds the inverted index from a set of hashes and global item indices.
@@ -56,6 +58,14 @@ public:
 
         // 2. Sort by hash value
         std::sort(flattened.begin(), flattened.end());
+
+        // Find max id
+        max_item_id_ = 0;
+        if (!global_item_indices.empty()) {
+            for(uint id : global_item_indices) {
+                if(id > max_item_id_) max_item_id_ = id;
+            }
+        }
 
         // 3. Populate sorted_item_indices_ and buckets_
         sorted_item_indices_.resize(flattened.size());
@@ -86,7 +96,9 @@ public:
     vector<uint> get_matches(const vector<uint>& query_hashes) const {
         if (buckets_.empty()) return {};
         
-        unordered_map<uint, uint> counts;
+        vector<uint16_t> counts(max_item_id_ + 1, 0);
+        vector<uint> nz_indices;
+        
         for (uint q_h : query_hashes) {
             // Binary search for the hash bucket
             auto it = std::lower_bound(buckets_.begin(), buckets_.end(), q_h, 
@@ -94,14 +106,18 @@ public:
             
             if (it != buckets_.end() && it->hash_val == q_h) {
                 for (uint i = 0; i < it->num_items; ++i) {
-                    counts[sorted_item_indices_[it->start_idx + i]]++;
+                    uint item_idx = sorted_item_indices_[it->start_idx + i];
+                    if (counts[item_idx] == 0) {
+                        nz_indices.push_back(item_idx);
+                    }
+                    counts[item_idx]++;
                 }
             }
         }
 
         vector<uint> matches;
-        for (auto const& [item_idx, count] : counts) {
-            if (count >= threshold_) {
+        for (uint item_idx : nz_indices) {
+            if (counts[item_idx] >= threshold_) {
                 matches.push_back(item_idx);
             }
         }

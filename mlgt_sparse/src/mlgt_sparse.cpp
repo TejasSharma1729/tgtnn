@@ -1,6 +1,7 @@
 #include "headers.hpp"
 #include "BaseHasher.hpp"
 #include "MinHasher.hpp"
+#include "WeightedMinHasher.hpp"
 #include "SparseSRPHasher.hpp"
 #include "DenseSRPHasher.hpp"
 #include "BloomHashFunction.hpp"
@@ -11,7 +12,7 @@
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(mlgt_saffron, m) {
+PYBIND11_MODULE(mlgt_sparse, m) {
     m.doc() = "Multi-Label Group Testing (MLGT) module for sub-linear nearest neighbor search.";
 
     // Export Constants
@@ -38,6 +39,23 @@ PYBIND11_MODULE(mlgt_saffron, m) {
         }, py::arg("query"))
         .def_readwrite("num_hashes", &MinHasher::num_hashes)
         .def_readwrite("seed", &MinHasher::seed);
+
+    // WeightedMinHasher
+    py::class_<WeightedMinHasher>(m, "WeightedMinHasher",
+        "Weighted MinHash implementation for Weighted Jaccard similarity estimation.")
+        .def(py::init<uint32_t, uint32_t, uint32_t, uint32_t>(),
+             py::arg("num_hashes") = 1,
+             py::arg("hashes_per_table") = 1,
+             py::arg("hash_range_pow") = 16,
+             py::arg("seed") = 42)
+        .def("__call__", [](const WeightedMinHasher& h, py::array_t<float> data, py::array_t<uint32_t> indices, uint32_t nnz) {
+            return h(data.data(), indices.data(), nnz);
+        }, py::arg("data"), py::arg("indices"), py::arg("nnz"))
+        .def("__call__", [](const WeightedMinHasher& h, const Eigen::VectorXf& q) {
+            return h(q);
+        }, py::arg("query"))
+        .def_readwrite("num_hashes", &WeightedMinHasher::num_hashes)
+        .def_readwrite("seed", &WeightedMinHasher::seed);
 
     // SparseSRPHasher
     py::class_<SparseSRPHasher>(m, "SparseSRPHasher",
@@ -126,6 +144,7 @@ PYBIND11_MODULE(mlgt_saffron, m) {
 
     register_mlgt(m, "MLGTSaffronBloom", (MLGTSaffronBloom*)nullptr);
     register_mlgt(m, "MLGTSaffronMinHash", (MLGTSaffronMinHash*)nullptr);
+    register_mlgt(m, "MLGTSaffronWeightedMinHash", (MLGTSaffronWeightedMinHash*)nullptr);
     register_mlgt(m, "MLGTSaffronSparseSRP", (MLGTSaffronSparseSRP*)nullptr);
     register_mlgt(m, "MLGTSaffronDenseSRP", (MLGTSaffronDenseSRP*)nullptr);
 

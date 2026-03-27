@@ -3,6 +3,8 @@
 
 #include "headers.hpp"
 #include "BloomHashFunction.hpp"
+#include "MinHasher.hpp"
+#include "WeightedMinHasher.hpp"
 #include "Saffron.hpp"
 #include "GlobalInvertedIndex.hpp"
 
@@ -25,8 +27,8 @@ public:
 protected:
     /** @brief The hashing engine used for indexing and queries. */
     Hasher shared_hasher_; 
-    /** @brief A collection of inverted indices, one for each pool. */
-    vector<GlobalInvertedIndex> pool_indices_;
+    /** @brief The single global inverted index. */
+    GlobalInvertedIndex global_index_;
     /** @brief The indexed sparse dataset in CSR format. */
     SparseDataset dataset_;
     /** @brief XOR-sum signatures used by SAFFRON for recovery. */
@@ -116,22 +118,14 @@ public:
             );
         }
 
-        // Build one index PER POOL
-        pool_indices_.resize(num_pools_);
-        #pragma omp parallel for
-        for (int p = 0; p < (int)num_pools_; ++p) {
-            pool_indices_[p] = GlobalInvertedIndex(num_hashes_, threshold_);
-            
-            vector<vector<uint>> pool_hashes;
-            pool_hashes.reserve(pools_.pools_to_items[p].size());
-            for (uint global_idx : pools_.pools_to_items[p]) {
-                pool_hashes.push_back(all_hashes[global_idx]);
-            }
-            pool_indices_[p].build(pool_hashes, pools_.pools_to_items[p]);
-        }
+        // Build one single global index
+        global_index_ = GlobalInvertedIndex(num_hashes_, threshold_);
+        vector<uint> all_item_indices(num_features_);
+        std::iota(all_item_indices.begin(), all_item_indices.end(), 0);
+        global_index_.build(all_hashes, all_item_indices);
         
         if (debug_ > 0) {
-            cout << "[MLGTSaffron] Built " << num_pools_ << " pool indices." << endl;
+            cout << "[MLGTSaffron] Built 1 global index." << endl;
         }
     }
 
@@ -148,11 +142,11 @@ protected:
         vector<uint> query_hashes = shared_hasher_(query_vec);
         vector<vector<bool>> residuals(num_pools_, vector<bool>(signature_length_, false));
         
-        #pragma omp parallel for
-        for (int p = 0; p < (int)num_pools_; ++p) {
-            vector<uint> matched_items = pool_indices_[p].get_matches(query_hashes);
-            for (uint global_item_idx : matched_items) {
-                const vector<bool>& sig = item_signatures_[global_item_idx];
+        vector<uint> matched_items = global_index_.get_matches(query_hashes);
+        
+        for (uint global_item_idx : matched_items) {
+            const vector<bool>& sig = item_signatures_[global_item_idx];
+            for (uint p : pools_.items_to_pools[global_item_idx]) {
                 for (uint b = 0; b < signature_length_; ++b) {
                     if (sig[b]) {
                         residuals[p][b] = !residuals[p][b]; 
@@ -196,6 +190,7 @@ public:
 
 using MLGTSaffronBloom = MLGTSaffron<BloomHashFunction>;
 using MLGTSaffronMinHash = MLGTSaffron<MinHasher>;
+using MLGTSaffronWeightedMinHash = MLGTSaffron<WeightedMinHasher>;
 using MLGTSaffronSparseSRP = MLGTSaffron<SparseSRPHasher>;
 using MLGTSaffronDenseSRP = MLGTSaffron<DenseSRPHasher>;
 

@@ -9,6 +9,8 @@
 #include <pybind11/eigen.h>
 
 typedef unsigned int uint;
+typedef __uint128_t uint128_t;
+typedef __int128_t int128_t;
 
 const uint NUM_POOLS_COEFF = 400; 
 const uint POOLS_PER_ITEM = 3; 
