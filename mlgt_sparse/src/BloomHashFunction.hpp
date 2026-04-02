@@ -17,23 +17,25 @@ const uint BLOOM_THRESHOLD = 20;
  */
 class BloomHashFunction : public BaseHasher {
 public:
-    /** @brief Number of bits to pack into each compound hash value. */
-    uint num_bits; 
+    /** @brief Number of bits packed into each compound SRP hash value. */
+    uint num_bits;
     /** @brief Expected dimensionality of the input vectors. */
-    uint dimension; 
-    /** @brief Minimum number of hash matches required for identification. */
-    uint threshold; 
-    /** @brief Debug verbosity level. */
+    uint dimension;
+    /** @brief Minimum number of hash matches required for identification (mirrors MLGTSaffron threshold). */
+    uint threshold;
+    /** @brief Debug verbosity level (0 = silent). */
     int debug;
 
 public:
     /**
      * @brief Construct a new Bloom Hash Function.
-     * @param dimension Input dimensionality.
-     * @param num_hashes Number of compound hash functions.
-     * @param num_bits Bits per compound hash.
-     * @param threshold Recovery threshold.
-     * @param debug Debug level.
+     *
+     * @param dimension   Dimensionality of the input vectors.
+     * @param num_hashes  Number of independent compound hash functions to compute.
+     * @param num_bits    Number of SRP projection bits packed into each hash value.
+     * @param threshold   Minimum hash-match count for candidate identification (informational; used by callers).
+     * @param debug       Debug verbosity level (0 = silent).
+     * @param seed        Random seed; if 0, a hardware random seed is drawn automatically.
      */
     BloomHashFunction(
         uint dimension,

@@ -43,7 +43,10 @@ public:
     }
 
     /**
-     * @brief Internal helper to hash a raw float pointer (dense).
+     * @brief Hash a raw dense float pointer by wrapping it in an Eigen::Map.
+     *
+     * @param data Pointer to a contiguous float array of length `dimension`.
+     * @return vector<uint32_t> Vector of `num_hashes` hash values.
      */
     inline vector<uint32_t> hash_dense(const float* data) const {
         Eigen::Map<const Eigen::VectorXf> q(data, dimension);
@@ -51,7 +54,15 @@ public:
     }
 
     /**
-     * @brief Implementation of sparse hashing interface.
+     * @brief Hash a sparse vector (CSR row format) using the stored projection matrix.
+     *
+     * Performs a sparse-dense dot product against every row of the projection matrix
+     * and packs the sign bits into integer hash values.
+     *
+     * @param data    Pointer to the non-zero float values of the sparse row.
+     * @param indices Pointer to the column indices of the non-zero elements.
+     * @param nnz     Number of non-zero elements.
+     * @return vector<uint32_t> Vector of `num_hashes` hash values.
      */
     virtual vector<uint32_t> operator()(const float* data, const uint32_t* indices, uint32_t nnz) const override {
         vector<uint32_t> res(num_hashes, 0);
@@ -79,10 +90,13 @@ public:
     }
 
     /**
-     * @brief Implementation of dense hashing interface using Eigen BLAS.
-     * 
-     * @param q The query vector (sparse or dense)
-     * @return vector<uint32_t> the computed set of hashes
+     * @brief Hash a dense query vector using a single Eigen matrix-vector product.
+     *
+     * Computes projection_matrix * q and packs the sign of each projection into
+     * the corresponding bit of the output hash values.
+     *
+     * @param q Dense Eigen query vector; must have size equal to `dimension`.
+     * @return vector<uint32_t> Vector of `num_hashes` hash values.
      */
     virtual vector<uint32_t> operator()(const Eigen::VectorXf& q) const override {
         assert(q.size() == (int)dimension && "Dimension mismatch in DenseSRPHasher");

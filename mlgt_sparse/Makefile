@@ -5,6 +5,8 @@ CXX ?= g++
 
 # Compiler flags
 CXXFLAGS := $(CXXFLAGS) -O3 -Wall -Wno-shadow -std=c++20 -fPIC -fopenmp
+CXXFLAGS_ASAN := -g -O1 -Wall -Wno-shadow -std=c++20 -fPIC -fopenmp \
+                 -fsanitize=address,undefined -fno-omit-frame-pointer
 SHARED := -shared
 
 # Pybind11 and Eigen configuration
@@ -20,17 +22,23 @@ TARGET := mlgt_sparse$(shell $(PYTHON)-config --extension-suffix)
 SRC := src/mlgt_sparse.cpp
 HDR := $(wildcard src/*.hpp)
 
-.PHONY: all build clean help
+.PHONY: all build asan clean help
 
 all: build
 
 build: $(TARGET)
-	stubgen -m mlgt_sparse -o .
+	stubgen -m mlgt_sparse -o . && mv mlgt_sparse.pyi __init__.pyi
 
 $(TARGET): $(SRC) $(HDR)
 	@echo "Building mlgt_sparse extension for sparse vectors..."
 	$(CXX) $(SHARED) $(CXXFLAGS) $(SRC) -o $(TARGET) $(INCLUDES) $(LDFLAGS)
 	@echo "✓ Built $(TARGET)"
+
+asan: $(SRC) $(HDR)
+	@echo "Building mlgt_sparse with AddressSanitizer + UBSan..."
+	$(CXX) $(SHARED) $(CXXFLAGS_ASAN) $(SRC) -o $(TARGET) $(INCLUDES) $(LDFLAGS) \
+	    -fsanitize=address,undefined
+	@echo "✓ Built $(TARGET) [ASan+UBSan]"
 
 test: build
 	@echo "Testing mlgt_sparse extension..."
@@ -47,5 +55,6 @@ help:
 	@echo "Targets:"
 	@echo "  all   - Build extension (default)"
 	@echo "  build - Build the shared library"
+	@echo "  asan  - Build with AddressSanitizer + UBSan (debug, O1)"
 	@echo "  clean - Remove built artifacts"
 	@echo "  help  - Show this help message"

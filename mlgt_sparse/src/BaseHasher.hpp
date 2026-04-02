@@ -7,8 +7,8 @@
  * @brief Abstract base class for all MLGT hashers.
  * 
  * A Hasher's role is to project high-dimensional vectors (either sparse or dense) 
- * into a set of discrete integer hash values. These hash values are used by the 
- * GlobalInvertedIndex to perform fast candidate identification.
+ * into a set of discrete integer hash values. These hash values are used by the
+ * PoolInvertedIndex to perform fast candidate identification.
  * 
  * All hashers in this module must support two interfaces:
  * 1. Sparse Input: Processing a single row of a CSR matrix (data, indices, nnz).

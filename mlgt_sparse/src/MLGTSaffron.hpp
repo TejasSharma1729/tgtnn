@@ -6,29 +6,53 @@
 #include "MinHasher.hpp"
 #include "WeightedMinHasher.hpp"
 #include "Saffron.hpp"
-#include "GlobalInvertedIndex.hpp"
+#include "PoolInvertedIndex.hpp"
+
+
+/**
+ * @brief Abstract base class for all MLGTSaffron variants.
+ *
+ * Inherits Saffron's pooling and peeling infrastructure and adds a pure-virtual
+ * search interface so that Python (and C++) code can hold a polymorphic pointer
+ * to any concrete variant (MinHash, Bloom, SRP, …) through this type.
+ */
+class MLGTSaffronBase : public Saffron {
+public:
+    using Saffron::Saffron;
+    virtual ~MLGTSaffronBase() = default;
+
+    /**
+     * @brief Search for approximate nearest neighbours of a query vector.
+     * @param query_arr 1-D float32 numpy array of length num_cols.
+     * @return vector<uint> Up to sparsity_ item indices (sorted by global index).
+     */
+    virtual vector<uint> search(pybind11::array_t<float> query_arr) = 0;
+
+    /** @brief Callable alias for search(). */
+    virtual vector<uint> operator()(pybind11::array_t<float> query_arr) = 0;
+};
 
 
 /**
  * @brief Generic Sparse Multi-Label Group Testing (MLGT) Saffron implementation.
- * 
- * This class implements a sub-linear time nearest neighbor search algorithm based 
- * on Group Testing and the SAFFRON recovery scheme. It uses a templated Hasher 
- * to project vectors into a discrete space, and a GlobalInvertedIndex to 
+ *
+ * This class implements a sub-linear time nearest neighbor search algorithm based
+ * on Group Testing and the SAFFRON recovery scheme. It uses a templated Hasher
+ * to project vectors into a discrete space, and a PoolInvertedIndex to
  * perform thresholded lookups across multiple pools.
- * 
+ *
  * @tparam Hasher A type that satisfies the HasherType concept (inherits from BaseHasher).
  */
 template <HasherType Hasher>
-class MLGTSaffron : public Saffron {
+class MLGTSaffron : public MLGTSaffronBase {
 public:
     /** @brief Alias for the template hasher type. */
     using HasherAlias = Hasher;
 protected:
     /** @brief The hashing engine used for indexing and queries. */
     Hasher shared_hasher_; 
-    /** @brief The single global inverted index. */
-    GlobalInvertedIndex global_index_;
+    /** @brief The pool indices. */
+    vector<PoolInvertedIndex> inverted_indices_;
     /** @brief The indexed sparse dataset in CSR format. */
     SparseDataset dataset_;
     /** @brief XOR-sum signatures used by SAFFRON for recovery. */
@@ -52,6 +76,7 @@ public:
      * @param num_cols Total number of columns (features).
      * @param hasher An instance of the chosen Hasher.
      * @param num_neighbors The number of nearest neighbors to recover (target sparsity).
+     * @param pools_per_item The number of pools an item appears in.
      * @param threshold Identification match threshold.
      * @param debug Debug verbosity level.
      * @param normalize If true, L2-normalizes vectors before processing.
@@ -62,11 +87,13 @@ public:
         pybind11::array_t<uint64_t> indptr_arr,
         uint32_t num_cols,
         Hasher hasher,
-        uint num_neighbors = 100,
+        uint num_neighbors = 10,
+        uint num_pools = 0,
+        uint pools_per_item = POOLS_PER_ITEM,
         uint threshold = BLOOM_THRESHOLD,
         int debug = 0,
-        bool normalize = true
-    ) : Saffron(indptr_arr.shape(0) - 1, num_neighbors, debug),
+        bool normalize = false
+    ) : MLGTSaffronBase(indptr_arr.shape(0) - 1, num_neighbors, num_pools, pools_per_item, debug),
         shared_hasher_(hasher),
         num_hashes_(hasher.num_hashes),
         threshold_(threshold),
@@ -119,10 +146,13 @@ public:
         }
 
         // Build one single global index
-        global_index_ = GlobalInvertedIndex(num_hashes_, threshold_);
+        inverted_indices_.resize(num_pools_, PoolInvertedIndex(num_hashes_, threshold_));
         vector<uint> all_item_indices(num_features_);
         std::iota(all_item_indices.begin(), all_item_indices.end(), 0);
-        global_index_.build(all_hashes, all_item_indices);
+        
+        for (uint i = 0; i < num_pools_; i++) {
+            inverted_indices_[i].build(all_hashes, pools_.pools_to_items[i], item_signatures_);
+        }
         
         if (debug_ > 0) {
             cout << "[MLGTSaffron] Built 1 global index." << endl;
@@ -141,18 +171,9 @@ protected:
     inline vector<vector<bool>> getResiduals(const Eigen::VectorXf& query_vec) const {
         vector<uint> query_hashes = shared_hasher_(query_vec);
         vector<vector<bool>> residuals(num_pools_, vector<bool>(signature_length_, false));
-        
-        vector<uint> matched_items = global_index_.get_matches(query_hashes);
-        
-        for (uint global_item_idx : matched_items) {
-            const vector<bool>& sig = item_signatures_[global_item_idx];
-            for (uint p : pools_.items_to_pools[global_item_idx]) {
-                for (uint b = 0; b < signature_length_; ++b) {
-                    if (sig[b]) {
-                        residuals[p][b] = !residuals[p][b]; 
-                    }
-                }
-            }
+
+        for (uint i = 0; i < num_pools_; i++) {
+            residuals[i] = inverted_indices_[i](query_hashes);
         }
         return residuals;
     }
@@ -164,7 +185,7 @@ public:
      * @param query_arr 1D numpy array representing the query point.
      * @return vector<uint> Indices of the top neighbors found.
      */
-    inline vector<uint> search(pybind11::array_t<float> query_arr) {
+    inline vector<uint> search(pybind11::array_t<float> query_arr) override {
         Eigen::Map<const Eigen::VectorXf> q_raw(query_arr.data(), dimension_);
         Eigen::VectorXf query = q_raw;
         if (normalize_) {
@@ -183,7 +204,7 @@ public:
      * @param query_arr 1D numpy array.
      * @return vector<uint> Indices of the top neighbors.
      */
-    inline vector<uint> operator()(pybind11::array_t<float> query_arr) {
+    inline vector<uint> operator()(pybind11::array_t<float> query_arr) override {
         return search(query_arr);
     }
 };

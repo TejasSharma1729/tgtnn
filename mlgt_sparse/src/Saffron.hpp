@@ -149,21 +149,32 @@ protected:
 
 public:
     /**
-     * @brief Initializes the Saffron algorithm setup.
-     * 
-     * @param num_features Total number of features (n).
-     * @param sparsity Expected sparsity level (k).
-     * @param debug Debug level.
+     * @brief Initialises the SAFFRON algorithm: builds the pooling matrix and computes signature parameters.
+     *
+     * @param num_features  Total number of items/features in the dataset (n).
+     * @param sparsity      Expected number of nearest neighbours to recover (k); controls pool count when num_pools == 0.
+     * @param num_pools     Number of measurement pools (m); if 0, defaults to sparsity * NUM_POOLS_COEFF.
+     * @param pools_per_item Number of pools each item is randomly assigned to (default POOLS_PER_ITEM).
+     * @param debug         Debug verbosity level (0 = silent).
      */
-    Saffron(uint num_features, uint sparsity, int debug = 0) :
+    Saffron(
+        uint num_features,
+        uint sparsity,
+        uint num_pools = 0,
+        uint pools_per_item = POOLS_PER_ITEM,
+        int debug = 0
+    ) :
         num_features_(num_features),
         sparsity_(sparsity),
+        num_pools_(num_pools),
         debug_(debug)
     {
         uint L = ceil(log2(num_features));
         signature_length_ = 3 * (2 * L + 1);
-        pools_ = computePools(num_features, sparsity, debug);
-        num_pools_ = pools_.num_pools;
+        if (num_pools_ == 0) {
+            num_pools_ = sparsity * NUM_POOLS_COEFF;
+        }
+        pools_ = computePools(num_features_, num_pools_, pools_per_item, debug_);
     }
 
     /**

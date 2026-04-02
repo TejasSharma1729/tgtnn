@@ -8,13 +8,13 @@
  */
 struct PoolingMatrix {
     /** @brief Adjacency list: for each pool, which items are included. */
-    vector<vector<uint>> pools_to_items; 
+    vector<vector<uint>> pools_to_items;
     /** @brief Adjacency list: for each item, which pools it belongs to. */
-    vector<vector<uint>> items_to_pools; 
+    vector<vector<uint>> items_to_pools;
     /** @brief Total number of features/items (n). */
-    uint num_features; 
+    uint num_features;
     /** @brief Total number of pools (m). */
-    uint num_pools; 
+    uint num_pools;
 };
 
 /**
@@ -25,14 +25,16 @@ struct PoolingMatrix {
  * with high probability, facilitating sparse recovery.
  * 
  * @param num_features Total number of features (n).
- * @param sparsity Expected sparsity level (k).
+ * @param num_pools Number of pools (m).
  * @param debug Debug verbosity level.
  * @return PoolingMatrix The mapping between items and pools.
  */
-inline PoolingMatrix computePools(uint num_features, uint sparsity, int debug = 0) {
-    uint num_pools = sparsity * NUM_POOLS_COEFF;
-    uint pools_per_item = POOLS_PER_ITEM;
-    
+inline PoolingMatrix computePools(
+    uint num_features,
+    uint num_pools,
+    uint pools_per_item = POOLS_PER_ITEM,
+    int debug = 0
+) {
     PoolingMatrix pooling_matrix;
     pooling_matrix.num_features = num_features;
     pooling_matrix.num_pools = num_pools;
@@ -55,7 +57,6 @@ inline PoolingMatrix computePools(uint num_features, uint sparsity, int debug = 
     
     if (debug > 0) {
         cout << "[Compute Pools] num_features=" << num_features
-             << ", sparsity=" << sparsity
              << ", num_pools=" << num_pools
              << ", pools_per_item=" << pools_per_item << endl;
     }

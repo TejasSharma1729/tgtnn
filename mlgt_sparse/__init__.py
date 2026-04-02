@@ -1,12 +1,13 @@
-import mlgt_sparse
-from mlgt_sparse import BloomHashFunction, DenseSRPHasher, MinHasher, SparseSRPHasher
-from mlgt_sparse import MLGTSaffronBloom, MLGTSaffronDenseSRP, MLGTSaffronMinHash, MLGTSaffronSparseSRP
+from . import mlgt_sparse # type: ignore
+from .mlgt_sparse import Hasher, BloomHashFunction, DenseSRPHasher, MinHasher, WeightedMinHasher, SparseSRPHasher
+from .mlgt_sparse import MLGTSaffron, MLGTSaffronBloom, MLGTSaffronDenseSRP, MLGTSaffronMinHash, MLGTSaffronWeightedMinHash, MLGTSaffronSparseSRP
 
-from .dataset_utils import read_binary_csr, get_dataset, calculate_recall
+from .dataset_utils import read_binary_csr, get_dataset, calculate_recall, DATASETS, HASHER_TYPES
 
 __all__ = [
     "mlgt_sparse",
-    "BloomHashFunction", "DenseSRPHasher", "MinHasher", "SparseSRPHasher",
-    "MLGTSaffronBloom", "MLGTSaffronDenseSRP", "MLGTSaffronMinHash", "MLGTSaffronSparseSRP",
-    "read_binary_csr", "get_dataset", "calculate_recall"
+    "Hasher", "BloomHashFunction", "DenseSRPHasher", "MinHasher", "WeightedMinHasher", "SparseSRPHasher",
+    "MLGTSaffron", "MLGTSaffronBloom", "MLGTSaffronDenseSRP", "MLGTSaffronMinHash",
+    "MLGTSaffronWeightedMinHash", "MLGTSaffronSparseSRP",
+    "read_binary_csr", "get_dataset", "calculate_recall", "DATASETS", "HASHER_TYPES"
 ]
