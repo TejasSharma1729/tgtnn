@@ -228,6 +228,16 @@ PYBIND11_MODULE(mlgt_sparse, m) {
              "    seed      : Random seed for projection matrix generation.\n"
              "    num_hashes: Number of independent hash values to compute.\n"
              "    store     : Unused parameter (matrix is always stored); kept for API compatibility.")
+        .def("__call__", [](const DenseSRPHasher& h, py::array_t<float> data, py::array_t<uint32_t> indices, uint32_t nnz) {
+            return h(data.data(), indices.data(), nnz);
+        }, py::arg("data"), py::arg("indices"), py::arg("nnz"),
+             "Hash a sparse CSR row using the stored projection matrix.\n\n"
+             "Args:\n"
+             "    data   : 1-D float32 numpy array of non-zero values.\n"
+             "    indices: 1-D uint32 numpy array of column indices of the non-zero elements.\n"
+             "    nnz    : Number of non-zero elements.\n"
+             "Returns:\n"
+             "    List[int] of length num_hashes.")
         .def("__call__", [](const DenseSRPHasher& h, const Eigen::VectorXf& q) {
             return h(q);
         }, py::arg("query"),

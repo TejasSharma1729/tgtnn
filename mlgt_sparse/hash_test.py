@@ -50,7 +50,7 @@ def get_num_matches(X_hashes: ndarray, Q_hashes: ndarray, chunk: int = 64) -> nd
 def recall_at_k(exact_scores, hash_scores, k: int) -> float:
     """Average Recall@K between exact and hash-space top-K rankings."""
     score = 0.0
-    for i in range(exact_scores.shape[0]):
+    for i in tqdm(range(exact_scores.shape[0]), "Recall"):
         top_k_exact = set(np.argsort(exact_scores[i])[-k:][::-1])
         top_k_hash  = set(np.argsort(hash_scores[i])[-k:][::-1])
         score += len(top_k_exact & top_k_hash) / k
@@ -64,12 +64,37 @@ def run(args):
     assert isinstance(X.shape, tuple) and len(X.shape) == 2
     assert isinstance(Q.shape, tuple) and len(Q.shape) == 2
 
-    hasher: Hasher = eval("mlgt_sparse." + args.hasher_type)(
-        num_hashes=args.num_hashes,
-        hashes_per_table=args.hashes_per_table,
-        hash_range_pow=args.hash_range_pow,
-        seed=args.seed,
-    )
+    D = X.shape[1]
+    t = args.hasher_type
+    if t in ("MinHasher", "WeightedMinHasher"):
+        hasher: Hasher = getattr(mlgt_sparse, t)(
+            num_hashes=args.num_hashes,
+            hashes_per_table=args.hashes_per_table,
+            hash_range_pow=args.hash_range_pow,
+            seed=args.seed,
+        )
+    elif t == "SparseSRPHasher":
+        hasher = mlgt_sparse.SparseSRPHasher(
+            num_hashes=args.num_hashes,
+            num_bits=args.num_bits,
+            seed=args.seed,
+        )
+    elif t == "DenseSRPHasher":
+        hasher = mlgt_sparse.DenseSRPHasher(
+            num_hashes=args.num_hashes,
+            num_bits=args.num_bits,
+            dimension=D,
+            seed=args.seed,
+        )
+    elif t == "BloomHashFunction":
+        hasher = mlgt_sparse.BloomHashFunction(
+            num_hashes=args.num_hashes,
+            num_bits=args.num_bits,
+            dimension=D,
+            seed=args.seed,
+        )
+    else:
+        raise ValueError(f"Unknown hasher type: {t}")
 
     print("Hashing the dataset...")
     X_hashes = hash_matrix(hasher, X)
@@ -86,7 +111,7 @@ def run(args):
 
 
 if __name__ == "__main__":
-    parser = ArgumentParser(description="MinHasher recall@K sanity check.")
+    parser = ArgumentParser(description="Hasher recall@K sanity check.")
     parser.add_argument("--dataset", "-d", type=str, default="sparse1M",
                         choices=DATASETS, help="Dataset to use (default: sparse1M)")
     parser.add_argument("--hasher-type", "-t", type=str, choices=HASHER_TYPES,
@@ -94,9 +119,11 @@ if __name__ == "__main__":
     parser.add_argument("--num-hashes", "-H", type=int, default=100,
                         help="Number of hash tables (default: 100)")
     parser.add_argument("--hashes-per-table", "-p", type=int, default=1,
-                        help="Min-hashes combined per table (default: 1)")
+                        help="Min-hashes combined per table, MinHash/WeightedMinHash only (default: 1)")
     parser.add_argument("--hash-range-pow", "-b", type=int, default=20,
-                        help="Output range = 2^b (default: 20)")
+                        help="Output range = 2^b, MinHash/WeightedMinHash only (default: 20)")
+    parser.add_argument("--num-bits", "-B", type=int, default=16,
+                        help="SRP projection bits per hash, SRP/Bloom only (default: 16)")
     parser.add_argument("--seed", "-S", type=int, default=42,
                         help="Random seed (default: 42)")
     parser.add_argument("-k", type=int, default=10,
