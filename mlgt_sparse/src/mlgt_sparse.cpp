@@ -9,6 +9,7 @@
 #include "Saffron.hpp"
 #include "PoolInvertedIndex.hpp"
 #include "MLGTSaffron.hpp"
+#include "MLGTGlobal.hpp"
 
 namespace py = pybind11;
 
@@ -322,12 +323,74 @@ PYBIND11_MODULE(mlgt_sparse, m) {
         .def("__call__", [](MLGTSaffronBase& self, py::array_t<float> q) { return self(q); },
              py::arg("query"),
              "Alias for search(query); see search() for full documentation.");
+     
+     // Abstract base class for all MLGTSaffron index variants
+    py::class_<MLGTGlobalBase>(m, "MLGTGlobal",
+        "Abstract base class for all MLGT nearest-neighbour index variants.\n\n"
+        "Use for type annotations and isinstance() checks:\n\n"
+        "    idx: MLGTGlobal = MLGTGlobalMinHash(...)\n"
+        "    assert isinstance(idx, MLGTGlobal)\n\n"
+        "Concrete variants and the similarity measure each targets:\n"
+        "  MLGTGlobalBloom           – cosine  (Bloom/SRP, default)\n"
+        "  MLGTGlobalMinHash         – Jaccard\n"
+        "  MLGTGlobalWeightedMinHash – Weighted Jaccard\n"
+        "  MLGTGlobalSparseSRP       – cosine  (sparse, matrix-free)\n"
+        "  MLGTGlobalDenseSRP        – cosine  (stored projection matrix)")
+        .def("search", &MLGTGlobalBase::search, py::arg("query"),
+             "Search for the approximate nearest neighbours of a query vector.\n\n"
+             "Args:\n"
+             "    query: 1-D float32 numpy array of length num_cols.\n"
+             "Returns:\n"
+             "    List[int]: Up to num_neighbors item indices (sorted by global index).")
+        .def("__call__", [](MLGTGlobalBase& self, py::array_t<float> q) { return self(q); },
+             py::arg("query"),
+             "Alias for search(query); see search() for full documentation.");
 
     // Helper to register concrete MLGTSaffron variants (all inherit MLGTSaffronBase)
     auto register_mlgt = [&](auto& module, const char* name, auto type_ptr) {
         using T = typename std::remove_pointer<decltype(type_ptr)>::type;
         py::class_<T, MLGTSaffronBase>(module, name,
             "MLGT approximate nearest-neighbour index using the SAFFRON recovery scheme.\n\n"
+            "Indexes a sparse dataset once at construction time.  Each query is answered\n"
+            "in sub-linear time by:\n"
+            "  1. Hashing the query with the configured Hasher.\n"
+            "  2. Querying each pool's PoolInvertedIndex to obtain a binary residual.\n"
+            "  3. Running the SAFFRON peeling algorithm over the residuals to identify\n"
+            "     candidate item indices.\n"
+            "  4. Re-scoring candidates by exact dot product and returning the top-k.\n\n"
+            "search() and __call__() are inherited from MLGTSaffron.")
+            .def(py::init<py::array_t<float>, py::array_t<uint32_t>, py::array_t<uint64_t>, uint32_t, typename T::HasherAlias, uint, uint, uint, uint, int, bool>(),
+                 py::arg("data"),
+                 py::arg("indices"),
+                 py::arg("indptr"),
+                 py::arg("num_cols"),
+                 py::arg("hasher"),
+                 py::arg("num_neighbors") = 100,
+                 py::arg("num_pools") = 0,
+                 py::arg("pools_per_item") = POOLS_PER_ITEM,
+                 py::arg("threshold") = BLOOM_THRESHOLD,
+                 py::arg("debug") = 0,
+                 py::arg("normalize") = true,
+                 "Build an MLGT nearest-neighbour index.\n\n"
+                 "Args:\n"
+                 "    data        : 1-D float32 numpy array – the CSR data array of the dataset.\n"
+                 "    indices     : 1-D uint32 numpy array – the CSR column-indices array.\n"
+                 "    indptr      : 1-D uint64 numpy array – the CSR row-pointer array (length n+1).\n"
+                 "    num_cols    : Total number of feature dimensions (columns).\n"
+                 "    hasher      : An initialised Hasher instance (MinHasher, BloomHashFunction, etc.).\n"
+                 "    num_neighbors: Number of nearest neighbours to recover per query (k).\n"
+                 "    num_pools   : Number of SAFFRON measurement pools; 0 = k * NUM_POOLS_COEFF.\n"
+                 "    pools_per_item: Number of pools each item is assigned to.\n"
+                 "    threshold   : Minimum hash-match count for a pool hit to count as a candidate.\n"
+                 "    debug       : Debug verbosity level (0 = silent).\n"
+                 "    normalize   : If True, all dataset vectors and queries are L2-normalised before processing.");
+    };
+
+    // Helper to register concrete MLGTGlobal variants (all inherit MLGTGlobalBase)
+    auto register_mlgt_global = [&](auto& module, const char* name, auto type_ptr) {
+        using T = typename std::remove_pointer<decltype(type_ptr)>::type;
+        py::class_<T, MLGTGlobalBase>(module, name,
+            "MLGT approximate nearest-neighbour index using the a hash-value inverted index.\n\n"
             "Indexes a sparse dataset once at construction time.  Each query is answered\n"
             "in sub-linear time by:\n"
             "  1. Hashing the query with the configured Hasher.\n"
@@ -366,4 +429,10 @@ PYBIND11_MODULE(mlgt_sparse, m) {
     register_mlgt(m, "MLGTSaffronWeightedMinHash", (MLGTSaffronWeightedMinHash*)nullptr);
     register_mlgt(m, "MLGTSaffronSparseSRP", (MLGTSaffronSparseSRP*)nullptr);
     register_mlgt(m, "MLGTSaffronDenseSRP", (MLGTSaffronDenseSRP*)nullptr);
+
+     register_mlgt_global(m, "MLGTGlobalBloom", (MLGTGlobalBloom*)nullptr);
+     register_mlgt_global(m, "MLGTGlobalMinHash", (MLGTGlobalMinHash*)nullptr);
+     register_mlgt_global(m, "MLGTGlobalWeightedMinHash", (MLGTGlobalWeightedMinHash*)nullptr);
+     register_mlgt_global(m, "MLGTGlobalSparseSRP", (MLGTGlobalSparseSRP*)nullptr);
+     register_mlgt_global(m, "MLGTGlobalDenseSRP", (MLGTGlobalDenseSRP*)nullptr);
 }

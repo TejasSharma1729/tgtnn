@@ -7,6 +7,7 @@
 #include "SaffronIndex.hpp"
 #include "GlobalInvertedIndex.hpp"
 #include "MLGTSaffron.hpp"
+#include "MLGTGlobal.hpp"
 #include "BloomHashIndex.hpp"
 #include "BloomGroupTestingSaffron.hpp"
 
@@ -134,6 +135,19 @@ PYBIND11_MODULE(mlgt_saffron, m) {
              py::arg("normalize") = true)
         .def("search", &MLGTSaffron::search, py::arg("query"), "Searches for the top K nearest neighbors.")
         .def("__call__", &MLGTSaffron::operator(), py::arg("query"), "Searches for the top K nearest neighbors.");
+
+    // MLGTGlobal
+    py::class_<MLGTGlobal, Saffron>(m, "MLGTGlobal", "MLGT Global nearest neighbor search implementation using GlobalInvertedIndex.")
+        .def(py::init<py::array_t<float>, uint, uint, uint, uint, int, bool>(),
+             py::arg("data_points"),
+             py::arg("num_neighbors") = 100,
+             py::arg("num_hashes") = BLOOM_NUM_HASHES,
+             py::arg("hash_bits") = BLOOM_HASH_BITS,
+             py::arg("threshold") = BLOOM_THRESHOLD,
+             py::arg("debug") = 0,
+             py::arg("normalize") = true)
+        .def("search", &MLGTGlobal::search, py::arg("query"), "Searches for the top K nearest neighbors.")
+        .def("__call__", &MLGTGlobal::operator(), py::arg("query"), "Searches for the top K nearest neighbors.");
 
     // BloomGroupTestingSaffron
     py::class_<BloomGroupTestingSaffron, Saffron>(m, "BloomGroupTestingSaffron", "Saffron variant using one BloomHashIndex per (pool, test) pair.")

@@ -256,7 +256,7 @@ public:
             vector<bool> sig = getSignature(cand.item_idx, signature_length_);
             for (uint p_idx : pools_.items_to_pools[cand.item_idx]) {
                 for (uint b = 0; b < signature_length_; ++b) {
-                    if (sig[b]) residuals[p_idx][b].flip();
+                    residuals[p_idx][b] = residuals[p_idx][b] ^ sig[b];
                 }
                 // Re-check the modified pool for new identifiable items
                 check_pool(p_idx);

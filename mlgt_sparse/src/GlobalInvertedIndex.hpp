@@ -2,116 +2,109 @@
 #define B827CE93_864C_4295_A4D3_0F4800283341
 
 #include "headers.hpp"
+#include <unordered_map>
+#include <cstdint>
 
 /**
- * @brief Memory-efficient inverted index using sorted buckets.
+ * @brief Memory-efficient inverted index using an array-of-vectors or hash table.
  * 
  * Provides an efficient way to index items by their hash values and retrieve 
- * items that match at least `threshold` of a query's hashes. The index uses 
- * a contiguous array of sorted item indices to maximize cache locality.
+ * items that match at least `threshold` of a query's hashes.
  */
 class GlobalInvertedIndex {
 private:
-    /** @brief CONTIGUOUS storage of item indices, sorted by their hash values. */
+    /** @brief CONTIGUOUS storage of item indices. */
     vector<uint> sorted_item_indices_;
-    /** @brief Maps each unique hash value to its bucket in sorted_item_indices_. */
-    vector<HashBucket> buckets_;
-    /** @brief Number of hash values expected per item. */
+    
+    /** 
+     * @brief Flat array mapping [hash_index][hash_value] to the start index in sorted_item_indices_. 
+     * size = (num_hashes_ + 1) * hash_range
+     */
+    vector<uint> bucket_offsets_;
+    
     uint num_hashes_;
-    /** @brief Minimum match threshold. */
     uint threshold_;
-    /** @brief Max global item index for bounding array counts. */
     uint max_item_id_;
+    uint hash_range_; // Typically 2^b (e.g. 2^20)
 
 public:
-    /**
-     * @brief Empty constructor.
-     */
-    GlobalInvertedIndex() : num_hashes_(0), threshold_(0), max_item_id_(0) {}
+    GlobalInvertedIndex() : num_hashes_(0), threshold_(0), max_item_id_(0), hash_range_(0) {}
 
-    /**
-     * @brief Construct a new Global Inverted Index.
-     * @param num_hashes Number of compound hashes per item.
-     * @param threshold Minimum number of matches for a candidate.
-     */
-    GlobalInvertedIndex(uint num_hashes, uint threshold) 
-        : num_hashes_(num_hashes), threshold_(threshold), max_item_id_(0) {}
+    GlobalInvertedIndex(uint num_hashes, uint threshold, uint hash_range = 1048576) 
+        : num_hashes_(num_hashes), threshold_(threshold), max_item_id_(0), hash_range_(hash_range) {}
 
-    /**
-     * @brief Builds the inverted index from a set of hashes and global item indices.
-     * 
-     * @param item_hashes 2D vector [num_items, num_hashes] of hash values.
-     * @param global_item_indices The global indices of the items being indexed.
-     */
     void build(const vector<vector<uint>>& item_hashes, const vector<uint>& global_item_indices) {
         if (item_hashes.empty()) return;
         uint n = item_hashes.size();
         
-        // 1. Flatten all hashes into a list of (hash, global_item_idx)
-        vector<pair<uint, uint>> flattened;
-        flattened.reserve(n * num_hashes_);
+        // Find max hash value to size the flat array accurately
+        uint max_hash = 0;
+        max_item_id_ = 0;
+        for (uint i = 0; i < n; ++i) {
+            if (global_item_indices[i] > max_item_id_) max_item_id_ = global_item_indices[i];
+            for (uint h = 0; h < num_hashes_; ++h) {
+                if (item_hashes[i][h] > max_hash) max_hash = item_hashes[i][h];
+            }
+        }
+        
+        // Ensure our range can cover the max hash
+        hash_range_ = max_hash + 1;
+        
+        // bucket_offsets_ shape is basically (num_hashes_ * hash_range_ + 1)
+        // It stores the prefix sum of sizes (like CSR indptr)
+        bucket_offsets_.assign(num_hashes_ * hash_range_ + 1, 0);
+        
+        // 1. Count frequencies of each (hash_index, hash_value)
         for (uint i = 0; i < n; ++i) {
             for (uint h = 0; h < num_hashes_; ++h) {
-                flattened.push_back({item_hashes[i][h], global_item_indices[i]});
+                uint flat_idx = h * hash_range_ + item_hashes[i][h];
+                bucket_offsets_[flat_idx]++;
             }
         }
-
-        // 2. Sort by hash value
-        std::sort(flattened.begin(), flattened.end());
-
-        // Find max id
-        max_item_id_ = 0;
-        if (!global_item_indices.empty()) {
-            for(uint id : global_item_indices) {
-                if(id > max_item_id_) max_item_id_ = id;
+        
+        // 2. Prefix sum to get offsets
+        uint cumsum = 0;
+        for (size_t i = 0; i < bucket_offsets_.size(); ++i) {
+            uint count = bucket_offsets_[i];
+            bucket_offsets_[i] = cumsum;
+            cumsum += count;
+        }
+        
+        // 3. Scatter item indices into the contiguous array using bucket_offsets_
+        sorted_item_indices_.resize(cumsum);
+        vector<uint> current_offsets = bucket_offsets_; // Copy for tracking inserts
+        
+        for (uint i = 0; i < n; ++i) {
+            for (uint h = 0; h < num_hashes_; ++h) {
+                uint flat_idx = h * hash_range_ + item_hashes[i][h];
+                uint pos = current_offsets[flat_idx]++;
+                sorted_item_indices_[pos] = global_item_indices[i];
             }
         }
-
-        // 3. Populate sorted_item_indices_ and buckets_
-        sorted_item_indices_.resize(flattened.size());
-        buckets_.clear();
-
-        if (flattened.empty()) return;
-
-        uint current_hash = flattened[0].first;
-        uint start_idx = 0;
-
-        for (uint i = 0; i < flattened.size(); ++i) {
-            sorted_item_indices_[i] = flattened[i].second;
-            if (flattened[i].first != current_hash) {
-                buckets_.push_back({current_hash, start_idx, i - start_idx});
-                current_hash = flattened[i].first;
-                start_idx = i;
-            }
-        }
-        buckets_.push_back({current_hash, start_idx, (uint)flattened.size() - start_idx});
     }
 
-    /**
-     * @brief Retrieves all items that match at least `threshold_` of the query hashes.
-     * 
-     * @param query_hashes A vector of length `num_hashes_` containing query hashes.
-     * @return vector<uint> A list of candidate item indices.
-     */
     vector<uint> get_matches(const vector<uint>& query_hashes) const {
-        if (buckets_.empty()) return {};
+        if (bucket_offsets_.empty()) return {};
         
         vector<uint16_t> counts(max_item_id_ + 1, 0);
         vector<uint> nz_indices;
+        // Avoid reallocation overhead
+        nz_indices.reserve(1000);
         
-        for (uint q_h : query_hashes) {
-            // Binary search for the hash bucket
-            auto it = std::lower_bound(buckets_.begin(), buckets_.end(), q_h, 
-                [](const HashBucket& b, uint val) { return b.hash_val < val; });
+        for (uint h = 0; h < num_hashes_; ++h) {
+            uint q_h = query_hashes[h];
+            if (q_h >= hash_range_) continue;
             
-            if (it != buckets_.end() && it->hash_val == q_h) {
-                for (uint i = 0; i < it->num_items; ++i) {
-                    uint item_idx = sorted_item_indices_[it->start_idx + i];
-                    if (counts[item_idx] == 0) {
-                        nz_indices.push_back(item_idx);
-                    }
-                    counts[item_idx]++;
+            uint flat_idx = h * hash_range_ + q_h;
+            uint start = bucket_offsets_[flat_idx];
+            uint end = bucket_offsets_[flat_idx + 1];
+            
+            for (uint i = start; i < end; ++i) {
+                uint item_idx = sorted_item_indices_[i];
+                if (counts[item_idx] == 0) {
+                    nz_indices.push_back(item_idx);
                 }
+                counts[item_idx]++;
             }
         }
 
@@ -124,10 +117,6 @@ public:
         return matches;
     }
 
-    /**
-     * @brief Returns the number of hashes the index expects.
-     * @return uint Hash count.
-     */
     inline uint num_hashes() const { return num_hashes_; }
 };
 

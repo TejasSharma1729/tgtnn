@@ -68,7 +68,7 @@ public:
         const vector<uint>& pool_item_indices,
         const vector<vector<bool>>& item_signatures
     ) {
-        if (item_hashes.empty()) {
+        if (item_hashes.empty() || pool_item_indices.empty() || item_signatures.empty()) {
             return;
         }
         uint N = item_hashes.size();
@@ -127,6 +127,8 @@ public:
      * @return vector<bool> XOR-accumulated binary residual of length `signature_length_`.
      */
     vector<bool> get_residual(const vector<uint> &query_hashes) const {
+        if (pool_size_ == 0 || signature_length_ == 0) return {};
+        
         vector<uint16_t> matches(pool_size_, 0);
         vector<bool> residual(signature_length_, false);
         uint num_matches = 0;
@@ -156,11 +158,11 @@ public:
             for (uint pIdx = 0; pIdx < buckets_[bucket].num_items; pIdx++) {
                 uint in_pool_idx = sorted_item_indices_[buckets_[bucket].start_idx + pIdx];
                 matches[in_pool_idx]++;
-                if (matches[in_pool_idx] < threshold_) {
+                if (matches[in_pool_idx] != threshold_) {
                     continue;
                 }
                 for (uint b = 0; b < item_signatures_[in_pool_idx].size(); b++) {
-                    residual[b] = residual[b] | item_signatures_[in_pool_idx][b];
+                    residual[b] = residual[b] ^ item_signatures_[in_pool_idx][b];
                 }
                 if (++num_matches == 2) {
                     return residual;

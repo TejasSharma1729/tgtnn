@@ -102,6 +102,64 @@ inline float dot_sparse_dense(
  *
  * @param query      Dense Eigen query vector.
  * @param dataset    Sparse dataset in CSR format containing the indexed items.
+ * @param identified Vector of candidate global item indices to score.
+ * @param k          Maximum number of results to return.
+ * @return vector<uint> Up to k item indices sorted by global index.
+ */
+inline vector<uint> getTopKSparse(
+    const Eigen::VectorXf &query,
+    const SparseDataset &dataset,
+    const std::vector<uint> &identified,
+    uint k
+) {
+    if (identified.empty()) return {};
+    vector<pair<float, uint>> scores;
+    scores.reserve(identified.size());
+        
+    #pragma omp parallel
+    {
+        vector<pair<float, uint>> local_scores;
+        #pragma omp for nowait
+        for (size_t i = 0; i < identified.size(); ++i) {
+            uint idx = identified[i];
+            float dp = dot_sparse_dense(
+                dataset.row_data(idx), 
+                dataset.row_indices(idx), 
+                dataset.nnz(idx), 
+                query
+            );
+            local_scores.push_back({dp, idx});
+        }
+        #pragma omp critical
+        scores.insert(scores.end(), local_scores.begin(), local_scores.end());
+    }
+
+    auto cmp = [](const pair<float, uint> &a, const pair<float, uint> &b) {
+        return a.first > b.first; 
+    };
+    
+    if (scores.size() > k) {
+        std::nth_element(scores.begin(), scores.begin() + k, scores.end(), cmp);
+        scores.resize(k);
+    }
+    std::sort(scores.begin(), scores.end(), cmp);
+
+    vector<uint> topK;
+    for (const auto &p : scores) topK.push_back(p.second);
+    // std::sort(topK.begin(), topK.end()); // Saffron seems to expect sorted by score or sorted by index? 
+    // Original Saffron sorted topK indices at the end.
+    std::sort(topK.begin(), topK.end());
+    return topK;
+}
+
+/**
+ * @brief Score a query against a candidate set and return the top-k item indices.
+ *
+ * Computes dot products in parallel via OpenMP, partially sorts by score, and
+ * returns the top-k indices sorted by their global index (not by score).
+ *
+ * @param query      Dense Eigen query vector.
+ * @param dataset    Sparse dataset in CSR format containing the indexed items.
  * @param identified Set of candidate global item indices to score.
  * @param k          Maximum number of results to return.
  * @return vector<uint> Up to k item indices sorted by global index.

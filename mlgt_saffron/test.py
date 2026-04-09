@@ -13,7 +13,7 @@ CUR_DIR: str = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(CUR_DIR)
 DATASETS = ["imagenet", "imdb_wiki", "insta_1m", "mirflickr"]
 
-from mlgt_saffron import SaffronIndex, MLGTSaffron, BloomGroupTestingSaffron
+from mlgt_saffron import SaffronIndex, MLGTSaffron, BloomGroupTestingSaffron, MLGTGlobal
 
 def test_saffron(
         dataset: ndarray,
@@ -47,6 +47,12 @@ def test_saffron(
     idx_start = time.time()
     if algo_name == "mlgt":
         saffron_index = MLGTSaffron(
+            dataset, num_neighbors, 
+            num_hashes=num_hashes, hash_bits=hash_bits, threshold=threshold,
+            debug=verbose
+        ) # type: ignore
+    elif algo_name == "global":
+        saffron_index = MLGTGlobal(
             dataset, num_neighbors, 
             num_hashes=num_hashes, hash_bits=hash_bits, threshold=threshold,
             debug=verbose
@@ -156,9 +162,9 @@ if __name__ == "__main__":
         "-a",
         type=str,
         nargs="+",
-        choices=["mlgt", "bloom"],
-        default=["mlgt"],
-        help="The algorithm(s) to test [mlgt(default), bloom]"
+        choices=["mlgt", "bloom", "global"],
+        default=["mlgt", "global"],
+        help="The algorithm(s) to test [mlgt, bloom, global(default)]"
     )
     parser.add_argument(
         "--num-hashes",
