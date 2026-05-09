@@ -123,6 +123,9 @@ class LinscanWrapper(BaselinePythonWrapper):
             print(f"Linscan init failed: {e}")
             raise
 
+    def set_query_arguments(self, query_args):
+        self.algo.set_query_arguments(query_args)
+
     def streaming_update(self, new_data):
         sparse_data: sp.csr_matrix = self._to_sparse(new_data) # type: ignore
         indptr = sparse_data.indptr
@@ -162,6 +165,9 @@ class CufeWrapper(BaselinePythonWrapper):
         except Exception as e:
             print(f"Cufe init failed: {e}")
             raise
+
+    def set_query_arguments(self, query_args):
+        self.algo.set_query_arguments(query_args)
 
     def streaming_update(self, new_data):
         sparse_data: sp.csr_matrix = self._to_sparse(new_data) # type: ignore
@@ -385,7 +391,14 @@ class FalconnWrapper(BaselinePythonWrapper):
             pass
 
 class SHNSWWrapper(BaselinePythonWrapper):
-    def __init__(self, data, k=10, M=16, ef_construction=200):
+    def __init__(self, data, k=10, M=16, ef_construction=200, ef_search=10, **kwargs):
+        if "efSearch" in kwargs:
+            ef_search = kwargs.pop("efSearch")
+        if "efConstruction" in kwargs:
+            ef_construction = kwargs.pop("efConstruction")
+        if kwargs:
+            unexpected = ", ".join(sorted(kwargs.keys()))
+            raise TypeError(f"Unexpected SHNSW parameters: {unexpected}")
         self.temp_dir = tempfile.mkdtemp()
         self.temp_bin = os.path.join(self.temp_dir, "dataset.bin")
         try:
@@ -409,7 +422,7 @@ class SHNSWWrapper(BaselinePythonWrapper):
             p.init_index(max_elements=data.shape[0] + 1000, csr_path=self.temp_bin, ef_construction=ef_construction, M=M)
             p.add_items()
             algo.p = p
-            algo.p.set_ef(10)
+            algo.p.set_ef(ef_search)
             super().__init__(algo, k)
         except Exception as e:
             print(f"SHNSW init failed: {e}")
