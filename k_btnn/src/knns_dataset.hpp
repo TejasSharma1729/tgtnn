@@ -148,11 +148,11 @@ public:
             uint left_child = 2 * node_idx;
             uint right_child = 2 * node_idx + 1;
             double left_dot = query.dot(tree[left_child]);
-            double right_dot = query.dot(tree[right_child]);
+            double right_dot = dot_val - left_dot; // optimize away a dot product
 
             search_index.push({left_dot, tree_idx, left_child});
             search_index.push({right_dot, tree_idx, right_child});
-            result.second += 2;
+            result.second += 1;
         }
         sort(result.first.begin(), result.first.end());
         return result;
@@ -166,26 +166,12 @@ public:
         const uint num_trees = this->index.size();
         vector<pair<vector<uint>, size_t>> all_results(num_queries);
 
-        // If batch is large, parallelize across queries (Batch-Parallel)
-        // Adjust NUM_THREADS based on workload to reduce overhead
-        uint work_threads = NUM_THREADS;
-        if (num_queries < NUM_THREADS * 5) work_threads = max(1u, num_queries / 8);
-
-        if (use_threading && work_threads > 1) {
-            vector<thread> threads;
-            auto worker = [this, &all_results, &query_set] (uint start, uint end) {
-                for (uint i = start; i < end; i++) {
-                    vector_t q = query_set.row(i);
-                    all_results[i] = this->search(q, false);
-                }
-            };
-            for (uint i = 0; i < work_threads; i++) {
-                uint start = (i * num_queries) / work_threads;
-                uint end = ((i + 1) * num_queries) / work_threads;
-                if (i == work_threads - 1) end = num_queries;
-                if (start < end) threads.emplace_back(worker, start, end);
+        if (use_threading) {
+            #pragma omp parallel for num_threads(NUM_THREADS)
+            for (int i = 0; i < (int)num_queries; i++) {
+                vector_t q = query_set.row(i);
+                all_results[i] = this->search(q, false); 
             }
-            for (auto &t : threads) t.join();
         } 
         else {
             for (uint i = 0; i < num_queries; i++) {
@@ -218,28 +204,18 @@ public:
 
         // Serial mode
         if (!use_threading || num_pools < 4) {
-             return this->search_multiple_internal(query_pools, num_queries);
+            return this->search_multiple_internal(query_pools, num_queries);
         }
 
         // Parallel mode (Strategy A: Many query pools)
         vector<pair<vector<vector<uint>>, size_t>> async_results(num_pools);
-        vector<thread> threads;
-        uint work_threads = min((uint)NUM_THREADS, (uint)num_pools);
-        
-        auto worker = [this, &async_results, &query_pools] (uint start_p, uint end_p) {
-            for (uint p = start_p; p < end_p; p++) {
+        {
+            #pragma omp parallel for num_threads(NUM_THREADS)
+            for (int p = 0; p < (int)num_pools; p++) {
                 knns_inverted_index_t single_pool = {query_pools[p]};
                 async_results[p] = this->search_multiple_internal(single_pool, 1 << KNNS_INVERTED_LEVELS);
             }
-        };
-
-        for (uint i = 0; i < work_threads; i++) {
-            uint start = (i * num_pools) / work_threads;
-            uint end = ((i + 1) * num_pools) / work_threads;
-            if (i == work_threads - 1) end = num_pools;
-            if (start < end) threads.emplace_back(worker, start, end);
         }
-        for (auto &t : threads) if (t.joinable()) t.join();
 
         pair<vector<vector<uint>>, size_t> result = {vector<vector<uint>>(num_queries), 0};
         for (uint p = 0; p < num_pools; p++) {
@@ -294,32 +270,32 @@ private:
                 uint left_qchild = 2 * qnode_idx;
                 uint right_qchild = 2 * qnode_idx + 1;
                 double left_dot = qtree[left_qchild].dot(tree[node_idx]);
-                double right_dot = qtree[right_qchild].dot(tree[node_idx]);
+                double right_dot = dot_val - left_dot; // optimize away a dot product
                 search_index.push({left_dot, tree_idx, node_idx, qtree_idx, left_qchild});
                 search_index.push({right_dot, tree_idx, node_idx, qtree_idx, right_qchild});
-                result.second += 2;
+                result.second += 1;
             } else if (qnode_idx >= static_cast<uint>(1 << KNNS_INVERTED_LEVELS)) {
                 uint q_idx = qtree_idx * (1 << KNNS_INVERTED_LEVELS) + (qnode_idx - (1 << KNNS_INVERTED_LEVELS));
                 if (q_idx < num_queries_to_fill && result.first[q_idx].size() >= this->k_val) continue;
                 uint left_child = 2 * node_idx;
                 uint right_child = 2 * node_idx + 1;
                 double left_dot = qtree[qnode_idx].dot(tree[left_child]);
-                double right_dot = qtree[qnode_idx].dot(tree[right_child]);
+                double right_dot = dot_val - left_dot; // optimize away a dot product
                 search_index.push({left_dot, tree_idx, left_child, qtree_idx, qnode_idx});
                 search_index.push({right_dot, tree_idx, right_child, qtree_idx, qnode_idx});
-                result.second += 2;
+                result.second += 1;
             } else {
                 uint left_child = 2 * node_idx; uint right_child = 2 * node_idx + 1;
                 uint left_qchild = 2 * qnode_idx; uint right_qchild = 2 * qnode_idx + 1;
                 double ll_dot = qtree[left_qchild].dot(tree[left_child]);
                 double lr_dot = qtree[right_qchild].dot(tree[left_child]);
                 double rl_dot = qtree[left_qchild].dot(tree[right_child]);
-                double rr_dot = qtree[right_qchild].dot(tree[right_child]);
+                double rr_dot = dot_val - (ll_dot + lr_dot + rl_dot); // optimize away a dot product
                 search_index.push({ll_dot, tree_idx, left_child, qtree_idx, left_qchild});
                 search_index.push({lr_dot, tree_idx, left_child, qtree_idx, right_qchild});
                 search_index.push({rl_dot, tree_idx, right_child, qtree_idx, left_qchild});
                 search_index.push({rr_dot, tree_idx, right_child, qtree_idx, right_qchild});
-                result.second += 4;
+                result.second += 3;
             }
         }
         for (uint i = 0; i < num_queries_to_fill; i++) {
@@ -378,9 +354,11 @@ private:
                 continue;
             }
             uint left = 2 * n_idx; uint right = 2 * n_idx + 1;
-            double l_dot = query.dot(tree[left]); double r_dot = query.dot(tree[right]);
-            search_pool_index.push({l_dot, t_idx, left}); search_pool_index.push({r_dot, t_idx, right});
-            result.second += 2;
+            double l_dot = query.dot(tree[left]); 
+            double r_dot = dot_val - l_dot; // optimize away a dot product
+            search_pool_index.push({l_dot, t_idx, left}); 
+            search_pool_index.push({r_dot, t_idx, right});
+            result.second += 1;
         }
         return result;
     }

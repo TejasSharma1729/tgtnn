@@ -5,9 +5,18 @@ import numpy as np
 import scipy.sparse as sp
 import tempfile
 
+# Set thread count to 16 for all algorithms
+NUM_THREADS = 16
+os.environ['OMP_NUM_THREADS'] = str(NUM_THREADS)
+os.environ['OPENBLAS_NUM_THREADS'] = str(NUM_THREADS)
+os.environ['MKL_NUM_THREADS'] = str(NUM_THREADS)
+os.environ['VECLIB_MAXIMUM_THREADS'] = str(NUM_THREADS)
+os.environ['NUMEXPR_NUM_THREADS'] = str(NUM_THREADS)
+
 # Add the big-ann-benchmarks repository to the Python path
 CUR_DIR = os.path.dirname(os.path.abspath(__file__))
 BENCHMARK_PATH = os.path.join(CUR_DIR, "..", "assets", "big-ann-benchmarks")
+assert os.path.exists(BENCHMARK_PATH), f"big-ann-benchmarks path does not exist: {BENCHMARK_PATH}"
 sys.path.append(BENCHMARK_PATH)
 
 try:
@@ -28,8 +37,13 @@ try:
     
     # Dense ANN libraries
     import faiss
+    faiss.omp_set_num_threads(NUM_THREADS)  # Set Faiss to use 16 threads
+    
     import scann
+    # Scann will use OMP_NUM_THREADS environment variable automatically
+    
     import falconn
+    # Falconn will use OMP_NUM_THREADS environment variable automatically
 except ImportError as e:
     print(f"Warning: Could not import some benchmark modules. {e}")
 except Exception as e:
@@ -258,6 +272,10 @@ class NLEWrapper(BaselinePythonWrapper):
 
 class FaissHNSWWrapper(BaselinePythonWrapper):
     def __init__(self, data, k=10, M=32, efConstruction=128, efSearch=64):
+        # Ensure Faiss uses 16 threads
+        import faiss
+        faiss.omp_set_num_threads(NUM_THREADS)
+        
         # Convert to dense float32 for FAISS
         if sp.issparse(data):
             dense_data = data.toarray().astype(np.float32)
@@ -292,6 +310,10 @@ class FaissHNSWWrapper(BaselinePythonWrapper):
 
 class FaissGTWrapper(BaselinePythonWrapper):
     def __init__(self, data, k=10):
+        # Ensure Faiss uses 16 threads
+        import faiss
+        faiss.omp_set_num_threads(NUM_THREADS)
+        
         if sp.issparse(data):
             dense_data = data.toarray().astype(np.float32)
         else:

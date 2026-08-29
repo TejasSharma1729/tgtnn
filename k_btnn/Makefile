@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -O3 -Wall -shared -std=c++17 -fPIC -fopenmp
+CXXFLAGS = -g3 -Wall -shared -std=c++17 -fPIC -fopenmp
 # Add paths manually if Python/environment settings are missing
 INCLUDES = $(shell python3 -m pybind11 --includes) -I./src \
            -I../assets/SHNSW/hnswlib \

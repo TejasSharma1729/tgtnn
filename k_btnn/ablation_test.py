@@ -1,7 +1,18 @@
 #!/usr/bin/env python3
+import os
+import sys
+
+# Set thread count to 16 for all algorithms BEFORE importing other libraries
+NUM_THREADS = 16
+os.environ['OMP_NUM_THREADS'] = str(NUM_THREADS)
+os.environ['OPENBLAS_NUM_THREADS'] = str(NUM_THREADS)
+os.environ['MKL_NUM_THREADS'] = str(NUM_THREADS)
+os.environ['VECLIB_MAXIMUM_THREADS'] = str(NUM_THREADS)
+os.environ['NUMEXPR_NUM_THREADS'] = str(NUM_THREADS)
+
 from dataclasses import dataclass, field
 from typing import List, Optional
-import sys, os, time, gc
+import time, gc
 import argparse
 import csv
 
